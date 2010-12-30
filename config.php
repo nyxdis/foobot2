@@ -8,6 +8,12 @@ $settings['protocol'] = 'irc';
 /* The bot's nick */
 $settings['nick'] = 'foobot';
 
+/* The bot's username */
+$settings['username'] = 'foobot';
+
+/* The bot's realname */
+$settings['realname'] = 'foobot';
+
 /* The server we're connecting to */
 $settings['server'] = 'localhost';
 

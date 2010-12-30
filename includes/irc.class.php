@@ -22,6 +22,8 @@ class irc implements communication
 
 	public function connect()
 	{
+		global $settings;
+
 		$this->send('USER ' . $settings['username'] . ' +i * :' . $settings['realname']);
 		$this->send('NICK ' . $settings['nick']);
 		for (;;) {
