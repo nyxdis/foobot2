@@ -11,6 +11,9 @@ $settings['nick'] = 'foobot';
 /* The server we're connecting to */
 $settings['server'] = 'localhost';
 
+/* Port of the server */
+$settings['port']= 6667;
+
 /* Network, important for the database */
 $settings['network'] = '';
 
