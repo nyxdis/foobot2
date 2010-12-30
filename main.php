@@ -16,10 +16,12 @@ require_once 'includes/misc_functions.php';
 require_once 'includes/plugins.php';
 
 // Load plugins
+$plugins = plugins::get_instance();
+
 foreach (glob('plugins/*.php') as $file) {
 	$file = basename($file);
 	$file = substr($file, 0, -4);
-	load_plugin($file);
+	$plugins->load($file);
 }
 
 $bot = bot::get_instance();
