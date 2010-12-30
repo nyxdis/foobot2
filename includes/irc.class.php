@@ -22,8 +22,8 @@ class irc implements communication
 
 	public function connect()
 	{
-		$this->bot->send('USER ' . $settings['username'] . ' +i * :' . $settings['realname']);
-		$this->bot->send('NICK ' . $settings['nick']);
+		$this->send('USER ' . $settings['username'] . ' +i * :' . $settings['realname']);
+		$this->send('NICK ' . $settings['nick']);
 		for (;;) {
 			$buf = $this->bot->read();
 			if (strstr($buf, '001 ' . $settings['nick'] . ' :')) {
@@ -55,7 +55,7 @@ class irc implements communication
 				$cmd .= $settings['authuser'];
 
 			$cmd .= $settings['authpass'];
-			$this->bot->write($authserv, $cmd);
+			$this->bot->say($authserv, $cmd);
 		}
 
 		if (isset ($settings['operpass'])) {
@@ -71,8 +71,13 @@ class irc implements communication
 		$cmd = 'JOIN ' . $channel;
 		if ($key)
 			$cmd .= ' ' . $key;
-		$this->bot->send($cmd);
-		$this->bot->send('WHO ' . $channel);
+		$this->send($cmd);
+		$this->send('WHO ' . $channel);
+	}
+
+	public function send($raw)
+	{
+		$this->bot->write($raw . LF);
 	}
 }
 

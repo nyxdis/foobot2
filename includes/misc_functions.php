@@ -41,7 +41,7 @@ function foobot_error_handler($errno, $error, $file, $line, $context)
 		$error;
 
 	// Check if the bot is already initialized
-	if (isset($bot))
+	if ($bot->connected)
 		$bot->send($settings['debug_channel'], $string);
 	else
 		die($string);

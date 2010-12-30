@@ -110,6 +110,8 @@ class bot
 	 **/
 	public function connect()
 	{
+		global $settings;
+
 		$this->protocol = new $settings['protocol'];
 		$this->log(DEBUG, 'Connecting');
 		if (!socket_connect($this->socket, $settings['server'], $settings['port']))
@@ -146,6 +148,35 @@ class bot
 		if (!in_array($channel, $this->channels))
 			$this->channels[] = $channel;
 		$this->protocol->join($channel, $key);
+	}
+
+	/**
+	 * Send raw protocol data
+	 * @param string $raw data
+	 **/
+	public function send($raw)
+	{
+		$this->protocol->send($raw);
+	}
+
+	/**
+	 * Write data to the socket
+	 * @param string $data data
+	 **/
+	public function write($data)
+	{
+		socket_write($this->socket, $data);
+	}
+
+	/**
+	 * Write a log entry
+	 * @param int $level log level
+	 * @param string $msg text to log
+	 **/
+	public function log($level, $msg)
+	{
+		// TODO implement
+		echo $msg;
 	}
 }
 
