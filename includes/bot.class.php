@@ -177,6 +177,14 @@ class bot
 	}
 
 	/**
+	 * Read data from the socket
+	 **/
+	public function read()
+	{
+		socket_read($this->socket, 4096);
+	}
+
+	/**
 	 * Write a log entry
 	 * @param int $level log level
 	 * @param string $msg text to log
