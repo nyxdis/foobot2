@@ -79,7 +79,6 @@ class bot
 
 		$this->open_log();
 		$this->create_socket();
-		$this->protocol = new $settings['protocol'];
 	}
 
 	/**
@@ -111,6 +110,7 @@ class bot
 	 **/
 	public function connect()
 	{
+		$this->protocol = new $settings['protocol'];
 		$this->log(DEBUG, 'Connecting');
 		if (!socket_connect($this->socket, $settings['server'], $settings['port']))
 			return false;
