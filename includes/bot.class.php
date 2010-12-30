@@ -124,7 +124,8 @@ class bot
 		$this->log(DEBUG, 'Connecting');
 		if (!socket_connect($this->socket, $settings['server'], $settings['port']))
 			return false;
-		return $this->protocol->connect();
+		$this->protocol->connect();
+		socket_set_nonblock($this->socket);
 	}
 
 	/**
@@ -181,7 +182,7 @@ class bot
 	 **/
 	public function read()
 	{
-		socket_read($this->socket, 4096);
+		return socket_read($this->socket, 4096, PHP_NORMAL_READ);
 	}
 
 	/**
@@ -192,7 +193,38 @@ class bot
 	public function log($level, $msg)
 	{
 		// TODO implement
-		echo $msg;
+		echo $msg . LF;
+	}
+
+	/**
+	 * Wait for acion on the socket
+	 **/
+	public function wait()
+	{
+		$nul = NULL;
+		if(socket_select(array($this->socket), $nul, $nul, 1)) {
+			$line = $this->read();
+			if(!$line) {
+				socket_close($this->socket);
+				$this->connect();
+			}
+			$this->parse();
+		} else {
+			// reminders
+			// save last seen table
+			// announce events
+		}
+	}
+
+	/**
+	 * Parse incoming messages
+	 * @access private
+	 * @param string $line
+	 **/
+	private function parse($line)
+	{
+		if(!strncmp($line, 'PING :', 6))
+			$this->send('PONG ' . strstr($line, ':'));
 	}
 }
 
