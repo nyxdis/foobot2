@@ -13,11 +13,19 @@ if (!defined('PHP_VERSION_ID') || PHP_VERSION_ID < 50300)
 
 require_once 'includes/settings.php';
 require_once 'includes/misc_functions.php';
+require_once 'includes/plugins.php';
+
+// Load plugins
+foreach (glob('plugins/*.php') as $file) {
+	$file = basename($file);
+	$file = substr($file, 0, -4);
+	load_plugin($file);
+}
 
 $bot = bot::get_instance();
 $bot->connect();
-if(!$bot->connected)
-	die('Failed to connect');
+if (!$bot->connected)
+	die ('Failed to connect');
 $bot->post_connect();
 
 for (;;)
