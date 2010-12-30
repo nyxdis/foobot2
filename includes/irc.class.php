@@ -81,6 +81,18 @@ class irc implements communication
 	{
 		$this->bot->write($raw . LF);
 	}
+
+	public function say($target, $text)
+	{
+		$send = 'PRIVMSG ' . $target . ' :' . $text;
+                if (strlen($send) > 412) {
+                        $text = str_split($text, 402 - strlen($channel));
+                        foreach ($text as $t)
+                                $this->say($target, $t);
+                } else {
+                        $this->send($send);
+                }
+	}
 }
 
 ?>

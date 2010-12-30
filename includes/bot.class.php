@@ -154,8 +154,9 @@ class bot
 	 **/
 	public function join($channel, $key = NULL)
 	{
-		if (!in_array($channel, $this->channels))
-			$this->channels[] = $channel;
+		if (in_array($channel, $this->channels))
+			return;
+		$this->channels[] = $channel;
 		$this->protocol->join($channel, $key);
 	}
 
@@ -202,13 +203,14 @@ class bot
 	public function wait()
 	{
 		$nul = NULL;
-		if(socket_select(array($this->socket), $nul, $nul, 1)) {
+		$sock = array($this->socket);
+		if(socket_select($sock, $nul, $nul, 1)) {
 			$line = $this->read();
 			if(!$line) {
 				socket_close($this->socket);
 				$this->connect();
 			}
-			$this->parse();
+			$this->parse($line);
 		} else {
 			// reminders
 			// save last seen table
@@ -225,6 +227,16 @@ class bot
 	{
 		if(!strncmp($line, 'PING :', 6))
 			$this->send('PONG ' . strstr($line, ':'));
+	}
+
+	/**
+	 * Send text to target
+	 * @param string $target where to send text to
+	 * @param string $text text to send
+	 **/
+	public function say($target, $text)
+	{
+		$this->protocol->say($target, $text);
 	}
 }
 
