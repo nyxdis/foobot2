@@ -44,7 +44,7 @@ function foobot_error_handler($errno, $error, $file, $line, $context)
 	if ($bot->connected)
 		$bot->say($settings['debug_channel'], $string);
 	else
-		die($string);
+		die ($string);
 }
 
 set_error_handler('foobot_error_handler');

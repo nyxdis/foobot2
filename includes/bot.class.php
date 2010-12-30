@@ -90,6 +90,11 @@ class bot
 	}
 
 	/**
+	 * @ignore
+	 **/
+	private function __clone() {}
+
+	/**
 	 * Open log file
 	 * @access private
 	 **/
@@ -204,9 +209,9 @@ class bot
 	{
 		$nul = NULL;
 		$sock = array($this->socket);
-		if(socket_select($sock, $nul, $nul, 1)) {
+		if (socket_select($sock, $nul, $nul, 1)) {
 			$line = $this->read();
-			if(!$line) {
+			if (!$line) {
 				socket_close($this->socket);
 				$this->connect();
 			}
@@ -225,7 +230,7 @@ class bot
 	 **/
 	private function parse($line)
 	{
-		if(!strncmp($line, 'PING :', 6))
+		if (!strncmp($line, 'PING :', 6))
 			$this->send('PONG ' . strstr($line, ':'));
 	}
 

@@ -19,19 +19,21 @@ class demo extends plugin_interface
 	 **/
 	public function load()
 	{
-		$this->register_command('ping');
+		parent::register_command('ping', 'pub_ping');
+
+		// Register help for the plugin
+		parent::register_help('demo', 'Plugin demonstration');
+		// Register help for the plugin's command 'ping'
+		parent::register_help('ping', 'Simple ping command');
 	}
 
 	/**
-	 * Help texts for available functions
-	 * @see plugin_interface::register_help()
+	 * Ping function
+	 * @param mixed $dummy unused
 	 **/
-	public function help()
+	public function pub_ping($dummy)
 	{
-		// Register help for the plugin
-		$this->register_help('demo', 'Plugin demonstration');
-		// Register help for the plugin's command 'ping'
-		$this->register_help('ping', 'Simple ping command');
+		parent::answer('pong');
 	}
 }
 

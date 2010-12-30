@@ -15,25 +15,47 @@
 abstract class plugin_interface
 {
 	abstract public function load();
+
+	protected function answer($text)
+	{
+		$bot = bot::get_instance();
+	}
 }
 
 /**
- * Array of loaded plugins
- * @global array $plugs
+ * Plugin management
+ *
+ * @package foobot
+ * @subpackage classes
  **/
-$plugs = array();
-
-/**
- * Function to load plugins
- * @param string $plugin name of the plugin to load
- **/
-function load_plugin($plugin)
+class plugin
 {
-	global $plugs;
+	/**
+	 * Array of loaded plugins
+	 * @var array
+	 **/
+	private $loaded = array();
 
-	include 'includes/' . $plugin . '.php';
-	$plug = new $plugin();
-	$plugs[$plugin] = $plug->load();
+	private static $instance = NULL;
+
+	private function __construct() {}
+	private function __clone() {}
+	public static function get_instance()
+	{
+		if(self::$instance == NULL)
+			self::$instance = new self;
+		return self::$instance;
+	}
+
+	public function load($plugin)
+	{
+		include 'plugins/' . $plugin . '.php';
+		$plug = new $plugin();
+		$plug ->load();
+	}
+
+	public function register_function() {}
+	public function register_help() {}
 }
 
 ?>
