@@ -28,13 +28,16 @@ abstract class plugin_interface
  * @package foobot
  * @subpackage classes
  **/
-class plugin
+class plugins
 {
 	/**
 	 * Array of loaded plugins
 	 * @var array
 	 **/
 	private $loaded = array();
+
+	private $help = array();
+	private $commands = array();
 
 	private static $instance = NULL;
 
@@ -54,8 +57,17 @@ class plugin
 		$plug ->load();
 	}
 
-	public function register_function() {}
-	public function register_help() {}
+	public function register_command($plugin, $command, $function = NULL)
+	{
+		if (!$function)
+			$function = $command;
+		$this->commands[$command] = array('plugin' => $plugin, 'function' => $function);
+	}
+
+	public function register_help($command, $help)
+	{
+		$this->help[$command] = $help;
+	}
 }
 
 ?>
