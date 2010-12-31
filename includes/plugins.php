@@ -45,7 +45,7 @@ class plugins
 	private function __clone() {}
 	public static function get_instance()
 	{
-		if(self::$instance == NULL)
+		if (self::$instance == NULL)
 			self::$instance = new self;
 		return self::$instance;
 	}

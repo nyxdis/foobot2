@@ -23,5 +23,5 @@ $required_settings[] = 'server';
 $required_settings[] = 'channels';
 
 foreach ($required_settings as $setting)
-	if (!isset($settings[$setting]))
+	if (!isset ($settings[$setting]))
 		die ('Required setting \'' . $setting . '\' missing!');

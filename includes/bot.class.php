@@ -23,6 +23,12 @@ define('ERROR', 3);
 class bot
 {
 	/**
+	 * The bot's internal userlist
+	 * @var array
+	 **/
+	public $userlist = array();
+
+	/**
 	 * Is the bot connected?
 	 * @var bool
 	 **/
@@ -230,8 +236,25 @@ class bot
 	 **/
 	private function parse($line)
 	{
+		global $settings;
+
 		if (!strncmp($line, 'PING :', 6))
 			$this->send('PONG ' . strstr($line, ':'));
+
+		// Update userlist on JOIN, NICK and WHO events
+                if (preg_match('/:\S+ 352 ' . $settings['nick'] . ' \S+ (?<ident>\S+) (?<host>\S+) \S+ (?<nick>\S+) \S+ :\d+ (?<realname>.+)/', $line, $whoinfo) ||
+                        preg_match('/:(?<nick>.+)!(?<ident>.+)@(?<host>.+) JOIN .*/', $line, $whoinfo) ||
+                        preg_match('/:(?<oldnick>\S+)!(?<ident>\S+)@(?<host>\S+) NICK :(?<nick>\S+)/', $line, $whoinfo)) {
+                        $this->userlist[$whoinfo['nick']] = array('ident' => $whoinfo['ident'], 'host' => $whoinfo['host']);
+                        if (isset ($whoinfo['realname']))
+				$this->userlist[$whoinfo['nick']]['realname'] = $whoinfo['realname'];
+                        if (!isset ($whoinfo['realname']) && !isset ($whoinfo['oldnick']))
+				$this->send('WHO ' . $whoinfo['nick']);
+                        if (isset ($whoinfo['oldnick']))
+				unset ($this->userlist[$whoinfo['oldnick']]);
+                        $user = new user($whoinfo['nick'], $whoinfo['ident'], $whoinfo['host']);
+                        $this->userlist[$whoinfo['nick']]['usr'] = $user;
+                }
 	}
 
 	/**
