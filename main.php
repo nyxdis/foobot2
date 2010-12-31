@@ -24,6 +24,9 @@ foreach (glob('plugins/*.php') as $file) {
 	$plugins->load($file);
 }
 
+$db = db::get_instance();
+$db->initialize();
+
 $bot = bot::get_instance();
 $bot->connect();
 if (!$bot->connected)
