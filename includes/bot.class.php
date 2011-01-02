@@ -236,25 +236,125 @@ class bot
 	 **/
 	private function parse($line)
 	{
-		global $settings;
+		global $settings, $db;
 
 		if (!strncmp($line, 'PING :', 6))
 			$this->send('PONG ' . strstr($line, ':'));
 
 		// Update userlist on JOIN, NICK and WHO events
-                if (preg_match('/:\S+ 352 ' . $settings['nick'] . ' \S+ (?<ident>\S+) (?<host>\S+) \S+ (?<nick>\S+) \S+ :\d+ (?<realname>.+)/', $line, $whoinfo) ||
-                        preg_match('/:(?<nick>.+)!(?<ident>.+)@(?<host>.+) JOIN .*/', $line, $whoinfo) ||
-                        preg_match('/:(?<oldnick>\S+)!(?<ident>\S+)@(?<host>\S+) NICK :(?<nick>\S+)/', $line, $whoinfo)) {
-                        $this->userlist[$whoinfo['nick']] = array('ident' => $whoinfo['ident'], 'host' => $whoinfo['host']);
-                        if (isset ($whoinfo['realname']))
+		if (preg_match('/:\S+ 352 ' . $settings['nick'] . ' \S+ (?<ident>\S+) (?<host>\S+) \S+ (?<nick>\S+) \S+ :\d+ (?<realname>.+)/', $line, $whoinfo) ||
+			preg_match('/:(?<nick>.+)!(?<ident>.+)@(?<host>.+) JOIN .*/', $line, $whoinfo) ||
+			preg_match('/:(?<oldnick>\S+)!(?<ident>\S+)@(?<host>\S+) NICK :(?<nick>\S+)/', $line, $whoinfo)) {
+			$this->userlist[$whoinfo['nick']] = array('ident' => $whoinfo['ident'], 'host' => $whoinfo['host']);
+			if (isset ($whoinfo['realname']))
 				$this->userlist[$whoinfo['nick']]['realname'] = $whoinfo['realname'];
-                        if (!isset ($whoinfo['realname']) && !isset ($whoinfo['oldnick']))
+			if (!isset ($whoinfo['realname']) && !isset ($whoinfo['oldnick']))
 				$this->send('WHO ' . $whoinfo['nick']);
-                        if (isset ($whoinfo['oldnick']))
+			if (isset ($whoinfo['oldnick']))
 				unset ($this->userlist[$whoinfo['oldnick']]);
-                        $user = new user($whoinfo['nick'], $whoinfo['ident'], $whoinfo['host']);
-                        $this->userlist[$whoinfo['nick']]['usr'] = $user;
-                }
+			$user = new user($whoinfo['nick'], $whoinfo['ident'], $whoinfo['host']);
+			$this->userlist[$whoinfo['nick']]['usr'] = $user;
+		}
+
+		// Parse text
+		// TODO event-driven rewrite
+		if (preg_match('/:(?<nick>\S+)!(?<ident>\S+)@(?<host>\S+) PRIVMSG (?<channel>#\S+) :(?<text>.*)/', $line, $nickinfo)) {
+			$nick = $nickinfo['nick'];
+
+			$usr = $userlist[$nickinfo['nick']]['usr'];
+
+			/* YouTube */
+			if (preg_match('/https?:\/\/(www\.)?youtube\.(com|de)\/watch\?.*v=(?<videoid>[A-Za-z0-9_]*)/', $nickinfo['text'], $urlinfo)) {
+				$ch = curl_init();
+				$url = 'http://www.youtube.com/oembed?url=http%3A//www.youtube.com/watch?v%3D' . $urlinfo['videoid'] . '&format=json';
+				curl_setopt($ch, CURLOPT_URL, $url);
+				curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 4);
+				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+				$result = json_decode(curl_exec($ch));
+				if (!$result)
+					return;
+				$this->say($nickinfo['channel'], $result->provider_name . ' - ' . $result->title);
+			}
+
+			/* sed */
+			if (preg_match('/^s(?<match>\/.*)\/(?<replace>.*)(?<opts>\/i?)(?<global>g?)/', $nickinfo['text'], $sedinfo)) {
+				$match = $sedinfo['match'] . $sedinfo['opts'];
+				if (!empty ($sedinfo['global']))
+					$ll = $lastline[$nickinfo['channel']][0];
+				else
+					$ll = $lastline[$nickinfo['channel']][$nickinfo['nick']];
+				$ll = preg_replace($match, $sedinfo['replace'], $ll);
+				$this->say($nickinfo['channel'], $nickinfo['nick'] . ': ' . $ll);
+			} else {
+				/* lastline */
+				$lastline[$nickinfo['channel']][$nickinfo['nick']] = $nickinfo['text'];
+				$lastline[$nickinfo['channel']][0] = $nickinfo['text'];
+			}
+
+			/* urls */
+			if (preg_match('/(?<url>(https?:\/\/|www\.)\S+)/', $nickinfo['text'], $url)) {
+				$db->query('INSERT INTO urls (channel, url) VALUES(' . $db->quote($nickinfo['channel']) . ', ' . $db->quote($url['url']) . ')');
+			}
+
+			/* seen */
+			if (isset ($usr->name))
+				$seen[$usr->name] = time();
+
+			/* mono */
+			if (!preg_match('/:\S+!\S+@\S+ PRIVMSG #\S+ :(' . COMMAND_CHAR . '|' . $this->nick . ')/', $line)) {
+				if ($mono[$nickinfo['channel']]['nick'] == $usr->name)
+					$mono[$nickinfo['channel']]['count']++;
+				else {
+					$mono[$nickinfo['channel']]['nick'] = $usr->name;
+					$mono[$nickinfo['channel']]['count'] = 1;
+				}
+			}
+		}
+		if (preg_match('/:(?<nick>\S+)!(?<ident>\S+)@(?<host>\S+) PRIVMSG ((?<target1>#\S+) :(' . COMMAND_CHAR . '|' . $this->nick . ': )|(?<target2>[^#]\S+) :' . COMMAND_CHAR . '?)(?<cmd>\S+)(?<args>.*)/', $line, $cmdinfo)) {
+
+			/* CTCP VERSION */
+			if ($cmdinfo['cmd'] == "\001VERSION\001") {
+				exec('git rev-parse --short HEAD', $gitver);
+				$this->send("NOTICE $cmdinfo[nick] :\001VERSION foobot v" . BOT_VERSION . "-$gitver[0]\001");
+				return;
+			}
+
+			if (!empty ($cmdinfo['target1'])) {
+				$channel = $cmdinfo['target1'];
+			} else {
+				$channel = $cmdinfo['nick'];
+				$usr = new user($cmdinfo['nick'], $cmdinfo['ident'], $cmdinfo['host']);
+			}
+			$cmd = strtolower($cmdinfo['cmd']);
+			if (isset ($cmdinfo['args']))
+				$args = $cmdinfo['args'];
+			else
+				$args = NULL;
+
+			/* regular commands */
+			if ($this->execute_command($cmd, trim($args)))
+				return;
+
+			/* karma */
+			if (preg_match('/(?<item>.*)(?<karma>(\+\+|--)+)($| ?# ?(?<comment>.*))/', $cmd . $args, $karmainfo)) {
+				if ($channel[0] == '#') {
+					$ki = array('item' => $karmainfo['item'], 'karma' => $karmainfo['karma']);
+					if (isset ($karmainfo['comment'])) $ki['comment'] = $karmainfo['comment'];
+					if ($ki['item'] == $usr->name)
+						$ki['karma'] = '--';
+					if ($karmainfo['karma'] == '++')
+						$this->execute_command('karmaup', $ki);
+					else
+						$this->execute_command('karmadown', $ki);
+				}
+			}
+			/* definitions */
+			elseif (preg_match('/(?<item>.+)(\?| is (?<definition>.+))/', $cmd . $args, $definfo)) {
+				$this->execute_command('define', $definfo);
+			} elseif (strncmp($channel, '#', 1) != 0) {
+				$this->say($settings['main_channel'], '<' . $cmdinfo['nick'] . '> ' . $cmd . ' ' . trim($args));
+			}
+		}
 	}
 
 	/**
