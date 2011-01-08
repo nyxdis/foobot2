@@ -3,7 +3,7 @@
  * bot class
  *
  * Low-level bot interaction
- * @author Christoph Mende <angelos@unkreativ.org
+ * @author Christoph Mende <angelos@unkreativ.org>
  * @package foobot
  **/
 
@@ -35,7 +35,7 @@ class bot
 	public $connected = false;
 
 	/**
-	 * TODO doc
+	 * The protocol to use (e.g. IRC)
 	 * @var communication
 	 **/
 	private $protocol = NULL;

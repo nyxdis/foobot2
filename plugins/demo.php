@@ -15,7 +15,7 @@ class demo extends plugin_interface
 {
 	/**
 	 * Plugin initialization
-	 * @see plugin_interface::register_event()
+	 * @see plugins::register_event()
 	 **/
 	public function load()
 	{

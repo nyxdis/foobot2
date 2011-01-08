@@ -13,13 +13,24 @@
  **/
 class irc implements communication
 {
+	/**
+	 * Instance of the bot class
+	 * @access private
+	 **/
 	private $bot;
 
+	/**
+	 * Constructor, get a bot instance
+	 **/
 	public function __construct()
 	{
 		$this->bot = bot::get_instance();
 	}
 
+	/**
+	 * Connect to IRC server
+	 * @return bool
+	 **/
 	public function connect()
 	{
 		global $settings;
@@ -34,8 +45,12 @@ class irc implements communication
 				return true;
 			}
 		}
+		return false;
 	}
 
+	/**
+	 * Commands to execute after successful connection
+	 **/
 	public function post_connect()
 	{
 		global $settings;
@@ -68,6 +83,11 @@ class irc implements communication
 		}
 	}
 
+	/**
+	 * Join a channel
+	 * @param string $channel the channel to join
+	 * @param string $key key of the channel
+	 **/
 	public function join($channel, $key)
 	{
 		$cmd = 'JOIN ' . $channel;
@@ -77,21 +97,30 @@ class irc implements communication
 		$this->send('WHO ' . $channel);
 	}
 
+	/**
+	 * Send data to the server
+	 * @param string $raw data
+	 **/
 	public function send($raw)
 	{
 		$this->bot->write($raw . LF);
 	}
 
+	/**
+	 * Send text to target
+	 * @param string $target where to send the text to
+	 * @param string $text what to send
+	 **/
 	public function say($target, $text)
 	{
 		$send = 'PRIVMSG ' . $target . ' :' . $text;
-                if (strlen($send) > 412) {
-                        $text = str_split($text, 402 - strlen($channel));
-                        foreach ($text as $t)
-                                $this->say($target, $t);
-                } else {
-                        $this->send($send);
-                }
+		if (strlen($send) > 412) {
+			$text = str_split($text, 402 - strlen($channel));
+			foreach ($text as $t)
+				$this->say($target, $t);
+		} else {
+			$this->send($send);
+		}
 	}
 }
 

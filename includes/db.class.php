@@ -1,9 +1,30 @@
 <?php
+/**
+ * database management
+ *
+ * This class provides a singleton to use for the bot's database
+ * @author Christoph Mende <angelos@unkreativ.org>
+ * @package foobot
+ **/
 
+/**
+ * database management
+ * @package foobot
+ * @subpackage classes
+ **/
 class db extends PDO
 {
+	/**
+	 * The class' instance
+	 * @access private
+	 * @var db
+	 **/
 	private static $instance = NULL;
 
+	/**
+	 * Class constructor, initializes the database
+	 * @access private
+	 **/
 	public function __construct()
 	{
 		global $settings;
@@ -12,6 +33,9 @@ class db extends PDO
 		parent::setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	}
 
+	/**
+	 * Use this function to get an instance
+	 **/
 	public static function get_instance()
 	{
 		if (self::$instance == NULL)
@@ -19,6 +43,11 @@ class db extends PDO
 		return self::$instance;
 	}
 
+	/**
+	 * Execute a database query
+	 * @return mixed PDO result or false
+	 * @param string $sql the query
+	 **/
 	public function query($sql)
 	{
 		global $settings, $bot;
@@ -33,6 +62,9 @@ class db extends PDO
 		return $ret;
 	}
 
+	/**
+	 * Initialize a new database
+	 **/
 	public function initialize()
 	{
 		$this->query('CREATE TABLE IF NOT EXISTS users (id integer primary key, username varchar(25) unique, title varchar(25), ulvl integer, userdata varchar(150))');
