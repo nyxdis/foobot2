@@ -34,11 +34,12 @@ class plugins
 	/**
 	 * Array of loaded plugins
 	 * @var array
+	 * @access private
 	 **/
 	private $loaded = array();
 
 	private $help = array();
-	private $commands = array();
+	private $events = array();
 
 	private static $instance = NULL;
 
@@ -56,6 +57,7 @@ class plugins
 		include 'plugins/' . $plugin . '.php';
 		$plug = new $plugin();
 		$plug ->load();
+		$this->loaded[$plugin] = $plug;
 	}
 
 	public function register_event($plugin, $event, $trigger = NULL, $function = NULL)
@@ -67,7 +69,20 @@ class plugins
 		if(!in_array($event, $events))
 			return false;
 
-		$this->events[$event][] = array('plugin' => $plugin, 'function' => $function);
+		if($event == 'command' && !$trigger)
+			return false;
+
+		$this->events[$event][] = array('plugin' => $plugin, 'function' => $function, 'trigger' => $trigger);
+	}
+
+	public function run_event($event, $trigger = NULL, $args = NULL)
+	{
+		foreach($this->events[$event] as $entry)
+		{
+			if($entry['trigger'] && $entry['trigger'] != $trigger)
+				return false;
+			$this->loaded[$entry['plugin']]->$entry['function']($args);
+		}
 	}
 
 	public function register_help($command, $help)
