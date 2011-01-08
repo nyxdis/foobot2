@@ -358,6 +358,17 @@ class bot
 	}
 
 	/**
+	 * Execute command sent to the bot
+	 * @param string $command the command to execute
+	 * @param string $args optional string with parameters
+	 **/
+	private function execute_command($command, $args = NULL)
+	{
+		$plugins = plugins::get_instance();
+		$plugins->run_event('command', $command, $args);
+	}
+
+	/**
 	 * Send text to target
 	 * @param string $target where to send text to
 	 * @param string $text text to send
