@@ -261,7 +261,7 @@ class bot
 		if (preg_match('/:(?<nick>\S+)!(?<ident>\S+)@(?<host>\S+) PRIVMSG (?<channel>#\S+) :(?<text>.*)/', $line, $nickinfo)) {
 			$nick = $nickinfo['nick'];
 
-			$usr = $userlist[$nickinfo['nick']]['usr'];
+			$usr = $this->userlist[$nickinfo['nick']]['usr'];
 
 			/* YouTube */
 			if (preg_match('/https?:\/\/(www\.)?youtube\.(com|de)\/watch\?.*v=(?<videoid>[A-Za-z0-9_]*)/', $nickinfo['text'], $urlinfo)) {
@@ -301,7 +301,7 @@ class bot
 				$seen[$usr->name] = time();
 
 			/* mono */
-			if (!preg_match('/:\S+!\S+@\S+ PRIVMSG #\S+ :(' . COMMAND_CHAR . '|' . $this->nick . ')/', $line)) {
+			if (!preg_match('/:\S+!\S+@\S+ PRIVMSG #\S+ :(' . $settings['command_char'] . '|' . $settings['nick'] . ')/', $line)) {
 				if ($mono[$nickinfo['channel']]['nick'] == $usr->name)
 					$mono[$nickinfo['channel']]['count']++;
 				else {
@@ -310,7 +310,7 @@ class bot
 				}
 			}
 		}
-		if (preg_match('/:(?<nick>\S+)!(?<ident>\S+)@(?<host>\S+) PRIVMSG ((?<target1>#\S+) :(' . COMMAND_CHAR . '|' . $this->nick . ': )|(?<target2>[^#]\S+) :' . COMMAND_CHAR . '?)(?<cmd>\S+)(?<args>.*)/', $line, $cmdinfo)) {
+		if (preg_match('/:(?<nick>\S+)!(?<ident>\S+)@(?<host>\S+) PRIVMSG ((?<target1>#\S+) :(' . $settings['command_char'] . '|' . $settings['nick'] . ': )|(?<target2>[^#]\S+) :' . $settings['command_char'] . '?)(?<cmd>\S+)(?<args>.*)/', $line, $cmdinfo)) {
 
 			/* CTCP VERSION */
 			if ($cmdinfo['cmd'] == "\001VERSION\001") {
