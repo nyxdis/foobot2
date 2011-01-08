@@ -257,7 +257,7 @@ class bot
 		}
 
 		// Parse text
-		// TODO event-driven rewrite
+		// TODO move to plugins
 		if (preg_match('/:(?<nick>\S+)!(?<ident>\S+)@(?<host>\S+) PRIVMSG (?<channel>#\S+) :(?<text>.*)/', $line, $nickinfo)) {
 			$nick = $nickinfo['nick'];
 

@@ -14,6 +14,7 @@
  **/
 abstract class plugin_interface
 {
+	// TODO doc
 	abstract public function load();
 
 	protected function answer($text)
@@ -57,11 +58,16 @@ class plugins
 		$plug ->load();
 	}
 
-	public function register_command($plugin, $command, $function = NULL)
+	public function register_event($plugin, $event, $trigger = NULL, $function = NULL)
 	{
 		if (!$function)
-			$function = $command;
-		$this->commands[$command] = array('plugin' => $plugin, 'function' => $function);
+			$function = $event;
+
+		$events = array('command', 'text', 'join');
+		if(!in_array($event, $events))
+			return false;
+
+		$this->events[$event][] = array('plugin' => $plugin, 'function' => $function);
 	}
 
 	public function register_help($command, $help)

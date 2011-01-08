@@ -15,13 +15,13 @@ class demo extends plugin_interface
 {
 	/**
 	 * Plugin initialization
-	 * @see plugin_interface::register_command()
+	 * @see plugin_interface::register_event()
 	 **/
 	public function load()
 	{
 		$plugins = plugins::get_instance();
 
-		$plugins->register_command(__CLASS__, 'ping', 'pub_ping');
+		$plugins->register_event(__CLASS__, 'command', 'ping', 'pub_ping');
 
 		// Register help for the plugin
 		$plugins->register_help('demo', 'Plugin demonstration');
