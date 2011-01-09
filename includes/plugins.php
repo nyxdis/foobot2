@@ -133,12 +133,14 @@ class plugins
 			if($entry['trigger'] &&
 			  (substr($entry['trigger'], 0, 1) == '/' && !preg_match($entry['trigger'], $trigger, $preg_args)) &&
 			    $entry['trigger'] != $trigger)
-				return false;
+				continue;
 
 			if(isset($preg_args))
 				$args = $preg_args;
 			elseif($args)
 				$args = explode(' ', $args);
+			else
+				$args = $trigger;
 
 			$this->loaded[$entry['plugin']]->$entry['function']($args);
 		}
