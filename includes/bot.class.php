@@ -270,19 +270,6 @@ class bot
 			$channel = $nickinfo['channel'];
 
 			$plugins->run_event('text', $nickinfo['text']);
-
-			// TODO move to plugins
-			/* mono */
-			/*
-			if (!preg_match('/:\S+!\S+@\S+ PRIVMSG #\S+ :(' . $settings['command_char'] . '|' . $settings['nick'] . ')/', $line)) {
-				if ($mono[$nickinfo['channel']]['nick'] == $usr->name)
-					$mono[$nickinfo['channel']]['count']++;
-				else {
-					$mono[$nickinfo['channel']]['nick'] = $usr->name;
-					$mono[$nickinfo['channel']]['count'] = 1;
-				}
-			}
-			*/
 		}
 		if (preg_match('/:(?<nick>\S+)!(?<ident>\S+)@(?<host>\S+) PRIVMSG ((?<target1>#\S+) :(' . $settings['command_char'] . '|' . $settings['nick'] . ': )|(?<target2>[^#]\S+) :' . $settings['command_char'] . '?)(?<cmd>\S+)(?<args>.*)/', $line, $cmdinfo)) {
 
