@@ -272,11 +272,6 @@ class bot
 			$plugins->run_event('text', $nickinfo['text']);
 
 			// TODO move to plugins
-			/* urls */
-			if (preg_match('/(?<url>(https?:\/\/|www\.)\S+)/', $nickinfo['text'], $url)) {
-				$db->query('INSERT INTO urls (channel, url) VALUES(' . $db->quote($nickinfo['channel']) . ', ' . $db->quote($url['url']) . ')');
-			}
-
 			/* seen */
 			if (isset ($usr->name))
 				$seen[$usr->name] = time();
