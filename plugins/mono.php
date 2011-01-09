@@ -28,7 +28,7 @@ class mono extends plugin_interface
 		global $channel, $usr, $settings;
 
 		$text = implode(' ', $args);
-		if (substr($text, 0, 1) == $settings['command_char'])
+		if ($text{0} == $settings['command_char'])
 			return;
 
 		if (!isset ($this->mono[$channel]) || $this->mono[$channel]['nick'] != $usr->name) {

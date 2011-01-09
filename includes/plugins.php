@@ -109,7 +109,7 @@ class plugins
 	{
 		// TODO swap trigger and function parameters
 		if (!$function)
-			$function = $trigger;
+			$function = str_replace('-', '_', $trigger);
 
 		$events = array('command', 'text', 'join');
 		if (!in_array($event, $events))
@@ -132,8 +132,8 @@ class plugins
 		foreach($this->events[$event] as $entry)
 		{
 			if ($entry['trigger'] &&
-			  ((substr($entry['trigger'], 0, 1) == '/' && !preg_match($entry['trigger'], $trigger, $preg_args)) ||
-			    $entry['trigger'] != $trigger))
+			  (($entry['trigger']{0} == '/' && !preg_match($entry['trigger'], $trigger, $preg_args)) ||
+			    ($entry['trigger']{0} != '/' && $entry['trigger'] != $trigger)))
 				continue;
 
 			if (isset ($preg_args) && !empty ($preg_args))

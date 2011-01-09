@@ -295,21 +295,8 @@ class bot
 			/* regular commands */
 			$plugins->run_event('command', $cmd, trim($args));
 
-			/* karma */
-			if (preg_match('/(?<item>.*)(?<karma>(\+\+|--)+)($| ?# ?(?<comment>.*))/', $cmd . $args, $karmainfo)) {
-				if ($channel[0] == '#') {
-					$ki = array('item' => $karmainfo['item'], 'karma' => $karmainfo['karma']);
-					if (isset ($karmainfo['comment'])) $ki['comment'] = $karmainfo['comment'];
-					if ($ki['item'] == $usr->name)
-						$ki['karma'] = '--';
-					if ($karmainfo['karma'] == '++')
-						$this->execute_command('karmaup', $ki);
-					else
-						$this->execute_command('karmadown', $ki);
-				}
-			}
 			/* definitions */
-			elseif (preg_match('/(?<item>.+)(\?| is (?<definition>.+))/', $cmd . $args, $definfo)) {
+			if (preg_match('/(?<item>.+)(\?| is (?<definition>.+))/', $cmd . $args, $definfo)) {
 				$this->execute_command('define', $definfo);
 			} elseif (strncmp($channel, '#', 1) != 0) {
 				$this->say($settings['main_channel'], '<' . $cmdinfo['nick'] . '> ' . $cmd . ' ' . trim($args));
