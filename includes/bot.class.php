@@ -272,10 +272,6 @@ class bot
 			$plugins->run_event('text', $nickinfo['text']);
 
 			// TODO move to plugins
-			/* seen */
-			if (isset ($usr->name))
-				$seen[$usr->name] = time();
-
 			/* mono */
 			/*
 			if (!preg_match('/:\S+!\S+@\S+ PRIVMSG #\S+ :(' . $settings['command_char'] . '|' . $settings['nick'] . ')/', $line)) {
