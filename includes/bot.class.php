@@ -256,26 +256,17 @@ class bot
 			$this->userlist[$whoinfo['nick']]['usr'] = $user;
 		}
 
+		$plugins = plugins::get_instance();
+
 		// Parse text
-		// TODO move to plugins
 		if (preg_match('/:(?<nick>\S+)!(?<ident>\S+)@(?<host>\S+) PRIVMSG (?<channel>#\S+) :(?<text>.*)/', $line, $nickinfo)) {
 			$nick = $nickinfo['nick'];
-
 			$usr = $this->userlist[$nickinfo['nick']]['usr'];
+			$channel = $nickinfo['channel'];
 
-			/* YouTube */
-			if (preg_match('/https?:\/\/(www\.)?youtube\.(com|de)\/watch\?.*v=(?<videoid>[A-Za-z0-9_]*)/', $nickinfo['text'], $urlinfo)) {
-				$ch = curl_init();
-				$url = 'http://www.youtube.com/oembed?url=http%3A//www.youtube.com/watch?v%3D' . $urlinfo['videoid'] . '&format=json';
-				curl_setopt($ch, CURLOPT_URL, $url);
-				curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 4);
-				curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-				$result = json_decode(curl_exec($ch));
-				if (!$result)
-					return;
-				$this->say($nickinfo['channel'], $result->provider_name . ' - ' . $result->title);
-			}
+			$plugins->run_event('text', $nickinfo['text']);
 
+			// TODO move to plugins
 			/* sed */
 			if (preg_match('/^s(?<match>\/.*)\/(?<replace>.*)(?<opts>\/i?)(?<global>g?)/', $nickinfo['text'], $sedinfo)) {
 				$match = $sedinfo['match'] . $sedinfo['opts'];
@@ -301,6 +292,7 @@ class bot
 				$seen[$usr->name] = time();
 
 			/* mono */
+			/*
 			if (!preg_match('/:\S+!\S+@\S+ PRIVMSG #\S+ :(' . $settings['command_char'] . '|' . $settings['nick'] . ')/', $line)) {
 				if ($mono[$nickinfo['channel']]['nick'] == $usr->name)
 					$mono[$nickinfo['channel']]['count']++;
@@ -309,6 +301,7 @@ class bot
 					$mono[$nickinfo['channel']]['count'] = 1;
 				}
 			}
+			*/
 		}
 		if (preg_match('/:(?<nick>\S+)!(?<ident>\S+)@(?<host>\S+) PRIVMSG ((?<target1>#\S+) :(' . $settings['command_char'] . '|' . $settings['nick'] . ': )|(?<target2>[^#]\S+) :' . $settings['command_char'] . '?)(?<cmd>\S+)(?<args>.*)/', $line, $cmdinfo)) {
 
@@ -332,8 +325,7 @@ class bot
 				$args = NULL;
 
 			/* regular commands */
-			if ($this->execute_command($cmd, trim($args)))
-				return;
+			$plugins->run_event('command', $cmd, trim($args));
 
 			/* karma */
 			if (preg_match('/(?<item>.*)(?<karma>(\+\+|--)+)($| ?# ?(?<comment>.*))/', $cmd . $args, $karmainfo)) {
@@ -364,8 +356,7 @@ class bot
 	 **/
 	private function execute_command($command, $args = NULL)
 	{
-		$plugins = plugins::get_instance();
-		$plugins->run_event('command', $command, $args);
+		echo 'BUG: DO NOT USE bot::execute_command()!';
 	}
 
 	/**
