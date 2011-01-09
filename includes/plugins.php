@@ -26,7 +26,11 @@ abstract class plugin_interface
 	 **/
 	protected function answer($text)
 	{
+		global $usr, $channel;
+
 		$bot = bot::get_instance();
+		$answer = $usr->nick . ': ' . $text;
+		$bot->say($channel, $answer);
 	}
 }
 

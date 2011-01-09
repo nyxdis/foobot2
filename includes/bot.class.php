@@ -236,7 +236,7 @@ class bot
 	 **/
 	private function parse($line)
 	{
-		global $settings, $db;
+		global $settings, $db, $usr, $channel;
 
 		if (!strncmp($line, 'PING :', 6))
 			$this->send('PONG ' . strstr($line, ':'));
