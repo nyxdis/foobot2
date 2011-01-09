@@ -111,10 +111,10 @@ class plugins
 			$function = $event;
 
 		$events = array('command', 'text', 'join');
-		if(!in_array($event, $events))
+		if (!in_array($event, $events))
 			return false;
 
-		if($event == 'command' && !$trigger)
+		if ($event == 'command' && !$trigger)
 			return false;
 
 		$this->events[$event][] = array('plugin' => $plugin, 'function' => $function, 'trigger' => $trigger);
@@ -130,17 +130,17 @@ class plugins
 	{
 		foreach($this->events[$event] as $entry)
 		{
-			if($entry['trigger'] &&
+			if ($entry['trigger'] &&
 			  (substr($entry['trigger'], 0, 1) == '/' && !preg_match($entry['trigger'], $trigger, $preg_args)) &&
 			    $entry['trigger'] != $trigger)
 				continue;
 
-			if(isset($preg_args))
+			if (isset ($preg_args) && !empty ($preg_args))
 				$args = $preg_args;
-			elseif($args)
+			elseif ($args)
 				$args = explode(' ', $args);
 			else
-				$args = $trigger;
+				$args = explode(' ', $trigger);
 
 			$this->loaded[$entry['plugin']]->$entry['function']($args);
 		}

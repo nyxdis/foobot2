@@ -194,7 +194,10 @@ class bot
 	 **/
 	public function read()
 	{
-		return socket_read($this->socket, 4096, PHP_NORMAL_READ);
+		$buf = socket_read($this->socket, 4096, PHP_NORMAL_READ);
+		if (!$buf)
+			die ('Error while reading socket');
+		return $buf;
 	}
 
 	/**
@@ -238,6 +241,8 @@ class bot
 	{
 		global $settings, $db, $usr, $channel;
 
+		$line = trim($line);
+
 		if (!strncmp($line, 'PING :', 6))
 			$this->send('PONG ' . strstr($line, ':'));
 
@@ -267,21 +272,6 @@ class bot
 			$plugins->run_event('text', $nickinfo['text']);
 
 			// TODO move to plugins
-			/* sed */
-			if (preg_match('/^s(?<match>\/.*)\/(?<replace>.*)(?<opts>\/i?)(?<global>g?)/', $nickinfo['text'], $sedinfo)) {
-				$match = $sedinfo['match'] . $sedinfo['opts'];
-				if (!empty ($sedinfo['global']))
-					$ll = $lastline[$nickinfo['channel']][0];
-				else
-					$ll = $lastline[$nickinfo['channel']][$nickinfo['nick']];
-				$ll = preg_replace($match, $sedinfo['replace'], $ll);
-				$this->say($nickinfo['channel'], $nickinfo['nick'] . ': ' . $ll);
-			} else {
-				/* lastline */
-				$lastline[$nickinfo['channel']][$nickinfo['nick']] = $nickinfo['text'];
-				$lastline[$nickinfo['channel']][0] = $nickinfo['text'];
-			}
-
 			/* urls */
 			if (preg_match('/(?<url>(https?:\/\/|www\.)\S+)/', $nickinfo['text'], $url)) {
 				$db->query('INSERT INTO urls (channel, url) VALUES(' . $db->quote($nickinfo['channel']) . ', ' . $db->quote($url['url']) . ')');
