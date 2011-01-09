@@ -45,11 +45,11 @@ class karma extends plugin_interface
 
 		if (is_numeric($args['item'])) {
 			$karma = $db->query('SELECT `karma` FROM `quotes` WHERE `id`=' . (int)$args['item'])->fetchObject();
-			if($karma === false) {
+			if ($karma === false) {
 				parent::answer('Quote not found');
 				return;
 			}
-			eval('$newkarma = $karma->karma ' . $kc . ' 1;');
+			eval ('$newkarma = $karma->karma ' . $kc . ' 1;');
 			if ($newkarma < -4) {
 				$db->query('DELETE FROM `quotes` WHERE `id`=' . (int)$args['item']);
 				$newkarma .= ' (auto-deleted)';
@@ -60,10 +60,10 @@ class karma extends plugin_interface
 		} else {
 			$oldkarma = $db->query('SELECT `value` FROM `karma` WHERE `item`=' . $item)->fetchObject();
 			if (!$oldkarma) {
-				eval('$karma = ' . $kc . '1;');
+				eval ('$karma = ' . $kc . '1;');
 				$db->query('INSERT INTO `karma` (`item`, `value`) VALUES(' . $item . ', 1)');
 			} else {
-				eval('$karma = $oldkarma->value' . $kc . '1;');
+				eval ('$karma = $oldkarma->value' . $kc . '1;');
 				$db->query('UPDATE `karma` SET `value` = `value`' . $kc . '1 WHERE `item`=' . $item);
 			}
 			if (!empty ($args['comment']))
@@ -106,7 +106,7 @@ class karma extends plugin_interface
 		while($reason = $reasons->fetchObject())
 			$string .= $reason->comment.', ';
 		$string = rtrim($string,', ');
-		if(strlen($string) > strlen('Reasons for ' . $item . ': '))
+		if (strlen($string) > strlen('Reasons for ' . $item . ': '))
 			parent::answer($string);
 		else
 			parent::answer('No comments for ' . $item);

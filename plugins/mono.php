@@ -43,7 +43,7 @@ class mono extends plugin_interface
 	{
 		global $channel;
 
-		if(isset ($this->mono[$channel]) && $this->mono[$channel]['count'] > 1)
+		if (isset ($this->mono[$channel]) && $this->mono[$channel]['count'] > 1)
 			parent::answer($this->mono[$channel]['nick'] . ' had a monologue over ' . $this->mono[$channel]['count'] . ' lines until now');
 		else
 			parent::answer('Nobody has a monologue at the moment');

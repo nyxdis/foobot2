@@ -77,7 +77,7 @@ class seen extends plugin_interface
 			$result .= $seconds;
 		} elseif ($hours == 0 && $minutes > 0) {
 			$unit = 'minute' . ($minutes == 1 && $seconds == 0 ? '' : 's');
-			if($seconds > 0)
+			if ($seconds > 0)
 				$result .= $format_func($minutes) . ':' . $format_func($seconds);
 			else
 				$result .= $minutes;
