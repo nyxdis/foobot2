@@ -130,8 +130,16 @@ class plugins
 	{
 		foreach($this->events[$event] as $entry)
 		{
-			if($entry['trigger'] && $entry['trigger'] != $trigger)
+			if($entry['trigger'] &&
+			  (substr($entry['trigger'], 0, 1) == '/' && !preg_match($entry['trigger'], $trigger, $preg_args)) &&
+			    $entry['trigger'] != $trigger)
 				return false;
+
+			if(isset($preg_args))
+				$args = $preg_args;
+			elseif($args)
+				$args = explode(' ', $args);
+
 			$this->loaded[$entry['plugin']]->$entry['function']($args);
 		}
 	}
