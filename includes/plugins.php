@@ -125,9 +125,9 @@ class plugins
 	 * Execute event
 	 * @param string $event what kind of event happened
 	 * @param string $trigger used trigger if available
-	 * @param string $args arguments to the trigger
+	 * @param string $argv arguments to the trigger
 	 **/
-	public function run_event($event, $trigger = NULL, $args = NULL)
+	public function run_event($event, $trigger = NULL, $argv = NULL)
 	{
 		foreach($this->events[$event] as $entry)
 		{
@@ -138,10 +138,12 @@ class plugins
 
 			if (isset ($preg_args) && !empty ($preg_args))
 				$args = $preg_args;
-			elseif ($args)
-				$args = explode(' ', $args);
-			else
+			elseif ($argv)
+				$args = explode(' ', $argv);
+			elseif ($event != 'command')
 				$args = explode(' ', $trigger);
+			else
+				$args = $argv;
 
 			$this->loaded[$entry['plugin']]->$entry['function']($args);
 		}
