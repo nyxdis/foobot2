@@ -105,9 +105,8 @@ class plugins
 	 * @param string $trigger optional trigger for the event (useful for text events)
 	 * @param string $function method to call
 	 **/
-	public function register_event($plugin, $event, $trigger = NULL, $function = NULL)
+	public function register_event($plugin, $event, $trigger = NULL, $function = NULL, $level = 1)
 	{
-		// TODO swap trigger and function parameters
 		if (!$function)
 			$function = str_replace('-', '_', $trigger);
 
@@ -118,7 +117,10 @@ class plugins
 		if ($event == 'command' && !$trigger)
 			return false;
 
-		$this->events[$event][] = array('plugin' => $plugin, 'function' => $function, 'trigger' => $trigger);
+		$this->events[$event][] = array('plugin' => $plugin,
+				'function' => $function,
+				'trigger' => $trigger,
+				'level' => $level);
 	}
 
 	/**
@@ -129,11 +131,16 @@ class plugins
 	 **/
 	public function run_event($event, $trigger = NULL, $argv = NULL)
 	{
+		global $usr;
+
 		foreach($this->events[$event] as $entry)
 		{
 			if ($entry['trigger'] &&
 			  (($entry['trigger']{0} == '/' && !preg_match($entry['trigger'], $trigger, $preg_args)) ||
 			    ($entry['trigger']{0} != '/' && $entry['trigger'] != $trigger)))
+				continue;
+
+			if ($entry['level'] > $usr->level)
 				continue;
 
 			if (isset ($preg_args) && !empty ($preg_args))
