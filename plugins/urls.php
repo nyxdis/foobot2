@@ -33,17 +33,17 @@ class urls extends plugin_interface
 
 	public function pub_urls($args)
 	{
-                global $channel, $db;
+		global $channel, $db;
 
-                $data = $db->query('SELECT * FROM urls
+		$data = $db->query('SELECT * FROM urls
 			WHERE channel=' . $db->quote($channel) . '
 			ORDER BY id DESC
 			LIMIT 5');
-                $urls = 'Last 5 URLs: ';
-                while ($row = $data->fetchObject())
-                        $urls .= $row->url . ', ';
-                $urls = rtrim($urls,', ');
-                parent::answer($urls);
+		$urls = 'Last 5 URLs: ';
+		while ($row = $data->fetchObject())
+			$urls .= $row->url . ', ';
+		$urls = rtrim($urls,', ');
+		parent::answer($urls);
 	}
 }
 
