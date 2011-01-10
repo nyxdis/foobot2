@@ -228,7 +228,7 @@ class bot
 			$logstring .= ' (in ' . $origin . ')';
 		else
 			$logstring .= ' (via query)';
-		$this->log($logstring);
+		$this->log(INFO, $logstring);
 	}
 
 	/**

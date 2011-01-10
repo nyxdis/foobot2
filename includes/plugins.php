@@ -131,7 +131,7 @@ class plugins
 	 **/
 	public function run_event($event, $trigger = NULL, $argv = NULL)
 	{
-		global $usr;
+		global $usr, $bot, $channel;
 
 		foreach($this->events[$event] as $entry)
 		{
@@ -151,6 +151,9 @@ class plugins
 				$args = explode(' ', $trigger);
 			else
 				$args = $argv;
+
+			if($event == 'command')
+				$bot->log_cmd($usr->name, $channel, $entry['trigger'], $args);
 
 			$this->loaded[$entry['plugin']]->$entry['function']($args);
 		}
