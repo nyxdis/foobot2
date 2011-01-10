@@ -49,5 +49,5 @@ $settings['debug_channel'] = '#foobot2-debug';
 #$settings['control_socket'] = '';
 
 /* Main channel */
-$settings['main_channel'] = $settings['channels'][0];
+$settings['main_channel'] = key($settings['channels']);
 ?>
