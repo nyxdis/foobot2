@@ -28,8 +28,7 @@ class irc implements communication
 	}
 
 	/**
-	 * Connect to IRC server
-	 * @return bool
+	 * @see bot::connect()
 	 **/
 	public function connect()
 	{
@@ -49,7 +48,7 @@ class irc implements communication
 	}
 
 	/**
-	 * Commands to execute after successful connection
+	 * @see bot::post_connect()
 	 **/
 	public function post_connect()
 	{
@@ -84,9 +83,7 @@ class irc implements communication
 	}
 
 	/**
-	 * Join a channel
-	 * @param string $channel the channel to join
-	 * @param string $key key of the channel
+	 * @see bot::join()
 	 **/
 	public function join($channel, $key)
 	{
