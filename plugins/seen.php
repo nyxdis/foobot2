@@ -21,7 +21,8 @@ class seen extends plugin_interface
 
 		$plugins->register_event(__CLASS__, 'text', NULL, 'seen_save');
 		$plugins->register_event(__CLASS__, 'command', 'seen', 'pub_seen');
-		$plugins->register_event(__CLASS__, 'shutdown', NULL, 'shutdown');
+		$plugins->register_event(__CLASS__, 'shutdown', NULL, 'save');
+		$plugins->register_recurring(__CLASS__, 'save', 3600);
 	}
 
 	public function seen_save($args)
@@ -94,8 +95,11 @@ class seen extends plugin_interface
 		parent::answer($nick . ' was last seen ' . $result . ' ago');
 	}
 
-	public function shutdown($args)
+	public function save($args)
 	{
+		if (empty ($this->seen))
+			return;
+
 		$db->query('DELETE FROM seen');
 		foreach ($this->seen as $nick => $time)
 			$db->query('INSERT INTO `seen` (`nick`, `ts`) VALUES(' . $db->quote($nick) . ', ' . $db->quote($time) . ')');
