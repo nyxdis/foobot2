@@ -24,9 +24,9 @@ class demo extends plugin_interface
 		$plugins->register_event(__CLASS__, 'command', 'ping', 'pub_ping');
 
 		// Register help for the plugin
-		$plugins->register_help('demo', 'Plugin demonstration');
+		$plugins->register_help(__CLASS__, 'demo', 'Plugin demonstration');
 		// Register help for the plugin's command 'ping'
-		$plugins->register_help('ping', 'Simple ping command');
+		$plugins->register_help(__CLASS__, 'ping', 'Simple ping command');
 	}
 
 	/**

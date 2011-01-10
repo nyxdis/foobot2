@@ -232,7 +232,7 @@ class bot
 	}
 
 	/**
-	 * Wait for acion on the socket
+	 * Wait for acion on the socket and execute timed and recurring events
 	 **/
 	public function wait()
 	{
@@ -246,9 +246,10 @@ class bot
 			}
 			$this->parse($line);
 		} else {
-			// reminders
-			// save last seen table
-			// announce events
+			$plugins = plugins::get_instance();
+
+			$plugins->run_recurring();
+			$plugins->run_timed();
 		}
 	}
 

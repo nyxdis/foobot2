@@ -65,6 +65,20 @@ class plugins
 	private $events = array();
 
 	/**
+	 * Registered recurring events
+	 * @var array
+	 * @access private
+	 **/
+	private $recurring = array();
+
+	/**
+	 * Registered timed events
+	 * @var array
+	 * @access private
+	 **/
+	private $timed = array();
+
+	/**
 	 * This class' instance
 	 * @var plugins
 	 * @access private
@@ -168,13 +182,66 @@ class plugins
 	}
 
 	/**
+	 * Register a recurring event
+	 * @param string $plugin the registering plugin
+	 * @param string $function method to call
+	 * @param int $interval interval in seconds
+	 **/
+	public function register_recurring($plugin, $function, $interval)
+	{
+		$this->recurring[] = array('plugin' => $plugin,
+				'function' => $function,
+				'interval' => $interval,
+				'last_execution' => 0);
+	}
+
+	/**
+	 * Run recurring events
+	 **/
+	public function run_recurring()
+	{
+		foreach ($this->recurring as $id => $entry) {
+			if (($entry['last_execution'] + $entry['interval']) <= time()) {
+				$this->loaded[$entry['plugin']]->$entry['function']();
+				$this->recurring[$id]['last_execution'] = time();
+			}
+		}
+	}
+
+	/**
+	 * Register a timed event
+	 * @param string $plugin the registering plugin
+	 * @param string $function method to call
+	 * @param int $interval interval in seconds
+	 **/
+	public function register_timed($plugin, $function, $time)
+	{
+		$this->timed[] = array('plugin' => $plugin,
+				'function' => $function,
+				'time' => $time);
+	}
+
+	/**
+	 * Run timed events
+	 **/
+	public function run_timed()
+	{
+		foreach ($this->timed as $id => $entry) {
+			if ($entry['time'] <= time()) {
+				$this->loaded[$entry['plugin']]->$entry['function']();
+				unset($this->timed[$id]);
+			}
+		}
+	}
+
+	/**
 	 * Register help text
 	 * @param string $command which command do we document here
 	 * @param string $help the help text
 	 **/
-	public function register_help($command, $help)
+	public function register_help($plugin, $command, $help)
 	{
-		$this->help[$command] = $help;
+		$this->help[$plugin][$command] = $help;
 	}
 }
 
