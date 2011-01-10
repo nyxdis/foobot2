@@ -1,18 +1,78 @@
 <?php
-// TODO doc
+/**
+ * user management
+ *
+ * @author Christoph Mende <angelos@unkreativ.org>
+ * @package foobot
+ **/
 
+/**
+ * user management
+ * @package foobot
+ * @subpackage classes
+ **/
 class user
 {
+	/**
+	 * Userid
+	 * @var int
+	 **/
 	public $id;
+
+	/**
+	 * Username
+	 * @var string
+	 **/
 	public $name;
+
+	/**
+	 * Userlevel
+	 * @var int
+	 **/
 	public $level;
+
+	/**
+	 * Current nickname
+	 * @var string
+	 **/
 	public $nick;
+
+	/**
+	 * Current ident
+	 * @var string
+	 **/
 	public $ident;
+
+	/**
+	 * Current hostname
+	 * @var string
+	 **/
 	public $host;
+
+	/**
+	 * Title
+	 * @var string
+	 **/
 	public $title;
+
+	/**
+	 * Location (TODO move to google plugin)
+	 * @var string
+	 **/
 	public $location;
+
+	/**
+	 * Personal TV channel list (TODO move to tv plugin)
+	 * @var string
+	 **/
 	public $tv_channels = "'prosieben.de','rtl.de','sat1.de'";
 
+	/**
+	 * Class constructor
+	 * @param string $nick Current nick
+	 * @param string $ident Current ident
+	 * @param string $host Current hostname
+	 **/
 	public function __construct($nick, $ident, $host)
 	{
 		global $db;
@@ -40,6 +100,11 @@ class user
 			$this->tv_channels = $userdata['tv_channels'];
 	}
 
+	/**
+	 * Change userdata
+	 * @param string $key
+	 * @param string $value
+	 **/
 	function update_userdata($key, $value)
 	{
 		global $db;
