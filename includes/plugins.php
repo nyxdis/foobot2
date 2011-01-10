@@ -29,8 +29,9 @@ abstract class plugin_interface
 		global $usr, $channel;
 
 		$bot = bot::get_instance();
-		$answer = $usr->nick . ': ' . $text;
-		$bot->say($channel, $answer);
+		if ($usr->nick != $channel)
+			$text = $usr->nick . ': ' . $text;
+		$bot->say($channel, $text);
 	}
 }
 
