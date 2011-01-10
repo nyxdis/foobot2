@@ -63,6 +63,20 @@ class db extends PDO
 	}
 
 	/**
+	 * Get a single property
+	 * @return mixed the property or false
+	 * @param string $sql the query
+	 **/
+	public function get_single_property($sql)
+	{
+		$r = $this->query($sql);
+		if(!$r)
+			return false;
+		$r = $r->fetch(PDO::FETCH_NUM);
+		return $r[0];
+	}
+
+	/**
 	 * Initialize a new database
 	 **/
 	public function initialize()
