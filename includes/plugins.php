@@ -187,11 +187,12 @@ class plugins
 	 * @param string $function method to call
 	 * @param int $interval interval in seconds
 	 **/
-	public function register_recurring($plugin, $function, $interval)
+	public function register_recurring($plugin, $function, $interval, $args = NULL)
 	{
 		$this->recurring[] = array('plugin' => $plugin,
 				'function' => $function,
 				'interval' => $interval,
+				'args' => $args,
 				'last_execution' => 0);
 	}
 
@@ -202,7 +203,7 @@ class plugins
 	{
 		foreach ($this->recurring as $id => $entry) {
 			if (($entry['last_execution'] + $entry['interval']) <= time()) {
-				$this->loaded[$entry['plugin']]->$entry['function']();
+				$this->loaded[$entry['plugin']]->$entry['function']($entry['args']);
 				$this->recurring[$id]['last_execution'] = time();
 			}
 		}
@@ -214,11 +215,12 @@ class plugins
 	 * @param string $function method to call
 	 * @param int $interval interval in seconds
 	 **/
-	public function register_timed($plugin, $function, $time)
+	public function register_timed($plugin, $function, $time, $args = NULL)
 	{
 		$this->timed[] = array('plugin' => $plugin,
 				'function' => $function,
-				'time' => $time);
+				'time' => $time,
+				'args' => $args);
 	}
 
 	/**
@@ -228,7 +230,7 @@ class plugins
 	{
 		foreach ($this->timed as $id => $entry) {
 			if ($entry['time'] <= time()) {
-				$this->loaded[$entry['plugin']]->$entry['function']();
+				$this->loaded[$entry['plugin']]->$entry['function']($entry['args']);
 				unset($this->timed[$id]);
 			}
 		}
