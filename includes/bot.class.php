@@ -344,6 +344,18 @@ class bot
 	{
 		$this->protocol->say($target, $text);
 	}
+
+	/**
+	 * Shut the bot down
+	 * @param string $msg Quitmsg
+	 **/
+	public function shutdown($msg = '')
+	{
+		$this->protocol->quit($msg);
+		$plugins = plugins::get_instance();
+		$plugins->run_event('shutdown');
+		exit;
+	}
 }
 
 ?>
