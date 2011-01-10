@@ -291,18 +291,20 @@ class bot
 
 			// Set channel to the origin's nick if the PRIVMSG was
 			// sent directly to the bot
-			if($target == $settings['nick'])
+			if ($target == $settings['nick'])
 				$channel = $matches['nick'];
 			else
 				$channel = $matches['target'];
 
-			if($matches['text']{0} == $settings['command_char'] || $channel == $nick) {
-				if($matches['text']{0} == $settings['command_char'])
+			if ($matches['text']{0} == $settings['command_char'] || $channel == $nick) {
+				if ($matches['text']{0} == $settings['command_char'])
 					$matches['text'] = substr($matches['text'], 1);
 				$args = explode(' ', trim($matches['text']));
 				$cmd = strtolower(array_shift($args));
 				$args = implode(' ', $args);
-				$plugins->run_event('command', $cmd, $args);
+				$return = $plugins->run_event('command', $cmd, $args);
+				if (!$return && $channel == $nick)
+					$this->say($settings['main_channel'], $matches['text']);
 			} else {
 				$plugins->run_event('text', $matches['text']);
 			}

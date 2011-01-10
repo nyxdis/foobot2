@@ -126,6 +126,7 @@ class plugins
 
 	/**
 	 * Execute event
+	 * @return bool did the event match anything?
 	 * @param string $event what kind of event happened
 	 * @param string $trigger used trigger if available
 	 * @param string $argv arguments to the trigger
@@ -133,6 +134,8 @@ class plugins
 	public function run_event($event, $trigger = NULL, $argv = NULL)
 	{
 		global $usr, $bot, $channel;
+
+		$return = false;
 
 		foreach($this->events[$event] as $entry)
 		{
@@ -144,6 +147,8 @@ class plugins
 			if ($entry['level'] > $usr->level)
 				continue;
 
+			$return = true;
+
 			if (isset ($preg_args) && !empty ($preg_args))
 				$args = $preg_args;
 			elseif ($argv)
@@ -153,11 +158,13 @@ class plugins
 			else
 				$args = $argv;
 
-			if($event == 'command')
+			if ($event == 'command')
 				$bot->log_cmd($usr->name, $channel, $entry['trigger'], $args);
 
 			$this->loaded[$entry['plugin']]->$entry['function']($args);
 		}
+
+		return $return;
 	}
 
 	/**
