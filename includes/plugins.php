@@ -186,6 +186,7 @@ class plugins
 	 * @param string $plugin the registering plugin
 	 * @param string $function method to call
 	 * @param int $interval interval in seconds
+	 * @todo save to db
 	 **/
 	public function register_recurring($plugin, $function, $interval, $args = NULL)
 	{
@@ -214,6 +215,7 @@ class plugins
 	 * @param string $plugin the registering plugin
 	 * @param string $function method to call
 	 * @param int $interval interval in seconds
+	 * @todo save to db
 	 **/
 	public function register_timed($plugin, $function, $time, $args = NULL)
 	{

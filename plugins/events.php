@@ -60,12 +60,27 @@ class events extends plugin_interface
 	{
 		global $db;
 
+		$args = implode(' ', $args);
 		if (!preg_match('/(?<name>.*) (?<year>\d{4})-?(?<month>\d{2})-?(?<day>\d{2})/', $args, $matches)) {
 			parent::answer('Invalid format, use <name> YYYY-MM-DD');
 			return;
 		}
 		$db->query('INSERT INTO events (name, date) VALUES(' . $db->quote($matches['name']) . ', \'' . $matches['year'] . '-' . $matches['month'] . '-' . $matches['day'] . '\')');
+		$id = $db->lastInsertId();
+		$plugins = plugins::get_instance();
+		$plugins->register_timed(__CLASS__, 'announce', mktime(0, 0, 0, $matches['month'], $matches['day'], $matches['year']), $id);
+		$plugins->register_timed(__CLASS__, 'announce', mktime(6, 0, 0, $matches['month'], $matches['day'], $matches['year']), $id);
+		$plugins->register_timed(__CLASS__, 'announce', mktime(12, 0, 0, $matches['month'], $matches['day'], $matches['year']), $id);
+		$plugins->register_timed(__CLASS__, 'announce', mktime(18, 0, 0, $matches['month'], $matches['day'], $matches['year']), $id);
 		parent::answer('Roger.');
+	}
+
+	public function announce($id)
+	{
+		global $bot, $db, $settings;
+
+		$name = $db->get_single_property('SELECT `name` FROM `events` WHERE `id` = ' . (int)$id);
+		$bot->say($settings['main_channel'], 'Event happening today: ' . $name);
 	}
 
 	public function delevent($args)
