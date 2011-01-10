@@ -97,7 +97,7 @@ class seen extends plugin_interface
 	public function shutdown($args)
 	{
 		$db->query('DELETE FROM seen');
-		foreach($this->seen as $nick => $time)
+		foreach ($this->seen as $nick => $time)
 			$db->query('INSERT INTO `seen` (`nick`, `ts`) VALUES(' . $db->quote($nick) . ', ' . $db->quote($time) . ')');
 	}
 }

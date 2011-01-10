@@ -137,7 +137,7 @@ class plugins
 
 		$return = false;
 
-		foreach($this->events[$event] as $entry)
+		foreach ($this->events[$event] as $entry)
 		{
 			if ($entry['trigger'] &&
 			  (($entry['trigger']{0} == '/' && !preg_match($entry['trigger'], $trigger, $preg_args)) ||

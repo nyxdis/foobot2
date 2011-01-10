@@ -13,7 +13,7 @@ $db->query('CREATE TABLE IF NOT EXISTS programme (channelid varchar(40), title v
 $db->query('DELETE FROM programme');
 
 /*
-foreach($tv->channel as $channel) {
+foreach ($tv->channel as $channel) {
 	$attributes = $channel->attributes();
 	$id = $attributes['id'];
 	$name = str_replace(' ','',$channel->{'display-name'}[0]);
@@ -21,7 +21,7 @@ foreach($tv->channel as $channel) {
 }
 */
 
-foreach($tv->programme as $programme) {
+foreach ($tv->programme as $programme) {
 	$attributes = $programme->attributes();
 	$channelid = $attributes['channel'];
 	$start = strtotime($attributes['start']);

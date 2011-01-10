@@ -174,7 +174,7 @@ class core extends plugin_interface
 		}
 		$userdata = 'Userdata for ' . $username . ': ';
 		$info = unserialize($info);
-		foreach($info as $key => $value)
+		foreach ($info as $key => $value)
 			$userdata .= $key . '=' . $value . '; ';
 
 		$userdata = rtrim($userdata, '; ');
@@ -191,7 +191,7 @@ class core extends plugin_interface
 		global $usr, $db;
 
 		$users = $db->get_single_property('SELECT COUNT(id) FROM users');
-		if($users > 0)
+		if ($users > 0)
 			return;
 		$db->query('INSERT INTO `users` (`username`, `ulvl`) VALUES(\'' . $usr->nick . '\', 1000)');
 		$db->query('INSERT INTO `hosts` VALUES(' . $db->lastInsertID() . ', \'' . $usr->ident . '\', \'' . $usr->host . '\')');
@@ -269,9 +269,9 @@ class core extends plugin_interface
 		}
 		if (!strncasecmp($sql, 'SELECT ', 7)) {
 			$headers = '';
-			while($result = $res->fetch(PDO::FETCH_ASSOC)) {
+			while ($result = $res->fetch(PDO::FETCH_ASSOC)) {
 				$row = '';
-				foreach($result as $header => $field) {
+				foreach ($result as $header => $field) {
 					if (!isset ($headers_sent)) {
 						$headers .= $header . ' | ';
 					}

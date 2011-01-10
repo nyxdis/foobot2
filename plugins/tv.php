@@ -29,7 +29,7 @@ class tv extends plugin_interface
 		case 'next':
 			$tv = $tvdb->query('select * from (select channelid, display_name, title, start from programme, channels where channelid=id and start>strftime(\'%s\', \'now\') and channelid in (' . $usr->tv_channels . ') order by start desc) group by channelid');
 			$next = '';
-			while($programme = $tv->fetchArray()) {
+			while ($programme = $tv->fetchArray()) {
 				$next .= $programme['display_name'] . ': ' . date('H:i', $programme['start']) . ' ' . $programme['title'] . ', ';
 			}
 			if (!empty ($next))
@@ -40,7 +40,7 @@ class tv extends plugin_interface
 		case 'chanlist':
 			$tv_channels = $tvdb->query('SELECT display_name FROM channels GROUP BY id');
 			$chanlist = 'I know these channels: ';
-			while($chan = $tv_channels->fetchArray()) {
+			while ($chan = $tv_channels->fetchArray()) {
 				$chanlist .= $chan['display_name'] . ', ';
 			}
 			self::answer(trim($chanlist, ', '));
@@ -49,7 +49,7 @@ class tv extends plugin_interface
 			array_shift($args);
 			$list = strtolower(implode('\', \'', str_replace(', ', '', $args)));
 			$tv_channels = $tvdb->query('SELECT * FROM channels WHERE lower(display_name) IN (\'' . $list . '\')');
-			while($chan = $tv_channels->fetchArray()) {
+			while ($chan = $tv_channels->fetchArray()) {
 				$chanlist .= '\'' . $chan['id'] . '\', ';
 				$display_names .= $chan['display_name'] . ', ';
 			}
@@ -65,7 +65,7 @@ class tv extends plugin_interface
 			$keywords = implode('%', $args);
 			$programmes = $tvdb->query('SELECT display_name, title, start FROM programme, channels WHERE channelid=id AND start>' . (int)time() . ' AND title LIKE \'%' . $tvdb->escapeString($keywords) . '%\' GROUP BY channelid ORDER BY start ASC LIMIT 3');
 			$next = '';
-			while($programme = $programmes->fetchArray()) {
+			while ($programme = $programmes->fetchArray()) {
 				if (date('Ymd', $programme['start']) == date('Ymd'))
 					$dateformat = 'H:i';
 				else
@@ -91,7 +91,7 @@ class tv extends plugin_interface
 					$tv_channels = $usr->tv_channels;
 				$tv = $tvdb->query('SELECT display_name, title, start FROM programme, channels WHERE channelid=id AND channelid IN (' . $tv_channels . ') AND start<=' . (int)$time . ' AND stop>' . (int)$time . ' GROUP BY channelid');
 				$onair = '';
-				while($programme = $tv->fetchArray()) {
+				while ($programme = $tv->fetchArray()) {
 					$onair .= $programme['display_name'] . ': ' . date('H:i', $programme['start']) . ' ' . $programme['title'] . ', ';
 				}
 				if (!empty ($onair))
@@ -114,7 +114,7 @@ class tv extends plugin_interface
 				}
 				$data = $tvdb->query('SELECT channelid, title, start FROM programme WHERE stop>' . $ts . ' AND channelid=\'' . $tvdb->escapeString($cid) . '\' ORDER BY start ASC LIMIT 2');
 				$onair = '';
-				while($oa = $data->fetchArray()) {
+				while ($oa = $data->fetchArray()) {
 					$onair .= date('H:i', $oa['start']) . ' ' . $oa['title'] . ', ';
 					$display_name = $oa['channelid'];
 				}
@@ -128,7 +128,7 @@ class tv extends plugin_interface
 			}
 			$tv = $tvdb->query('SELECT display_name, title, start FROM programme, channels WHERE channelid=id AND channelid IN (' . $usr->tv_channels . ') AND start<=' . (int)time() . ' AND stop>' . (int)time() . ' GROUP BY channelid');
 			$onair = '';
-			while($programme = $tv->fetchArray()) {
+			while ($programme = $tv->fetchArray()) {
 				$onair .= $programme['display_name'] . ': ' . date('H:i', $programme['start']) . ' ' . $programme['title'] . ', ';
 			}
 			if (!empty ($onair))

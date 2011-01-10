@@ -70,7 +70,7 @@ class db extends PDO
 	public function get_single_property($sql)
 	{
 		$r = $this->query($sql);
-		if(!$r)
+		if (!$r)
 			return false;
 		$r = $r->fetch(PDO::FETCH_NUM);
 		return $r[0];

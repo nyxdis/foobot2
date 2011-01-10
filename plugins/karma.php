@@ -79,7 +79,7 @@ class karma extends plugin_interface
 
 		$data = $db->query('SELECT * FROM `karma` ORDER BY `value` DESC LIMIT 5');
 		$reply = 'Karma top 5: ';
-		while($row = $data->fetchObject())
+		while ($row = $data->fetchObject())
 			$reply .= $row->item . ' (' . $row->value . '), ';
 		$reply = rtrim($reply, ', ');
 		parent::answer($reply);
@@ -91,7 +91,7 @@ class karma extends plugin_interface
 
 		$data = $db->query('SELECT * FROM `karma` ORDER BY `value` ASC LIMIT 5');
 		$reply = 'Karma bottom 5: ';
-		while($row = $data->fetchObject())
+		while ($row = $data->fetchObject())
 			$reply .= $row->item . ' (' . $row->value . '), ';
 		$reply = rtrim($reply, ', ');
 		parent::answer($reply);
@@ -103,7 +103,7 @@ class karma extends plugin_interface
 
 		$reasons = $db->query('SELECT `comment` FROM `karma_comments` WHERE `item` LIKE ' . $db->quote($item) . ' AND `karma`=' . $db->quote($karma));
 		$string = 'Reasons for ' . $item . ': ';
-		while($reason = $reasons->fetchObject())
+		while ($reason = $reasons->fetchObject())
 			$string .= $reason->comment.', ';
 		$string = rtrim($string,', ');
 		if (strlen($string) > strlen('Reasons for ' . $item . ': '))
