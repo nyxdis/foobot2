@@ -207,8 +207,28 @@ class bot
 	 **/
 	public function log($level, $msg)
 	{
-		// TODO implement
-		echo $msg . LF;
+		global $settings;
+
+		$logstring = date('Y-m-d H:i') . ': ' . $msg . LF;
+		$logfile = 'logs/cmdlog-' . $settings['network'] . '.log';
+		file_put_contents($logfile, $logstring, FILE_APPEND | FILE_TEXT);
+	}
+
+	/**
+	 * Log execution of commands
+	 * @param string $nick who executed the command
+	 * @param string $origin where was it executed
+	 * @param string $cmd which command
+	 * @param array $args args to the command (will be json encoded)
+	 **/
+	public function log_cmd($nick, $origin, $cmd, $args)
+	{
+		$logstring = 'Command "' . $cmd . '" executed by "' . $nick . '" with arguments ' . json_encode($args);
+		if ($origin != $nick)
+			$logstring .= ' (in ' . $origin . ')';
+		else
+			$logstring .= ' (via query)';
+		$this->log($logstring);
 	}
 
 	/**
