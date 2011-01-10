@@ -283,42 +283,44 @@ class bot
 
 		$plugins = plugins::get_instance();
 
-		// Parse text
-		if (preg_match('/:(?<nick>\S+)!(?<ident>\S+)@(?<host>\S+) PRIVMSG (?<channel>#\S+) :(?<text>.*)/', $line, $nickinfo)) {
-			$nick = $nickinfo['nick'];
-			$usr = $this->userlist[$nickinfo['nick']]['usr'];
-			$channel = $nickinfo['channel'];
+		// Parse PRIVMSG
+		if (preg_match('/:(?<nick>\S+)!(?<ident>\S+)@(?<host>\S+) PRIVMSG (?<target>\S+) :(?<text>.*)/', $line, $matches)) {
+			$nick = $matches['nick'];
+			$usr = $this->userlist[$matches['nick']]['usr'];
+			$target = $matches['target'];
 
-			$plugins->run_event('text', $nickinfo['text']);
+			// Set channel to the origin's nick if the PRIVMSG was
+			// sent directly to the bot
+			if($target == $settings['nick'])
+				$channel = $matches['nick'];
+			else
+				$channel = $matches['target'];
+
+			if($matches['text']{0} == $settings['command_char'] || $channel == $nick) {
+				if($matches['text']{0} == $settings['command_char'])
+					$matches['text'] = substr($matches['text'], 1);
+				$args = explode(' ', trim($matches['text']));
+				$cmd = strtolower(array_shift($args));
+				$args = implode(' ', $args);
+				$plugins->run_event('command', $cmd, $args);
+			} else {
+				$plugins->run_event('text', $matches['text']);
+			}
 		}
-		if (preg_match('/:(?<nick>\S+)!(?<ident>\S+)@(?<host>\S+) PRIVMSG ((?<target1>#\S+) :(' . $settings['command_char'] . '|' . $settings['nick'] . ': )|(?<target2>[^#]\S+) :' . $settings['command_char'] . '?)(?<cmd>\S+)(?<args>.*)/', $line, $cmdinfo)) {
 
-			/* CTCP VERSION */
+		/*
+		   TODO
+			// CTCP VERSION
 			if ($cmdinfo['cmd'] == "\001VERSION\001") {
 				exec('git rev-parse --short HEAD', $gitver);
 				$this->send("NOTICE $cmdinfo[nick] :\001VERSION foobot v" . BOT_VERSION . "-$gitver[0]\001");
 				return;
 			}
 
-			if (!empty ($cmdinfo['target1'])) {
-				$channel = $cmdinfo['target1'];
-			} else {
-				$channel = $cmdinfo['nick'];
-				$usr = new user($cmdinfo['nick'], $cmdinfo['ident'], $cmdinfo['host']);
-			}
-			$cmd = strtolower($cmdinfo['cmd']);
-			if (isset ($cmdinfo['args']))
-				$args = $cmdinfo['args'];
-			else
-				$args = NULL;
-
-			/* regular commands */
-			$plugins->run_event('command', $cmd, trim($args));
-
 			if (strncmp($channel, '#', 1) != 0) {
 				$this->say($settings['main_channel'], '<' . $cmdinfo['nick'] . '> ' . $cmd . ' ' . trim($args));
 			}
-		}
+		*/
 	}
 
 	/**
