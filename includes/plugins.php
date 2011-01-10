@@ -151,9 +151,9 @@ class plugins
 
 			if (isset ($preg_args) && !empty ($preg_args))
 				$args = $preg_args;
-			elseif ($argv)
+			elseif ($argv && !is_array($argv))
 				$args = explode(' ', $argv);
-			elseif ($event != 'command')
+			elseif (!$argv && $event != 'command')
 				$args = explode(' ', $trigger);
 			else
 				$args = $argv;

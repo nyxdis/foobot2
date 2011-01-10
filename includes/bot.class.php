@@ -268,7 +268,7 @@ class bot
 
 		// Update userlist on JOIN, NICK and WHO events
 		if (preg_match('/:\S+ 352 ' . $settings['nick'] . ' \S+ (?<ident>\S+) (?<host>\S+) \S+ (?<nick>\S+) \S+ :\d+ (?<realname>.+)/', $line, $whoinfo) ||
-			preg_match('/:(?<nick>.+)!(?<ident>.+)@(?<host>.+) JOIN .*/', $line, $whoinfo) ||
+			preg_match('/:(?<nick>.+)!(?<ident>.+)@(?<host>.+) JOIN :(?<channel>\S+)/', $line, $whoinfo) ||
 			preg_match('/:(?<oldnick>\S+)!(?<ident>\S+)@(?<host>\S+) NICK :(?<nick>\S+)/', $line, $whoinfo)) {
 			$this->userlist[$whoinfo['nick']] = array('ident' => $whoinfo['ident'], 'host' => $whoinfo['host']);
 			if (isset ($whoinfo['realname']))
@@ -277,6 +277,12 @@ class bot
 				$this->send('WHO ' . $whoinfo['nick']);
 			if (isset ($whoinfo['oldnick']))
 				unset ($this->userlist[$whoinfo['oldnick']]);
+			if (isset ($whoinfo['channel'])) {
+				$args = array('nick' => $whoinfo['nick'],
+						'channel' => $whoinfo['channel']);
+				$plugins = plugins::get_instance();
+				$plugins->run_event('join', NULL, $args);
+			}
 			$user = new user($whoinfo['nick'], $whoinfo['ident'], $whoinfo['host']);
 			$this->userlist[$whoinfo['nick']]['usr'] = $user;
 		}

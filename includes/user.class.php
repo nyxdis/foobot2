@@ -73,9 +73,12 @@ class user
 	 * @param string $ident Current ident
 	 * @param string $host Current hostname
 	 **/
-	public function __construct($nick, $ident, $host)
+	public function __construct($nick = '', $ident = '', $host = '')
 	{
 		global $db;
+
+		if (empty ($nick))
+			return;
 
 		$this->nick = $nick;
 		$this->ident = $ident;
