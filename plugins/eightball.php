@@ -50,10 +50,10 @@ class eightball extends plugin_interface
 	public function decide($args)
 	{
 		if (count($args) < 2) {
-                        $this->pub_8ball();
-                        return;
-                }
-                parent::answer($args[array_rand($args)]);
+			$this->pub_8ball();
+			return;
+		}
+		parent::answer($args[array_rand($args)]);
 	}
 }
 
