@@ -25,6 +25,8 @@ class tv extends plugin_interface
 		global $usr;
 
 		$tvdb = new SQLite3('xmltv.db');
+		if (empty ($args))
+			$args = array('');
 		switch($args[0]) {
 		case 'next':
 			$tv = $tvdb->query('select * from (select channelid, display_name, title, start from programme, channels where channelid=id and start>strftime(\'%s\', \'now\') and channelid in (' . $usr->tv_channels . ') order by start desc) group by channelid');
@@ -53,11 +55,11 @@ class tv extends plugin_interface
 				$chanlist .= '\'' . $chan['id'] . '\', ';
 				$display_names .= $chan['display_name'] . ', ';
 			}
-			$usr->update_userdata('tv_channels', rtrim($chanlist, ', '));
+			$usr->tv_channels = rtrim($chanlist, ', ');
 			self::answer('Set your personal channels to: ' . rtrim($display_names, ', '));
 			break;
 		case 'unset':
-			$usr->update_userdata('tv_channels', "'prosieben.de', 'rtl.de', 'sat1.de'");
+			$usr->tv_channels = "'prosieben.de', 'rtl.de', 'sat1.de'";
 			self::answer('Reset your channels to default');
 			break;
 		case 'search':

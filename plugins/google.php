@@ -48,7 +48,6 @@ class google extends plugin_interface
 		if (!empty ($args)) {
 			$city = $args[0];
 			$usr->location = urlencode($city);
-			$usr->update_userdata('location', $city);
 		}
 
 		$ch = curl_init();

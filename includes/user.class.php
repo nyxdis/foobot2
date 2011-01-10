@@ -106,19 +106,18 @@ class user
 	}
 
 	/**
-	 * Change userdata
+	 * Magic function that changes userdata values
 	 * @param string $key
 	 * @param string $value
 	 **/
-	public function update_userdata($key, $value)
+	public function __set($key, $value)
 	{
 		global $db;
 
 		if ($this->$key == $value)
 			return;
-		$userdata[$key] = $value;
-		$this->$key = $value;
-		$db->query('UPDATE `users` SET `userdata`=' . $db->quote(serialize($userdata)) . ' WHERE `id`=' . (int)$this->id);
+		$this->userdata[$key] = $value;
+		$db->query('UPDATE `users` SET `userdata`=' . $db->quote(serialize($this->userdata)) . ' WHERE `id`=' . (int)$this->id);
 	}
 }
 
