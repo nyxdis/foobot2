@@ -326,16 +326,6 @@ class bot
 	}
 
 	/**
-	 * Execute command sent to the bot
-	 * @param string $command the command to execute
-	 * @param string $args optional string with parameters
-	 **/
-	private function execute_command($command, $args = NULL)
-	{
-		echo 'BUG: DO NOT USE bot::execute_command()!';
-	}
-
-	/**
 	 * Send text to target
 	 * @param string $target where to send text to
 	 * @param string $text text to send
@@ -343,6 +333,16 @@ class bot
 	public function say($target, $text)
 	{
 		$this->protocol->say($target, $text);
+	}
+
+	/**
+	 * Send an action to target
+	 * @param string $target where to send the action to
+	 * @param string $text what to send
+	 **/
+	public function act($target, $text)
+	{
+		$this->protocol->act($target, $text);
 	}
 
 	/**

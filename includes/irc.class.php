@@ -98,8 +98,7 @@ class irc implements communication
 	}
 
 	/**
-	 * Send data to the server
-	 * @param string $raw data
+	 * @see bot::send()
 	 **/
 	public function send($raw)
 	{
@@ -107,9 +106,7 @@ class irc implements communication
 	}
 
 	/**
-	 * Send text to target
-	 * @param string $target where to send the text to
-	 * @param string $text what to send
+	 * @see bot::say()
 	 **/
 	public function say($target, $text)
 	{
@@ -121,6 +118,14 @@ class irc implements communication
 		} else {
 			$this->send($send);
 		}
+	}
+
+	/**
+	 * @see bot::act()
+	 **/
+	public function act($target, $text)
+	{
+		$this->say($target, "\001ACTION $text\001");
 	}
 }
 
