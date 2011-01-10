@@ -56,16 +56,10 @@ class user
 	public $title;
 
 	/**
-	 * Location (TODO move to google plugin)
-	 * @var string
+	 * Userdata for plugins
+	 * @var array
 	 **/
-	public $location;
-
-	/**
-	 * Personal TV channel list (TODO move to tv plugin)
-	 * @var string
-	 **/
-	public $tv_channels = "'prosieben.de','rtl.de','sat1.de'";
+	private $userdata = array();
 
 	/**
 	 * Class constructor
@@ -89,18 +83,26 @@ class user
 				    WHERE `id`=(SELECT `usrid`
 						FROM `hosts`
 						WHERE ' . $db->quote($ident) . ' LIKE `ident` AND
-						' . $db->quote($host) . ' LIKE `host` LIMIT 1) LIMIT 1')->fetchObject();
+						' . $db->quote($host) . ' LIKE `host` LIMIT 1)
+				    LIMIT 1')->fetchObject();
 		if (!$user)
 			return false;
 		$this->id = $user->id;
 		$this->level = $user->ulvl;
 		$this->name = $user->username;
 		$this->title = $user->title;
-		$userdata = unserialize($user->userdata);
-		if (isset ($userdata['location']))
-			$this->location = $userdata['location'];
-		if (isset ($userdata['tv_channels']))
-			$this->tv_channels = $userdata['tv_channels'];
+		$this->userdata = unserialize($user->userdata);
+	}
+
+	/**
+	 * Magic function that returns userdata values
+	 * @param string $key
+	 * @return string the value
+	 **/
+	public function __get($prop)
+	{
+		if (isset ($this->userdata[$prop]))
+			return $this->userdata[$prop];
 	}
 
 	/**
@@ -108,7 +110,7 @@ class user
 	 * @param string $key
 	 * @param string $value
 	 **/
-	function update_userdata($key, $value)
+	public function update_userdata($key, $value)
 	{
 		global $db;
 
