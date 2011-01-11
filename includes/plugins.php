@@ -102,15 +102,36 @@ class plugins
 	}
 
 	/**
+	 * Check if a plugin is loaded
+	 * @return bool
+	 * @param string $plugin name of the plugin
+	 **/
+	public function is_loaded($plugin)
+	{
+		if (isset ($this->loaded[$plugin]))
+			return true;
+		return false;
+	}
+
+	/**
 	 * Load a plugin
+	 * @return bool success?
 	 * @param string $plugin name of the plugin
 	 **/
 	public function load($plugin)
 	{
-		include 'plugins/' . $plugin . '.php';
+		$path = 'plugins/' . $plugin . '.php';
+		if (!file_exists($path))
+			return false;
+
+		include $path;
+		if (!class_exists($plugin) || !method_exists($plugin, 'load'))
+			return false;
+
 		$plug = new $plugin();
-		$plug ->load();
+		$plug->load();
 		$this->loaded[$plugin] = $plug;
+		return true;
 	}
 
 	/**
@@ -245,7 +266,7 @@ class plugins
 	 **/
 	public function register_help($plugin, $command, $help)
 	{
-		$this->help[$plugin][$command] = $help;
+		$this->help[$plugin][strtolower($command)] = $help;
 	}
 }
 

@@ -26,6 +26,7 @@ class core extends plugin_interface
 		$plugins->register_event(__CLASS__, 'command', 'help');
 		$plugins->register_event(__CLASS__, 'command', 'hi', NULL, 0);
 		$plugins->register_event(__CLASS__, 'command', 'join', NULL, 10);
+		$plugins->register_event(__CLASS__, 'command', 'load' , 'pub_load', 10);
 		$plugins->register_event(__CLASS__, 'command', 'merge', NULL, 100);
 		$plugins->register_event(__CLASS__, 'command', 'raw', NULL, 1000);
 		$plugins->register_event(__CLASS__, 'command', 'reboot', NULL, 100);
@@ -377,6 +378,22 @@ class core extends plugin_interface
 			$string .= $user->title . ' ';
 		$string .= $user->name . ', level ' . $user->level;
 		parent::answer($string);
+	}
+
+	public function pub_load($args)
+	{
+		$plug = $args[0];
+
+		$plugins = plugins::get_instance();
+		if ($plugins->is_loaded($plug)) {
+			parent::answer($plug . ' already loaded');
+			return;
+		}
+
+		if($plugins->load($plug))
+			parent::answer($plug . ' loaded');
+		else
+			parent::answer($plug . ' not found');
 	}
 }
 
