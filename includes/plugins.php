@@ -236,6 +236,7 @@ class plugins
 	 * @param string $plugin the registering plugin
 	 * @param string $function method to call
 	 * @param int $interval interval in seconds
+	 * @param mixed $args args passed to the callback function
 	 * @todo save to db
 	 **/
 	public function register_timed($plugin, $function, $time, $args = NULL)

@@ -37,6 +37,7 @@ class urban extends plugin_interface
 		$url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
 		if (preg_match('/<meta content=\'(?<description>.*)\' property=\'og:description\' \/>/', $result, $match)) {
 			$description = $match['description'];
+			$description = str_replace('&apos;', '\'', $description);
 			preg_match('/<meta content=\'(?<title>.*)\' property=\'og:title\' \/>/', $result, $match);
 			$title = $match['title'];
 			parent::answer(html_entity_decode($title) . ' - ' . html_entity_decode($description) . ' (' . $url . ')');
