@@ -308,10 +308,9 @@ class bot
 					$matches['text'] = substr($matches['text'], 1);
 				$args = explode(' ', trim($matches['text']));
 				$cmd = strtolower(array_shift($args));
-				$args = implode(' ', $args);
 				$return = $plugins->run_event('command', $cmd, $args);
 				if (!$return && $channel == $nick)
-					$this->say($settings['main_channel'], $matches['text']);
+					$this->say($settings['main_channel'], '<' . $nick . '> ' . $matches['text']);
 			} else {
 				$plugins->run_event('text', $matches['text']);
 			}
@@ -324,10 +323,6 @@ class bot
 				exec('git rev-parse --short HEAD', $gitver);
 				$this->send("NOTICE $cmdinfo[nick] :\001VERSION foobot v" . BOT_VERSION . "-$gitver[0]\001");
 				return;
-			}
-
-			if (strncmp($channel, '#', 1) != 0) {
-				$this->say($settings['main_channel'], '<' . $cmdinfo['nick'] . '> ' . $cmd . ' ' . trim($args));
 			}
 		*/
 	}
