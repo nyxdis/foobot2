@@ -134,7 +134,7 @@ class plugins
 
 		$this->events[$event][] = array('plugin' => $plugin,
 				'function' => $function,
-				'trigger' => $trigger,
+				'trigger' => strtolower($trigger),
 				'level' => $level);
 	}
 

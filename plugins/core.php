@@ -17,6 +17,7 @@ class core extends plugin_interface
 	{
 		$plugins = plugins::get_instance();
 
+		$plugins->register_event(__CLASS__, 'command', "\001VERSION\001", 'ctcp_version');
 		$plugins->register_event(__CLASS__, 'command', 'addhost');
 		$plugins->register_event(__CLASS__, 'command', 'adduser', NULL, 100);
 		$plugins->register_event(__CLASS__, 'command', 'alias', NULL, 5);
@@ -35,6 +36,19 @@ class core extends plugin_interface
 		$plugins->register_event(__CLASS__, 'command', 'who');
 		$plugins->register_event(__CLASS__, 'command', 'whoami', NULL, 0);
 		$plugins->register_event(__CLASS__, 'command', 'whois');
+	}
+
+	public function ctcp_version($args)
+	{
+		global $bot, $channel;
+
+		$version = BOT_VERSION;
+		if (file_exists('.git')) {
+			$rev = file_get_contents('.git/refs/heads/master');
+			$rev = substr($rev, 0, 7);
+			$version .= '-' . $rev;
+		}
+		$bot->send('NOTICE ' . $channel . ' :' . chr(1) . 'VERSION foobot v' . $version . chr(1));
 	}
 
 	public function addhost($args)
@@ -312,8 +326,7 @@ class core extends plugin_interface
 	public function version($args)
 	{
 		$version = BOT_VERSION;
-		if (file_exists('.git'))
-		{
+		if (file_exists('.git')) {
 			$rev = file_get_contents('.git/refs/heads/master');
 			$rev = substr($rev, 0, 7);
 			$version .= '-' . $rev;

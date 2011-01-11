@@ -52,7 +52,7 @@ class bot
 	 * @access private
 	 * @var array
 	 **/
-	private $channels;
+	private $channels = array();
 
 	/**
 	 * Socket for the connection
@@ -315,16 +315,6 @@ class bot
 				$plugins->run_event('text', $matches['text']);
 			}
 		}
-
-		/*
-		   TODO
-			// CTCP VERSION
-			if ($cmdinfo['cmd'] == "\001VERSION\001") {
-				exec('git rev-parse --short HEAD', $gitver);
-				$this->send("NOTICE $cmdinfo[nick] :\001VERSION foobot v" . BOT_VERSION . "-$gitver[0]\001");
-				return;
-			}
-		*/
 	}
 
 	/**
