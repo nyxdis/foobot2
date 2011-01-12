@@ -25,12 +25,11 @@ class mono extends plugin_interface
 
 	public function mono_save($args)
 	{
-		global $settings;
 		$usr = bot::get_instance()->usr;
 		$channel = bot::get_instance()->channel;
 
 		$text = implode(' ', $args);
-		if ($text{0} == $settings['command_char'])
+		if ($text{0} == settings::$command_char)
 			return;
 
 		if (!isset ($this->mono[$channel]) || $this->mono[$channel]['nick'] != $usr->name) {

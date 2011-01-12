@@ -26,8 +26,6 @@ class htn extends plugin_interface
 
 	public function bug($args)
 	{
-		global $settings;
-
 		$id = (int)$args[0];
 		$url = 'http://hackthenet.org/_htn.php/bugtracker/showbug?output=json&id=' . $id;
 		$ch = curl_init();

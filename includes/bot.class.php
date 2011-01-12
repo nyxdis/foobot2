@@ -98,8 +98,6 @@ class bot
 	 **/
 	private function __construct()
 	{
-		global $settings;
-
 		if (!file_exists('logs'))
 			mkdir('logs');
 
@@ -118,9 +116,7 @@ class bot
 	 **/
 	private function open_log()
 	{
-		global $settings;
-
-		$filename = 'logs/cmdlog-' . $settings['network'] . '.log';
+		$filename = 'logs/cmdlog-' . settings::$network . '.log';
 		$this->log_fp = fopen($filename, 'a+');
 		if (!$this->log_fp)
 			die ('Failed to open log file');
@@ -141,11 +137,9 @@ class bot
 	 **/
 	public function connect()
 	{
-		global $settings;
-
-		$this->protocol = new $settings['protocol'];
+		$this->protocol = new settings::$protocol;
 		$this->log(DEBUG, 'Connecting');
-		if (!socket_connect($this->socket, $settings['server'], $settings['port']))
+		if (!socket_connect($this->socket, settings::$server, settings::$port))
 			return false;
 		$this->protocol->connect();
 		socket_set_nonblock($this->socket);
@@ -156,15 +150,13 @@ class bot
 	 **/
 	public function post_connect()
 	{
-		global $settings;
-
 		$this->protocol->post_connect();
 
-		if (isset ($settings['debug_channel']))
-			$this->join($settings['debug_channel']);
+		if (!empty (settings::$debug_channel))
+			$this->join(settings::$debug_channel);
 
 		$this->log(DEBUG, 'Joining channels');
-		foreach ($settings['channels'] as $channel => $key) {
+		foreach (settings::$channels as $channel => $key) {
 			$this->log(DEBUG, 'Joining ' . $channel);
 			$this->join($channel, $key);
 		}
@@ -219,10 +211,8 @@ class bot
 	 **/
 	public function log($level, $msg)
 	{
-		global $settings;
-
 		$logstring = date('Y-m-d H:i') . ': ' . $msg . LF;
-		$logfile = 'logs/cmdlog-' . $settings['network'] . '.log';
+		$logfile = 'logs/cmdlog-' . settings::$network . '.log';
 		file_put_contents($logfile, $logstring, FILE_APPEND | FILE_TEXT);
 	}
 
@@ -272,8 +262,6 @@ class bot
 	 **/
 	private function parse($line)
 	{
-		global $settings;
-
 		$db = db::get_instance();
 
 		$line = trim($line);
@@ -282,7 +270,7 @@ class bot
 			$this->send('PONG ' . strstr($line, ':'));
 
 		// Update userlist on JOIN, NICK and WHO events
-		if (preg_match('/:\S+ 352 ' . $settings['nick'] . ' \S+ (?<ident>\S+) (?<host>\S+) \S+ (?<nick>\S+) \S+ :\d+ (?<realname>.+)/', $line, $whoinfo) ||
+		if (preg_match('/:\S+ 352 ' . settings::$nick . ' \S+ (?<ident>\S+) (?<host>\S+) \S+ (?<nick>\S+) \S+ :\d+ (?<realname>.+)/', $line, $whoinfo) ||
 			preg_match('/:(?<nick>.+)!(?<ident>.+)@(?<host>.+) JOIN :(?<channel>\S+)/', $line, $whoinfo) ||
 			preg_match('/:(?<oldnick>\S+)!(?<ident>\S+)@(?<host>\S+) NICK :(?<nick>\S+)/', $line, $whoinfo)) {
 			$this->userlist[$whoinfo['nick']] = array('ident' => $whoinfo['ident'], 'host' => $whoinfo['host']);
@@ -312,19 +300,19 @@ class bot
 
 			// Set channel to the origin's nick if the PRIVMSG was
 			// sent directly to the bot
-			if ($target == $settings['nick'])
+			if ($target == settings::$nick)
 				$this->channel = $matches['nick'];
 			else
 				$this->channel = $matches['target'];
 
-			if ($matches['text']{0} == $settings['command_char'] || $this->channel == $nick) {
-				if ($matches['text']{0} == $settings['command_char'])
+			if ($matches['text']{0} == settings::$command_char || $this->channel == $nick) {
+				if ($matches['text']{0} == settings::$command_char)
 					$matches['text'] = substr($matches['text'], 1);
 				$args = explode(' ', trim($matches['text']));
 				$cmd = strtolower(array_shift($args));
 				$return = $plugins->run_event('command', $cmd, $args);
 				if (!$return && $this->channel == $nick)
-					$this->say($settings['main_channel'], '<' . $nick . '> ' . $matches['text']);
+					$this->say(settings::$main_channel, '<' . $nick . '> ' . $matches['text']);
 			} else {
 				$plugins->run_event('text', $matches['text']);
 			}

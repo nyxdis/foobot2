@@ -202,19 +202,17 @@ class core extends plugin_interface
 
 	public function help($args)
 	{
-		global $settings;
-
 		$plugins = plugins::get_instance();
 
 		if (empty ($args)) {
-			$text = 'You can get help for the following plugins via "' . $settings['command_char'] . 'help <plugin>": ';
+			$text = 'You can get help for the following plugins via "' . settings::$command_char . 'help <plugin>": ';
 			$text .= implode(', ', $plugins->get_help());
 		} elseif (count($args) == 1) {
 			$help = $plugins->get_help($args[0]);
 			if (!$help) {
 				$text = 'No help found for plugin ' . $args[0];
 			} else {
-				$text = 'You can get help for the following functions via "' . $settings['command_char'] . 'help <plugin> <function>": ';
+				$text = 'You can get help for the following functions via "' . settings::$command_char . 'help <plugin> <function>": ';
 				$text .= implode(', ', $plugins->get_help($args[0]));
 			}
 		} else {
@@ -369,11 +367,10 @@ class core extends plugin_interface
 
 	public function who($args)
 	{
-		global $settings;
 		$bot = bot::get_instance();
 
 		$nick = $args[0];
-		if ($settings['protocol'] != 'irc') {
+		if (settings::$protocol != 'irc') {
 			parent::answer('Function not supported for current protocol');
 			return;
 		}

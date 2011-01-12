@@ -22,8 +22,6 @@ function __autoload($class)
  **/
 function foobot_error_handler($errno, $error, $file, $line, $context)
 {
-	global $settings;
-
 	$bot = bot::get_instance();
 
 	switch ($errno) {
@@ -44,7 +42,7 @@ function foobot_error_handler($errno, $error, $file, $line, $context)
 
 	// Check if the bot is already initialized
 	if ($bot->connected)
-		$bot->say($settings['debug_channel'], $string);
+		$bot->say(settings::$debug_channel, $string);
 	else
 		die ($string);
 }

@@ -32,13 +32,11 @@ class irc implements communication
 	 **/
 	public function connect()
 	{
-		global $settings;
-
-		$this->send('USER ' . $settings['username'] . ' +i * :' . $settings['realname']);
-		$this->send('NICK ' . $settings['nick']);
+		$this->send('USER ' . settings::$username . ' +i * :' . settings::$realname);
+		$this->send('NICK ' . settings::$nick);
 		for (;;) {
 			$buf = $this->bot->read();
-			if (strstr($buf, '001 ' . $settings['nick'] . ' :')) {
+			if (strstr($buf, '001 ' . settings::$nick . ' :')) {
 				$this->bot->log(DEBUG, 'Connected');
 				$this->bot->connected = true;
 				return true;
@@ -52,33 +50,17 @@ class irc implements communication
 	 **/
 	public function post_connect()
 	{
-		global $settings;
-
-		if (isset ($settings['authpass'])) {
+		if (!empty (settings::$authpass)) {
 			$this->bot->log(DEBUG, 'Authenticating');
 
-			if (!isset ($settings['authserv']))
-				$authserv = 'NickServ';
-			else
-				$authserv = $settings['authserv'];
+			$authserv = settings::$authserv;
+			$cmd = settings::$authcmd . ' ';
 
-			if (!isset ($settings['authcmd']))
-				$cmd = 'identify ';
-			else
-				$cmd = $settings['authcmd'] . ' ';
+			if (!empty (settings::$authuser))
+				$cmd .= settings::$authuser;
 
-			if (isset ($settings['authuser']))
-				$cmd .= $settings['authuser'];
-
-			$cmd .= $settings['authpass'];
+			$cmd .= settings::$authpass;
 			$this->bot->say($authserv, $cmd);
-		}
-
-		if (isset ($settings['operpass'])) {
-			$cmd = 'OPER ';
-			if (isset ($settings['operuser']))
-				$cmd .= $settings['operuser'] . ' ';
-			$cmd .= $settings['operpass'];
 		}
 	}
 

@@ -35,7 +35,6 @@ class seen extends plugin_interface
 
 	public function pub_seen($args)
 	{
-		global $settings;
 		$usr = bot::get_instance()->usr;
 
 		if (!isset ($args[0])) {
@@ -47,7 +46,7 @@ class seen extends plugin_interface
 			parent::answer('That\'s you!');
 			return;
 		}
-		if ($nick == $settings['nick']) {
+		if ($nick == settings::$nick) {
 			parent::answer('That\'s me!');
 			return;
 		}

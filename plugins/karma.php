@@ -28,12 +28,10 @@ class karma extends plugin_interface
 
 	public function karmachange($args)
 	{
-		global $settings;
-
 		$db = db::get_instance();
 
 		$item = strtolower($args['item']);
-		if ($item{0} == $settings['command_char'])
+		if ($item{0} == settings::$command_char)
 			$item = substr($item, 1);
 		$item = $db->quote($item);
 

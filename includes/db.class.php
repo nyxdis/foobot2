@@ -27,9 +27,7 @@ class db extends PDO
 	 **/
 	public function __construct()
 	{
-		global $settings;
-
-		parent::__construct('sqlite:foobot-' . strtolower($settings['network']) . '.db');
+		parent::__construct('sqlite:foobot-' . strtolower(settings::$network) . '.db');
 		parent::setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	}
 
@@ -50,15 +48,13 @@ class db extends PDO
 	 **/
 	public function query($sql)
 	{
-		global $settings;
-
 		$bot = bot::get_instance();
 
 		try {
 			$ret = parent::query($sql);
 		} catch (PDOException $err) {
-			if (isset ($settings['debug_channel']))
-				$bot->write($settings['debug_channel'], $err->getMessage());
+			if (!empty (settings::$debug_channel))
+				$bot->write(settings::$debug_channel, $err->getMessage());
 			return false;
 		}
 		return $ret;

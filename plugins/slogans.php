@@ -114,9 +114,7 @@ class slogans extends plugin_interface
 
 	public function cornholio_join($args)
 	{
-		global $settings;
-
-		if ($args['nick'] == $settings['nick'])
+		if ($args['nick'] == settings::$nick)
 			bot::get_instance()->say($args['channel'], $this->cornholio[array_rand($this->cornholio)]);
 	}
 }

@@ -15,6 +15,9 @@ require_once 'includes/settings.php';
 require_once 'includes/misc_functions.php';
 require_once 'includes/plugins.php';
 
+// Load settings
+settings::load();
+
 // Load plugins
 $plugins = plugins::get_instance();
 foreach (glob('plugins/*.php') as $file) {
@@ -28,15 +31,15 @@ $db = db::get_instance();
 $db->initialize();
 unset ($db);
 
-
 $bot = bot::get_instance();
 $bot->usr = new user();
 $bot->connect();
 if (!$bot->connected)
 	die ('Failed to connect');
 $bot->post_connect();
+unset ($bot);
 
 for (;;)
-	$bot->wait();
+	bot::get_instance()->wait();
 
 ?>

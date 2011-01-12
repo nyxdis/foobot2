@@ -77,13 +77,11 @@ class events extends plugin_interface
 
 	public function announce($id)
 	{
-		global $settings;
-
 		$db = db::get_instance();
 		$bot = bot::get_instance();
 
 		$name = $db->get_single_property('SELECT `name` FROM `events` WHERE `id` = ' . (int)$id);
-		$bot->say($settings['main_channel'], 'Event happening today: ' . $name);
+		$bot->say(settings::$main_channel, 'Event happening today: ' . $name);
 	}
 
 	public function delevent($args)
