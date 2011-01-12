@@ -22,7 +22,7 @@ class tv extends plugin_interface
 
 	public function pub_tv($args)
 	{
-		global $usr;
+		$usr = bot::get_instance()->usr;
 
 		$tvdb = new SQLite3('xmltv.db');
 		if (empty ($args))

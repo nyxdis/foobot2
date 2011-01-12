@@ -26,7 +26,8 @@ abstract class plugin_interface
 	 **/
 	protected function answer($text)
 	{
-		global $usr, $channel;
+		$usr = bot::get_instance()->usr;
+		$channel = bot::get_instance()->channel;
 
 		$bot = bot::get_instance();
 		if ($usr->nick != $channel)
@@ -168,7 +169,7 @@ class plugins
 	 **/
 	public function run_event($event, $trigger = NULL, $argv = NULL)
 	{
-		global $usr, $bot, $channel;
+		$bot = bot::get_instance();
 
 		$return = false;
 
@@ -179,7 +180,7 @@ class plugins
 			    ($entry['trigger']{0} != '/' && $entry['trigger'] != $trigger)))
 				continue;
 
-			if ($entry['level'] > $usr->level)
+			if ($entry['level'] > $bot->usr->level)
 				continue;
 
 			$return = true;
@@ -194,7 +195,7 @@ class plugins
 				$args = $argv;
 
 			if ($event == 'command')
-				$bot->log_cmd($usr->name, $channel, $entry['trigger'], $args);
+				$bot->log_cmd($bot->usr->name, $bot->channel, $entry['trigger'], $args);
 
 			$this->loaded[$entry['plugin']]->$entry['function']($args);
 		}

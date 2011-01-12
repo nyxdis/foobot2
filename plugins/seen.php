@@ -27,7 +27,7 @@ class seen extends plugin_interface
 
 	public function seen_save($args)
 	{
-		global $usr;
+		$usr = bot::get_instance()->usr;
 
 		$this->seen[$usr->name] = time();
 		$this->seen[$usr->nick] = time();
@@ -35,7 +35,8 @@ class seen extends plugin_interface
 
 	public function pub_seen($args)
 	{
-		global $usr, $settings;
+		global $settings;
+		$usr = bot::get_instance()->usr;
 
 		if (!isset ($args[0])) {
 			parent::answer('Seen who?');

@@ -30,7 +30,7 @@ class bofh extends plugin_interface
 
 	public function addlart($args)
 	{
-		global $db;
+		$db = db::get_instance();
 
 		$lart = implode(' ', $args);
 		$db->query('INSERT INTO `larts` VALUES(' . $db->quote($lart) . ')');
@@ -39,7 +39,10 @@ class bofh extends plugin_interface
 
 	public function lart($args)
 	{
-		global $channel, $bot, $db, $usr;
+		$bot = bot::get_instance();
+		$db = db::get_instance();
+		$channel = $bot->chanel;
+		$usr = $bot->usr;
 
 		if (empty ($args))
 			$nick = $usr->nick;

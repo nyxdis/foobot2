@@ -22,7 +22,9 @@ function __autoload($class)
  **/
 function foobot_error_handler($errno, $error, $file, $line, $context)
 {
-	global $settings, $bot;
+	global $settings;
+
+	$bot = bot::get_instance();
 
 	switch ($errno) {
 	case E_USER_ERROR:

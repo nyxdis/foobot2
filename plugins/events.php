@@ -24,7 +24,7 @@ class events extends plugin_interface
 
 	public function pub_events($args)
 	{
-		global $db;
+		$db = db::get_instance();
 
 		if (empty ($args))
 			$name = NULL;
@@ -58,7 +58,7 @@ class events extends plugin_interface
 
 	public function addevent($args)
 	{
-		global $db;
+		$db = db::get_instance();
 
 		$args = implode(' ', $args);
 		if (!preg_match('/(?<name>.*) (?<year>\d{4})-?(?<month>\d{2})-?(?<day>\d{2})/', $args, $matches)) {
@@ -77,7 +77,10 @@ class events extends plugin_interface
 
 	public function announce($id)
 	{
-		global $bot, $db, $settings;
+		global $settings;
+
+		$db = db::get_instance();
+		$bot = bot::get_instance();
 
 		$name = $db->get_single_property('SELECT `name` FROM `events` WHERE `id` = ' . (int)$id);
 		$bot->say($settings['main_channel'], 'Event happening today: ' . $name);
@@ -85,7 +88,7 @@ class events extends plugin_interface
 
 	public function delevent($args)
 	{
-		global $db;
+		$db = db::get_instance();
 
 		$name = $args[0];
 		$cnt = $db->get_single_property('SELECT COUNT(*) FROM events WHERE name LIKE ' . $db->quote('%' . str_replace(' ', '%', $name) . '%'));

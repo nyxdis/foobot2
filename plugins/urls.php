@@ -24,7 +24,8 @@ class urls extends plugin_interface
 
 	public function urls_save($args)
 	{
-		global $db, $channel;
+		$db = db::get_instance();
+		$channel = bot::get_instance()->channel;
 
 		$db->query('INSERT INTO urls (channel, url)
 				VALUES(' . $db->quote($channel) . ',
@@ -33,7 +34,8 @@ class urls extends plugin_interface
 
 	public function pub_urls($args)
 	{
-		global $channel, $db;
+		$db = db::get_instance();
+		$channel = bot::get_instance()->channel;
 
 		$data = $db->query('SELECT * FROM urls
 			WHERE channel=' . $db->quote($channel) . '

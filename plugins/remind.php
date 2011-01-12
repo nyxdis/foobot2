@@ -22,7 +22,8 @@ class remind extends plugin_interface
 
 	public function pub_remind($args)
 	{
-		global $usr, $channel;
+		$usr = bot::get_instance()->usr;
+		$channel = bot::get_instance()->channel;
 
 		$args = implode(' ', $args);
 		preg_match('/(?<who>.*) about (?<what>.*) (in (?<time1>\d+)(?<unit>.*)|at (?<time2>\d+[:.]\d\d))/', $args, $matches);
@@ -69,7 +70,7 @@ class remind extends plugin_interface
 
 	public function do_remind($args)
 	{
-		global $bot;
+		$bot = bot::get_instance();
 
 		$bot->say($args['target'], $args['text']);
 	}

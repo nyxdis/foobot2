@@ -33,7 +33,7 @@ class quotes extends plugin_interface
 
 	public function q($args)
 	{
-		global $db;
+		$db = db::get_instance();
 
 		$num = (int)$args[0];
 		$quotes = $db->query('SELECT * FROM `quotes` WHERE `karma` > -3 ORDER BY RANDOM() LIMIT ' . $num);
@@ -43,7 +43,7 @@ class quotes extends plugin_interface
 
 	public function aq($args)
 	{
-		global $db;
+		$db = db::get_instance();
 
 		$quote = implode(' ', $args);
 		$db->query('INSERT INTO `quotes` (`text`, `karma`) VALUES(' . $db->quote($quote) . ', 0)');
@@ -52,7 +52,7 @@ class quotes extends plugin_interface
 
 	public function dq($args)
 	{
-		global $db;
+		$db = db::get_instance();
 
 		$qid = (int)$args[0];
 		$res = $db->query('DELETE FROM `quotes` WHERE `id` = ' . $qid);
@@ -64,7 +64,7 @@ class quotes extends plugin_interface
 
 	public function iq($args)
 	{
-		global $db;
+		$db = db::get_instance();
 
 		$qid = (int)$args[0];
 		$quote = $db->query('SELECT * FROM `quotes` WHERE `id` = ' . $qid);
@@ -76,7 +76,7 @@ class quotes extends plugin_interface
 
 	public function sq($args)
 	{
-		global $db;
+		$db = db::get_instance();
 
 		$text = implode(' ', $args);
 		$quotes = $db->query('SELECT * FROM `quotes` WHERE `text` LIKE ' . str_replace(' ', '%', $db->quote('%' . $text . '%')) . ' ORDER BY RANDOM() LIMIT 3');
@@ -86,7 +86,7 @@ class quotes extends plugin_interface
 
 	public function tq($args)
 	{
-		global $db;
+		$db = db::get_instance();
 
 		if (empty ($args))
 			$num = 3;

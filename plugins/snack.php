@@ -22,9 +22,8 @@ class snack extends plugin_interface
 
 	public function pub_snack($args)
 	{
-		global $usr, $bot, $channel;
-
-		$bot->act($channel, 'munches ' . $usr->nick . '\'s snack');
+		$bot = bot::get_instance();
+		$bot->act($bot->channel, 'munches ' . $bot->usr->nick . '\'s snack');
 	}
 }
 

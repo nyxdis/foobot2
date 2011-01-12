@@ -26,7 +26,8 @@ class sed extends plugin_interface
 
 	public function sed_parse($args)
 	{
-		global $channel, $usr;
+		$usr = bot::get_instance()->usr;
+		$channel = bot::get_instance()->channel;
 
 		$match = $args['match'] . $args['opts'];
 		if (!empty ($args['global']))
@@ -39,7 +40,8 @@ class sed extends plugin_interface
 
 	public function sed_save($args)
 	{
-		global $channel, $usr;
+		$usr = bot::get_instance()->usr;
+		$channel = bot::get_instance()->channel;
 
 		$text = implode(' ', $args);
 		$this->lastline[$channel][$usr->nick] = $text;

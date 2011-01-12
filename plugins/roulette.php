@@ -32,7 +32,10 @@ class roulette extends plugin_interface
 
 	public function pub_roulette($args)
 	{
-		global $bot, $channel, $usr, $db;
+		$bot = bot::get_instance();
+		$db = db::get_instance();
+		$channel = $bot->channel;
+		$usr = $bot->usr;
 
 		if (isset ($this->lastplayer[$channel]) && $this->lastplayer[$channel] == $usr->nick) {
 			parent::answer('You\'re not going to play alone, are you?');
@@ -86,7 +89,7 @@ class roulette extends plugin_interface
 
 	public function roulette_chance($args)
 	{
-		global $channel;
+		$channel = bot::get_instance()->channel;
 
 		if (isset ($this->roulette_mode[$channel]) && $this->roulette_mode[$channel] == 'spin') {
 			parent::answer('Current probability of dying: 16.67 %');
@@ -100,7 +103,7 @@ class roulette extends plugin_interface
 
 	public function roulette_mode($args)
 	{
-		global $channel;
+		$channel = bot::get_instance()->channel;
 
 		if (isset ($this->roulette_mode[$channel]) && $this->roulette_mode[$channel] == 'spin') {
 			$this->roulette_mode[$channel] = 'dontspin';
@@ -113,7 +116,8 @@ class roulette extends plugin_interface
 
 	public function spin($args)
 	{
-		global $bot, $channel;
+		$bot = bot::get_instance();
+		$channel = $bot->channel;
 
 		if ($this->roulette_mode[$channel] == 'spin') {
 			parent::answer('Command not available in this roulette mode');
@@ -133,7 +137,8 @@ class roulette extends plugin_interface
 
 	public function stats($args)
 	{
-		global $usr, $db;
+		$usr = bot::get_instance()->usr;
+		$db = db::get_instance();
 
 		if (empty ($args)) {
 			$stats = $db->query('SELECT nick, (survivals * 100 / (survivals + deaths)) AS survival_rate FROM roulette WHERE (survivals + deaths) >= 50 ORDER BY survival_rate DESC LIMIT 5');

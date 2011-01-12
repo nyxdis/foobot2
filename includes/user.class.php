@@ -69,7 +69,7 @@ class user
 	 **/
 	public function __construct($nick = '', $ident = '', $host = '')
 	{
-		global $db;
+		$db = db::get_instance();
 
 		if (empty ($nick))
 			return;
@@ -112,7 +112,7 @@ class user
 	 **/
 	public function __set($key, $value)
 	{
-		global $db;
+		$db = db::get_instance();
 
 		if ($this->$key == $value)
 			return;

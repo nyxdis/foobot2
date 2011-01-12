@@ -43,7 +43,7 @@ class google extends plugin_interface
 
 	public function weather($args)
 	{
-		global $usr;
+		$usr = bot::get_instance()->usr;
 
 		if (!empty ($args)) {
 			$city = $args[0];

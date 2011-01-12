@@ -35,6 +35,18 @@ class bot
 	public $connected = false;
 
 	/**
+	 * Current channel for events
+	 * @var string
+	 **/
+	public $channel = '';
+
+	/**
+	 * Current user for events
+	 * @var user
+	 **/
+	public $usr = NULL;
+
+	/**
 	 * The protocol to use (e.g. IRC)
 	 * @var communication
 	 **/
@@ -260,7 +272,9 @@ class bot
 	 **/
 	private function parse($line)
 	{
-		global $settings, $db, $usr, $channel;
+		global $settings;
+
+		$db = db::get_instance();
 
 		$line = trim($line);
 
@@ -293,23 +307,23 @@ class bot
 		// Parse PRIVMSG
 		if (preg_match('/:(?<nick>\S+)!(?<ident>\S+)@(?<host>\S+) PRIVMSG (?<target>\S+) :(?<text>.*)/', $line, $matches)) {
 			$nick = $matches['nick'];
-			$usr = $this->userlist[$matches['nick']]['usr'];
+			$this->usr = $this->userlist[$matches['nick']]['usr'];
 			$target = $matches['target'];
 
 			// Set channel to the origin's nick if the PRIVMSG was
 			// sent directly to the bot
 			if ($target == $settings['nick'])
-				$channel = $matches['nick'];
+				$this->channel = $matches['nick'];
 			else
-				$channel = $matches['target'];
+				$this->channel = $matches['target'];
 
-			if ($matches['text']{0} == $settings['command_char'] || $channel == $nick) {
+			if ($matches['text']{0} == $settings['command_char'] || $this->channel == $nick) {
 				if ($matches['text']{0} == $settings['command_char'])
 					$matches['text'] = substr($matches['text'], 1);
 				$args = explode(' ', trim($matches['text']));
 				$cmd = strtolower(array_shift($args));
 				$return = $plugins->run_event('command', $cmd, $args);
-				if (!$return && $channel == $nick)
+				if (!$return && $this->channel == $nick)
 					$this->say($settings['main_channel'], '<' . $nick . '> ' . $matches['text']);
 			} else {
 				$plugins->run_event('text', $matches['text']);

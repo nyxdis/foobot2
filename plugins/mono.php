@@ -25,7 +25,9 @@ class mono extends plugin_interface
 
 	public function mono_save($args)
 	{
-		global $channel, $usr, $settings;
+		global $settings;
+		$usr = bot::get_instance()->usr;
+		$channel = bot::get_instance()->channel;
 
 		$text = implode(' ', $args);
 		if ($text{0} == $settings['command_char'])
@@ -41,7 +43,7 @@ class mono extends plugin_interface
 
 	public function pub_mono($args)
 	{
-		global $channel;
+		$channel = bot::get_instance()->channel;
 
 		if (isset ($this->mono[$channel]) && $this->mono[$channel]['count'] > 1)
 			parent::answer($this->mono[$channel]['nick'] . ' had a monologue over ' . $this->mono[$channel]['count'] . ' lines until now');

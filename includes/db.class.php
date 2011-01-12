@@ -50,7 +50,9 @@ class db extends PDO
 	 **/
 	public function query($sql)
 	{
-		global $settings, $bot;
+		global $settings;
+
+		$bot = bot::get_instance();
 
 		try {
 			$ret = parent::query($sql);

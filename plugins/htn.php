@@ -36,7 +36,7 @@ class htn extends plugin_interface
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		$result = curl_exec($ch);
 		$result = json_decode($result);
-		if(!$result) {
+		if (!$result) {
 			parent::answer('Bug nicht gefunden!');
 			return;
 		}

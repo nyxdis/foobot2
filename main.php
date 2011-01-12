@@ -17,19 +17,20 @@ require_once 'includes/plugins.php';
 
 // Load plugins
 $plugins = plugins::get_instance();
-
 foreach (glob('plugins/*.php') as $file) {
 	$file = basename($file);
 	$file = substr($file, 0, -4);
 	$plugins->load($file);
 }
+unset ($plugins);
 
 $db = db::get_instance();
 $db->initialize();
+unset ($db);
 
-$usr = new user();
 
 $bot = bot::get_instance();
+$bot->usr = new user();
 $bot->connect();
 if (!$bot->connected)
 	die ('Failed to connect');

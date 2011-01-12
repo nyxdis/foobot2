@@ -28,7 +28,9 @@ class karma extends plugin_interface
 
 	public function karmachange($args)
 	{
-		global $db, $settings;
+		global $settings;
+
+		$db = db::get_instance();
 
 		$item = strtolower($args['item']);
 		if ($item{0} == $settings['command_char'])
@@ -75,7 +77,7 @@ class karma extends plugin_interface
 
 	public function karma_top5($args)
 	{
-		global $db;
+		$db = db::get_instance();
 
 		$data = $db->query('SELECT * FROM `karma` ORDER BY `value` DESC LIMIT 5');
 		$reply = 'Karma top 5: ';
@@ -87,7 +89,7 @@ class karma extends plugin_interface
 
 	public function karma_bottom5($args)
 	{
-		global $db;
+		$db = db::get_instance();
 
 		$data = $db->query('SELECT * FROM `karma` ORDER BY `value` ASC LIMIT 5');
 		$reply = 'Karma bottom 5: ';
@@ -99,7 +101,7 @@ class karma extends plugin_interface
 
 	private function karma_why($item, $karma)
 	{
-		global $db;
+		$db = db::get_instance();
 
 		$reasons = $db->query('SELECT `comment` FROM `karma_comments` WHERE `item` LIKE ' . $db->quote($item) . ' AND `karma`=' . $db->quote($karma));
 		$string = 'Reasons for ' . $item . ': ';
@@ -132,7 +134,7 @@ class karma extends plugin_interface
 
 	public function pub_karma($args)
 	{
-		global $db;
+		$db = db::get_instance();
 
 		if (empty ($args)) {
 			parent::answer('Karma of what?');

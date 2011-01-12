@@ -26,7 +26,8 @@ class todo extends plugin_interface
 
 	public function done($args)
 	{
-		global $usr, $db;
+		$db = db::get_instance();
+		$usr = bot::get_instance()->usr;
 
 		if (empty ($args)) {
 			parent::answer('Need a TODO id or search string');
@@ -55,7 +56,7 @@ class todo extends plugin_interface
 			parent::answer('Deleted TODO #' . (int)$id . ': ' . $todolist[$id]);
 		else
 			parent::answer('No TODO with id #' . (int)$id . ' found');
-		unset($todolist[$id]);
+		unset ($todolist[$id]);
 		$db->query('UPDATE `todo` SET `todo` = ' . $db->quote(serialize($todolist)) . ' WHERE `nick` = ' . $db->quote($usr->name));
 	}
 
@@ -66,7 +67,8 @@ class todo extends plugin_interface
 
 	public function randomtodo($args)
 	{
-		global $usr, $db;
+		$usr = bot::get_instance()->usr;
+		$db = db::get_instance();
 
 		$todo = $db->get_single_property('SELECT `todo` FROM `todo` WHERE `nick` = ' . $db->quote($usr->name));
 		if (!$todo) {
@@ -90,7 +92,8 @@ class todo extends plugin_interface
 
 	public function pub_todo($args)
 	{
-		global $usr, $db;
+		$usr = bot::get_instance()->usr;
+		$db = db::get_instance();
 
 		if (!empty ($args)) {
 			$text = implode(' ', $args);

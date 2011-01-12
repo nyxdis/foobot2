@@ -41,7 +41,8 @@ class core extends plugin_interface
 
 	public function ctcp_version($args)
 	{
-		global $bot, $channel;
+		$bot = bot::get_instance();
+		$channel = $bot->channel;
 
 		$version = BOT_VERSION;
 		if (file_exists('.git')) {
@@ -54,7 +55,8 @@ class core extends plugin_interface
 
 	public function addhost($args)
 	{
-		global $usr, $db;
+		$db = db::get_instance();
+		$usr = bot::get_instance()->usr;
 
 		if (isset ($args[1])) {
 			$usrid = $db->get_single_property('SELECT `id` FROM `users` WHERE `username` = ' . $db->quote($args[0]));
@@ -79,7 +81,8 @@ class core extends plugin_interface
 
 	public function adduser($args)
 	{
-		global $bot, $db;
+		$bot = bot::get_instance();
+		$db = db::get_instance();
 
 		$nick = $args[0];
 		$db->query('INSERT INTO `users` (`username`, `ulvl`) VALUES(' . $db->quote($nick) . ', 1)');
@@ -139,7 +142,8 @@ class core extends plugin_interface
 
 	public function chlvl($args)
 	{
-		global $usr, $db;
+		$db = db::get_instance();
+		$usr = bot::get_instance()->usr;
 
 		if (count($args) != 2) {
 			parent::answer('Usage: chlvl username/uid level');
@@ -179,7 +183,7 @@ class core extends plugin_interface
 
 	public function getuserdata($args)
 	{
-		global $db;
+		$db = db::get_instance();
 
 		$username = $args[0];
 		$info = $db->get_single_property('SELECT `userdata` FROM `users` WHERE `username` = ' . $db->quote($username));
@@ -226,7 +230,8 @@ class core extends plugin_interface
 
 	public function hi($args)
 	{
-		global $usr, $db;
+		$db = db::get_instance();
+		$usr = bot::get_instance()->usr;
 
 		$users = $db->get_single_property('SELECT COUNT(id) FROM users');
 		if ($users > 0)
@@ -238,7 +243,7 @@ class core extends plugin_interface
 
 	public function join($args)
 	{
-		global $bot;
+		$bot = bot::get_instance();
 
 		$channel = $args[0];
 		$bot->join($channel);
@@ -246,7 +251,8 @@ class core extends plugin_interface
 
 	public function merge($args)
 	{
-		global $bot, $db;
+		$bot = bot::get_instance();
+		$db = db::get_instance();
 
 		if (!isset ($args[1])) {
 			parent::answer('Usage: merge username nickname');
@@ -271,7 +277,7 @@ class core extends plugin_interface
 
 	public function raw($args)
 	{
-		global $bot;
+		$bot = bot::get_instance();
 
 		$raw = implode(' ', $args);
 		$bot->send($raw);
@@ -279,7 +285,9 @@ class core extends plugin_interface
 
 	public function reboot($args)
 	{
-		global $argv, $bot, $usr;
+		global $argv;
+		$bot = bot::get_instance();
+		$usr = $bot->usr;
 
 		$bot->shutdown('Rebooting as requested by ' . $usr->name);
 		exec('/usr/bin/env php ' . $_SERVER['PHP_SELF'] . ' ' . $argv[1] . ' >/dev/null &');
@@ -288,7 +296,8 @@ class core extends plugin_interface
 
 	public function shutdown($args)
 	{
-		global $bot, $usr;
+		$bot = bot::get_instance();
+		$usr = $bot->usr;
 
 		$bot->shutdown('Shutting down as requested by ' . $usr->name);
 		exit;
@@ -296,7 +305,7 @@ class core extends plugin_interface
 
 	public function sql($args)
 	{
-		global $db;
+		$db = db::get_instance();
 
 		$sql = implode(' ', $args);
 		try {
@@ -360,7 +369,8 @@ class core extends plugin_interface
 
 	public function who($args)
 	{
-		global $bot, $settings;
+		global $settings;
+		$bot = bot::get_instance();
 
 		$nick = $args[0];
 		if ($settings['protocol'] != 'irc') {
@@ -373,7 +383,7 @@ class core extends plugin_interface
 
 	public function whoami($args)
 	{
-		global $usr;
+		$usr = bot::get_instance()->usr;
 
 		if (isset ($usr->name)) {
 			$string = 'You are ';
@@ -387,7 +397,7 @@ class core extends plugin_interface
 
 	public function whois($args)
 	{
-		global $bot;
+		$bot = bot::get_instance();
 
 		$nick = $args[0];
 		if (!$bot->userlist[$nick]['usr']->name) {

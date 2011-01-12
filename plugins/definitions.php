@@ -26,7 +26,7 @@ class definitions extends plugin_interface
 
 	public function define($args)
 	{
-		global $db;
+		$db = db::get_instance();
 
 		$def = $db->query('SELECT * FROM `definitions` WHERE `item` LIKE ' . $db->quote($args['item']))->fetchObject();
 		if (isset ($args['definition'])) {
@@ -45,7 +45,7 @@ class definitions extends plugin_interface
 
 	public function forget($args)
 	{
-		global $db;
+		$db = db::get_instance();
 
 		if (empty ($args)) {
 			parent::answer('Forget what?');
