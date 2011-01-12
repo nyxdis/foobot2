@@ -198,7 +198,30 @@ class core extends plugin_interface
 
 	public function help($args)
 	{
-		// TODO
+		global $settings;
+
+		$plugins = plugins::get_instance();
+
+		if (empty ($args)) {
+			$text = 'You can get help for the following plugins via "' . $settings['command_char'] . 'help <plugin>": ';
+			$text .= implode(', ', $plugins->get_help());
+		} elseif (count($args) == 1) {
+			$help = $plugins->get_help($args[0]);
+			if (!$help) {
+				$text = 'No help found for plugin ' . $args[0];
+			} else {
+				$text = 'You can get help for the following functions via "' . $settings['command_char'] . 'help <plugin> <function>": ';
+				$text .= implode(', ', $plugins->get_help($args[0]));
+			}
+		} else {
+			$help = $plugins->get_help($args[0], $args[1]);
+			if (!$help)
+				$text = 'No help found for function ' . $args[1] . ' in ' . $args[0];
+			else
+				$text = $args[1] . ': ' . $plugins->get_help($args[0], $args[1]);
+		}
+
+		parent::answer($text);
 	}
 
 	public function hi($args)
@@ -319,7 +342,7 @@ class core extends plugin_interface
 			parent::answer('No such alias');
 			return;
 		}
-		unset($alias[$a]);
+		unset ($alias[$a]);
 		$db->query('DELETE FROM aliases WHERE alias=' . $db->quote($a));
 		parent::answer('Alias removed');
 	}
@@ -390,7 +413,7 @@ class core extends plugin_interface
 			return;
 		}
 
-		if($plugins->load($plug))
+		if ($plugins->load($plug))
 			parent::answer($plug . ' loaded');
 		else
 			parent::answer($plug . ' not found');

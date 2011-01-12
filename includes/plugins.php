@@ -255,19 +255,44 @@ class plugins
 		foreach ($this->timed as $id => $entry) {
 			if ($entry['time'] <= time()) {
 				$this->loaded[$entry['plugin']]->$entry['function']($entry['args']);
-				unset($this->timed[$id]);
+				unset ($this->timed[$id]);
 			}
 		}
 	}
 
 	/**
 	 * Register help text
-	 * @param string $command which command do we document here
+	 * @param string $plugin documented plugin
+	 * @param string $command documented function
 	 * @param string $help the help text
 	 **/
 	public function register_help($plugin, $command, $help)
 	{
 		$this->help[$plugin][strtolower($command)] = $help;
+	}
+
+	/**
+	 * Return help strings
+	 * @return mixed array of available plugins/functions or help string or false if not found
+	 * @param string $plugin which plugin (returns all available plugins if empty)
+	 * @param string $function which function (Returns all available functions if empty)
+	 **/
+	public function get_help($plugin = NULL, $function = NULL)
+	{
+		if (!$plugin)
+			return array_keys($this->help);
+
+		if (!$function) {
+			if (isset ($this->help[$plugin]))
+				return array_keys($this->help[$plugin]);
+			else
+				return false;
+		}
+
+		if (isset ($this->help[$plugin][strtolower($function)]))
+			return $this->help[$plugin][strtolower($function)];
+		else
+			return false;
 	}
 }
 
