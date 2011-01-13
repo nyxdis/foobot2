@@ -156,9 +156,9 @@ class bot
 			$this->join(settings::$debug_channel);
 
 		$this->log(DEBUG, 'Joining channels');
-		foreach (settings::$channels as $channel => $key) {
+		foreach (settings::$channels as $channel) {
 			$this->log(DEBUG, 'Joining ' . $channel);
-			$this->join($channel, $key);
+			$this->join($channel);
 		}
 	}
 
