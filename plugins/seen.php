@@ -100,6 +100,8 @@ class seen extends plugin_interface
 		if (empty ($this->seen))
 			return;
 
+		$db = db::get_instance();
+
 		$db->query('DELETE FROM seen');
 		foreach ($this->seen as $nick => $time)
 			$db->query('INSERT INTO `seen` (`nick`, `ts`) VALUES(' . $db->quote($nick) . ', ' . $db->quote($time) . ')');
