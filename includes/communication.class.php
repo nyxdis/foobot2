@@ -39,6 +39,10 @@ interface communication
 	 * @see bot::act()
 	 **/
 	public function act($target, $text);
+	/**
+	 * @see bot::quit()
+	 **/
+	public function quit($msg);
 }
 
 ?>

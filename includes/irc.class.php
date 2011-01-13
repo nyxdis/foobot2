@@ -106,6 +106,14 @@ class irc implements communication
 	{
 		$this->say($target, "\001ACTION $text\001");
 	}
+
+	/**
+	 * @see bot::quit()
+	 **/
+	public function quit($msg)
+	{
+		$this->send('QUIT :' . $msg);
+	}
 }
 
 ?>
