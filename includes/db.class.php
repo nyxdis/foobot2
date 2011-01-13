@@ -29,6 +29,7 @@ class db extends PDO
 	{
 		parent::__construct('sqlite:foobot-' . strtolower(settings::$network) . '.db');
 		parent::setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		$this->initialize();
 	}
 
 	/**
@@ -76,8 +77,9 @@ class db extends PDO
 
 	/**
 	 * Initialize a new database
+	 * @access private
 	 **/
-	public function initialize()
+	private function initialize()
 	{
 		$this->query('CREATE TABLE IF NOT EXISTS users (id integer primary key, username varchar(25) unique, title varchar(25), ulvl integer, userdata varchar(150))');
 		$this->query('CREATE TABLE IF NOT EXISTS hosts (usrid integer, ident varchar(10), host varchar(50))');

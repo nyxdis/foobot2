@@ -27,10 +27,6 @@ foreach (glob('plugins/*.php') as $file) {
 }
 unset ($plugins);
 
-$db = db::get_instance();
-$db->initialize();
-unset ($db);
-
 $bot = bot::get_instance();
 $bot->usr = new user();
 $bot->connect();
