@@ -48,9 +48,15 @@ class settings
 			$file = $argv[1];
 
 		$settings = parse_ini_file($file);
-		foreach ($settings as $key => $value)
+		foreach ($settings as $key => $value) {
+			if (!property_exists(__CLASS__, $key)) {
+				bot::get_instance()->log(WARNING, 'Unknown config key: ' . $key);
+				continue;
+			}
+
 			if (!empty ($key))
 				self::$$key = $value;
+		}
 
 		$required = array('server', 'channels');
 
