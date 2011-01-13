@@ -116,7 +116,7 @@ class bot
 	 **/
 	private function open_log()
 	{
-		$filename = 'logs/cmdlog-' . settings::$network . '.log';
+		$filename = 'logs/' . settings::$network . '.log';
 		$this->log_fp = fopen($filename, 'a+');
 		if (!$this->log_fp)
 			die ('Failed to open log file');
@@ -212,8 +212,7 @@ class bot
 	public function log($level, $msg)
 	{
 		$logstring = date('Y-m-d H:i') . ': ' . $msg . LF;
-		$logfile = 'logs/cmdlog-' . settings::$network . '.log';
-		file_put_contents($logfile, $logstring, FILE_APPEND | FILE_TEXT);
+		fputs($this->log_fp, $logstring);
 	}
 
 	/**
