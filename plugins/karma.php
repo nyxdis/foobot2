@@ -17,7 +17,7 @@ class karma extends plugin_interface
 	{
 		$plugins = plugins::get_instance();
 
-		$trigger = '/(?<item>.*)(?<karma>[+-]{2})( ?# ?(?<comment>.*))?/';
+		$trigger = '/(?<item>.*)(?<karma>[+-]{2})($| ?# ?(?<comment>.*))/';
 		$plugins->register_event(__CLASS__, 'text', $trigger, 'karmachange');
 		$plugins->register_event(__CLASS__, 'command', 'karma-top5');
 		$plugins->register_event(__CLASS__, 'command', 'karma-bottom5');
