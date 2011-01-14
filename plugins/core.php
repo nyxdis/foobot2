@@ -287,9 +287,8 @@ class core extends plugin_interface
 		$bot = bot::get_instance();
 		$usr = $bot->usr;
 
-		$bot->shutdown('Rebooting as requested by ' . $usr->name);
 		exec('/usr/bin/env php ' . $_SERVER['PHP_SELF'] . ' ' . $argv[1] . ' >/dev/null &');
-		exit;
+		$bot->shutdown('Rebooting as requested by ' . $usr->name);
 	}
 
 	public function shutdown($args)
@@ -298,7 +297,6 @@ class core extends plugin_interface
 		$usr = $bot->usr;
 
 		$bot->shutdown('Shutting down as requested by ' . $usr->name);
-		exit;
 	}
 
 	public function sql($args)
