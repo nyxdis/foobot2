@@ -189,7 +189,7 @@ class bot
 	 **/
 	public function read()
 	{
-		$buf = fgets($this->socket, 4096);
+		$buf = fgets($this->socket);
 		if (!$buf)
 			die ('Error while reading socket');
 		return $buf;
