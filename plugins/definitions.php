@@ -15,11 +15,9 @@ class definitions extends plugin_interface
 {
 	public function load()
 	{
-		$plugins = plugins::get_instance();
-
 		$trigger = '/' . settings::$command_char . '(?<item>.+)(\?| is (?<definition>.+))/';
-		$plugins->register_event(__CLASS__, 'text', $trigger, 'define');
-		$plugins->register_event(__CLASS__, 'command', 'forget');
+		$this->register_event('text', $trigger, 'define');
+		$this->register_event('command', 'forget');
 	}
 
 	public function define($args)

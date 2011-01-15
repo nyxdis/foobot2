@@ -15,11 +15,9 @@ class bofh extends plugin_interface
 {
 	public function load()
 	{
-		$plugins = plugins::get_instance();
-
-		$plugins->register_event(__CLASS__, 'command', 'bofh', 'pub_bofh');
-		$plugins->register_event(__CLASS__, 'command', 'addlart');
-		$plugins->register_event(__CLASS__, 'command', 'lart');
+		$this->register_event('command', 'bofh', 'pub_bofh');
+		$this->register_event('command', 'addlart');
+		$this->register_event('command', 'lart');
 	}
 
 	public function pub_bofh($args)

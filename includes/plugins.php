@@ -34,6 +34,27 @@ abstract class plugin_interface
 			$text = $usr->nick . ': ' . $text;
 		$bot->say($channel, $text);
 	}
+
+	public function register_event($event, $trigger = NULL, $function = NULL, $level = 1)
+	{
+		plugins::get_instance()->register_event(get_class($this), $event, $trigger, $function, $level);
+	}
+
+	public function register_recurring($function, $interval, $args = NULL)
+	{
+		plugins::get_instance()->register_recurring(get_class($this), $function, $interval, $args);
+	}
+
+	public function register_timed($function, $time, $args = NULL)
+	{
+		plugins::get_instance()->register_timed(get_class($this), $function, $time, $args);
+	}
+
+	public function register_help($command, $help)
+	{
+		plugins::get_instance()->register_help(get_class($this), $command, $help);
+	}
+
 }
 
 /**

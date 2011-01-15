@@ -15,13 +15,11 @@ class todo extends plugin_interface
 {
 	public function load()
 	{
-		$plugins = plugins::get_instance();
-
-		$plugins->register_event(__CLASS__, 'command', 'done');
-		$plugins->register_event(__CLASS__, 'command', 'delete');
-		$plugins->register_event(__CLASS__, 'command', 'randomtodo');
-		$plugins->register_event(__CLASS__, 'command', 'feature');
-		$plugins->register_event(__CLASS__, 'command', 'todo', 'pub_todo');
+		$this->register_event('command', 'done');
+		$this->register_event('command', 'delete');
+		$this->register_event('command', 'randomtodo');
+		$this->register_event('command', 'feature');
+		$this->register_event('command', 'todo', 'pub_todo');
 	}
 
 	public function done($args)

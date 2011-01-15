@@ -17,12 +17,10 @@ class seen extends plugin_interface
 
 	public function load()
 	{
-		$plugins = plugins::get_instance();
-
-		$plugins->register_event(__CLASS__, 'text', NULL, 'seen_save');
-		$plugins->register_event(__CLASS__, 'command', 'seen', 'pub_seen');
-		$plugins->register_event(__CLASS__, 'shutdown', NULL, 'save');
-		$plugins->register_recurring(__CLASS__, 'save', 3600);
+		$this->register_event('text', NULL, 'seen_save');
+		$this->register_event('command', 'seen', 'pub_seen');
+		$this->register_event('shutdown', NULL, 'save');
+		$this->register_recurring('save', 3600);
 	}
 
 	public function seen_save($args)

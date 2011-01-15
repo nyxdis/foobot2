@@ -15,12 +15,10 @@ class google extends plugin_interface
 {
 	public function load()
 	{
-		$plugins = plugins::get_instance();
-
-		$plugins->register_event(__CLASS__, 'command', 'google', 'pub_google');
-		$plugins->register_event(__CLASS__, 'command', 'weather');
-		$plugins->register_event(__CLASS__, 'command', 'suggest');
-		$plugins->register_event(__CLASS__, 'command', 'translate');
+		$this->register_event('command', 'google', 'pub_google');
+		$this->register_event('command', 'weather');
+		$this->register_event('command', 'suggest');
+		$this->register_event('command', 'translate');
 	}
 
 	public function pub_google($args)

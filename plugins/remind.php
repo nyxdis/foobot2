@@ -15,9 +15,7 @@ class remind extends plugin_interface
 {
 	public function load()
 	{
-		$plugins = plugins::get_instance();
-
-		$plugins->register_event(__CLASS__, 'command', 'remind', 'pub_remind');
+		$this->register_event('command', 'remind', 'pub_remind');
 	}
 
 	public function pub_remind($args)
@@ -63,8 +61,7 @@ class remind extends plugin_interface
 			}
 		}
 
-		$plugins = plugins::get_instance();
-		$plugins->register_timed(__CLASS__, 'do_remind', $time, $event);
+		$this->register_timed('do_remind', $time, $event);
 		parent::answer('Roger.');
 	}
 

@@ -19,10 +19,8 @@ class youtube extends plugin_interface
 	 **/
 	public function load()
 	{
-		$plugins = plugins::get_instance();
-
 		$trigger = '/https?:\/\/(www\.)?youtube\.(com|de)\/watch\?.*v=(?<videoid>[A-Za-z0-9_]*)/';
-		$plugins->register_event(__CLASS__, 'text', $trigger, 'youtube_parse');
+		$this->register_event('text', $trigger, 'youtube_parse');
 	}
 
 	/**

@@ -15,10 +15,8 @@ class fml extends plugin_interface
 {
 	public function load()
 	{
-		$plugins = plugins::get_instance();
-
-		$plugins->register_event(__CLASS__, 'command', 'fml', 'pub_fml');
-		$plugins->register_event(__CLASS__, 'command', 'fmsl');
+		$this->register_event('command', 'fml', 'pub_fml');
+		$this->register_event('command', 'fmsl');
 	}
 
 	public function pub_fml($args)

@@ -15,9 +15,7 @@ class qalc extends plugin_interface
 {
 	public function load()
 	{
-		$plugins = plugins::get_instance();
-
-		$plugins->register_event(__CLASS__, 'command', 'qalc', 'pub_qalc');
+		$this->register_event('command', 'qalc', 'pub_qalc');
 	}
 
 	public function pub_qalc($args)

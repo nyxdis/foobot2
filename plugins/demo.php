@@ -19,14 +19,10 @@ class demo extends plugin_interface
 	 **/
 	public function load()
 	{
-		$plugins = plugins::get_instance();
+		$this->register_event('command', 'ping', 'pub_ping');
 
-		$plugins->register_event(__CLASS__, 'command', 'ping', 'pub_ping');
-
-		// Register help for the plugin
-		$plugins->register_help(__CLASS__, 'demo', 'Plugin demonstration');
 		// Register help for the plugin's command 'ping'
-		$plugins->register_help(__CLASS__, 'ping', 'Simple ping command');
+		$this->register_help('ping', 'Simple ping command');
 	}
 
 	/**

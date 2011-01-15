@@ -15,11 +15,9 @@ class urls extends plugin_interface
 {
 	public function load()
 	{
-		$plugins = plugins::get_instance();
-
 		$trigger = '/(?<url>(https?:\/\/|www\.)\S+)/';
-		$plugins->register_event(__CLASS__, 'text', $trigger, 'urls_save');
-		$plugins->register_event(__CLASS__, 'command', 'urls', 'pub_urls');
+		$this->register_event('text', $trigger, 'urls_save');
+		$this->register_event('command', 'urls', 'pub_urls');
 	}
 
 	public function urls_save($args)

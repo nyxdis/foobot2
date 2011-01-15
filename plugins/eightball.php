@@ -15,10 +15,8 @@ class eightball extends plugin_interface
 {
 	public function load()
 	{
-		$plugins = plugins::get_instance();
-
-		$plugins->register_event(__CLASS__, 'command', '8ball', 'pub_8ball');
-		$plugins->register_event(__CLASS__, 'command', 'decide');
+		$this->register_event('command', '8ball', 'pub_8ball');
+		$this->register_event('command', 'decide');
 	}
 
 	public function pub_8ball($args = NULL)

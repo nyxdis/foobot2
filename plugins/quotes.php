@@ -15,15 +15,13 @@ class quotes extends plugin_interface
 {
 	public function load()
 	{
-		$plugins = plugins::get_instance();
-
-		$plugins->register_event(__CLASS__, 'command', '2q', 'pub_2q');
-		$plugins->register_event(__CLASS__, 'command', 'q');
-		$plugins->register_event(__CLASS__, 'command', 'aq');
-		$plugins->register_event(__CLASS__, 'command', 'dq');
-		$plugins->register_event(__CLASS__, 'command', 'iq');
-		$plugins->register_event(__CLASS__, 'command', 'sq');
-		$plugins->register_event(__CLASS__, 'command', 'tq');
+		$this->register_event('command', '2q', 'pub_2q');
+		$this->register_event('command', 'q');
+		$this->register_event('command', 'aq');
+		$this->register_event('command', 'dq');
+		$this->register_event('command', 'iq');
+		$this->register_event('command', 'sq');
+		$this->register_event('command', 'tq');
 	}
 
 	public function pub_2q($args)

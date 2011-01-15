@@ -15,28 +15,26 @@ class core extends plugin_interface
 {
 	public function load()
 	{
-		$plugins = plugins::get_instance();
-
-		$plugins->register_event(__CLASS__, 'command', "\001VERSION\001", 'ctcp_version');
-		$plugins->register_event(__CLASS__, 'command', 'addhost');
-		$plugins->register_event(__CLASS__, 'command', 'adduser', NULL, 100);
-		$plugins->register_event(__CLASS__, 'command', 'alias', NULL, 5);
-		$plugins->register_event(__CLASS__, 'command', 'chlvl', NULL, 100);
-		$plugins->register_event(__CLASS__, 'command', 'getuserdata', NULL, 10);
-		$plugins->register_event(__CLASS__, 'command', 'help');
-		$plugins->register_event(__CLASS__, 'command', 'hi', NULL, 0);
-		$plugins->register_event(__CLASS__, 'command', 'join', NULL, 10);
-		$plugins->register_event(__CLASS__, 'command', 'load' , 'pub_load', 10);
-		$plugins->register_event(__CLASS__, 'command', 'merge', NULL, 100);
-		$plugins->register_event(__CLASS__, 'command', 'raw', NULL, 1000);
-		$plugins->register_event(__CLASS__, 'command', 'reboot', NULL, 100);
-		$plugins->register_event(__CLASS__, 'command', 'shutdown', NULL, 1000);
-		$plugins->register_event(__CLASS__, 'command', 'sql', NULL, 1000);
-		$plugins->register_event(__CLASS__, 'command', 'unalias', NULL, 5);
-		$plugins->register_event(__CLASS__, 'command', 'version');
-		$plugins->register_event(__CLASS__, 'command', 'who');
-		$plugins->register_event(__CLASS__, 'command', 'whoami', NULL, 0);
-		$plugins->register_event(__CLASS__, 'command', 'whois');
+		$this->register_event('command', "\001VERSION\001", 'ctcp_version');
+		$this->register_event('command', 'addhost');
+		$this->register_event('command', 'adduser', NULL, 100);
+		$this->register_event('command', 'alias', NULL, 5);
+		$this->register_event('command', 'chlvl', NULL, 100);
+		$this->register_event('command', 'getuserdata', NULL, 10);
+		$this->register_event('command', 'help');
+		$this->register_event('command', 'hi', NULL, 0);
+		$this->register_event('command', 'join', NULL, 10);
+		$this->register_event('command', 'load' , 'pub_load', 10);
+		$this->register_event('command', 'merge', NULL, 100);
+		$this->register_event('command', 'raw', NULL, 1000);
+		$this->register_event('command', 'reboot', NULL, 100);
+		$this->register_event('command', 'shutdown', NULL, 1000);
+		$this->register_event('command', 'sql', NULL, 1000);
+		$this->register_event('command', 'unalias', NULL, 5);
+		$this->register_event('command', 'version');
+		$this->register_event('command', 'who');
+		$this->register_event('command', 'whoami', NULL, 0);
+		$this->register_event('command', 'whois');
 	}
 
 	public function ctcp_version($args)

@@ -21,13 +21,11 @@ class roulette extends plugin_interface
 
 	public function load()
 	{
-		$plugins = plugins::get_instance();
-
-		$plugins->register_event(__CLASS__, 'command', 'roulette', 'pub_roulette', 0);
-		$plugins->register_event(__CLASS__, 'command', 'roulette-chance', NULL, 0);
-		$plugins->register_event(__CLASS__, 'command', 'roulette-mode');
-		$plugins->register_event(__CLASS__, 'command', 'spin', NULL, 0);
-		$plugins->register_event(__CLASS__, 'command', 'stats', NULL, 0);
+		$this->register_event('command', 'roulette', 'pub_roulette', 0);
+		$this->register_event('command', 'roulette-chance', NULL, 0);
+		$this->register_event('command', 'roulette-mode');
+		$this->register_event('command', 'spin', NULL, 0);
+		$this->register_event('command', 'stats', NULL, 0);
 	}
 
 	public function pub_roulette($args)

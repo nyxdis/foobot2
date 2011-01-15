@@ -15,9 +15,7 @@ class tv extends plugin_interface
 {
 	public function load()
 	{
-		$plugins = plugins::get_instance();
-
-		$plugins->register_event(__CLASS__, 'command', 'tv', 'pub_tv');
+		$this->register_event('command', 'tv', 'pub_tv');
 	}
 
 	public function pub_tv($args)

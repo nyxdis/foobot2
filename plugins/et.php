@@ -18,12 +18,10 @@ class et extends plugin_interface
 
 	public function load()
 	{
-		$plugins = plugins::get_instance();
-
-		$plugins->register_event(__CLASS__, 'command', 'et', 'pub_et');
-		$plugins->register_event(__CLASS__, 'command', 'etplayers');
-		$plugins->register_event(__CLASS__, 'command', 'etvar');
-		$plugins->register_event(__CLASS__, 'command', 'rcon', NULL, 10);
+		$this->register_event('command', 'et', 'pub_et');
+		$this->register_event('command', 'etplayers');
+		$this->register_event('command', 'etvar');
+		$this->register_event('command', 'rcon', NULL, 10);
 	}
 
 	public function pub_et($args)

@@ -15,11 +15,9 @@ class events extends plugin_interface
 {
 	public function load()
 	{
-		$plugins = plugins::get_instance();
-
-		$plugins->register_event(__CLASS__, 'command', 'events', 'pub_events');
-		$plugins->register_event(__CLASS__, 'command', 'addevent');
-		$plugins->register_event(__CLASS__, 'command', 'delevent');
+		$this->register_event('command', 'events', 'pub_events');
+		$this->register_event('command', 'addevent');
+		$this->register_event('command', 'delevent');
 	}
 
 	public function pub_events($args)
@@ -67,11 +65,10 @@ class events extends plugin_interface
 		}
 		$db->query('INSERT INTO events (name, date) VALUES(' . $db->quote($matches['name']) . ', \'' . $matches['year'] . '-' . $matches['month'] . '-' . $matches['day'] . '\')');
 		$id = $db->lastInsertId();
-		$plugins = plugins::get_instance();
-		$plugins->register_timed(__CLASS__, 'announce', mktime(0, 0, 0, $matches['month'], $matches['day'], $matches['year']), $id);
-		$plugins->register_timed(__CLASS__, 'announce', mktime(6, 0, 0, $matches['month'], $matches['day'], $matches['year']), $id);
-		$plugins->register_timed(__CLASS__, 'announce', mktime(12, 0, 0, $matches['month'], $matches['day'], $matches['year']), $id);
-		$plugins->register_timed(__CLASS__, 'announce', mktime(18, 0, 0, $matches['month'], $matches['day'], $matches['year']), $id);
+		$this->register_timed('announce', mktime(0, 0, 0, $matches['month'], $matches['day'], $matches['year']), $id);
+		$this->register_timed('announce', mktime(6, 0, 0, $matches['month'], $matches['day'], $matches['year']), $id);
+		$this->register_timed('announce', mktime(12, 0, 0, $matches['month'], $matches['day'], $matches['year']), $id);
+		$this->register_timed('announce', mktime(18, 0, 0, $matches['month'], $matches['day'], $matches['year']), $id);
 		parent::answer('Roger.');
 	}
 

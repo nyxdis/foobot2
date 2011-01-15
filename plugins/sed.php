@@ -17,11 +17,9 @@ class sed extends plugin_interface
 
 	public function load()
 	{
-		$plugins = plugins::get_instance();
-
 		$trigger = '/^s(?<match>\/.*)\/(?<replace>.*)(?<opts>\/i?)(?<global>g?)/';
-		$plugins->register_event(__CLASS__, 'text', $trigger, 'sed_parse');
-		$plugins->register_event(__CLASS__, 'text', NULL, 'sed_save');
+		$this->register_event('text', $trigger, 'sed_parse');
+		$this->register_event('text', NULL, 'sed_save');
 	}
 
 	public function sed_parse($args)

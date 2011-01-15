@@ -95,11 +95,9 @@ class slogans extends plugin_interface
 
 	public function load()
 	{
-		$plugins = plugins::get_instance();
-
-		$plugins->register_event(__CLASS__, 'command', 'cornholio');
-		$plugins->register_event(__CLASS__, 'command', 'futurama');
-		$plugins->register_event(__CLASS__, 'join', NULL, 'cornholio_join', 0);
+		$this->register_event('command', 'cornholio');
+		$this->register_event('command', 'futurama');
+		$this->register_event('join', NULL, 'cornholio_join', 0);
 	}
 
 	public function cornholio($args)

@@ -15,15 +15,13 @@ class karma extends plugin_interface
 {
 	public function load()
 	{
-		$plugins = plugins::get_instance();
-
 		$trigger = '/(?<item>.+)(?<karma>[+-]{2})($| ?# ?(?<comment>.*))/';
-		$plugins->register_event(__CLASS__, 'text', $trigger, 'karmachange');
-		$plugins->register_event(__CLASS__, 'command', 'karma-top5');
-		$plugins->register_event(__CLASS__, 'command', 'karma-bottom5');
-		$plugins->register_event(__CLASS__, 'command', 'karma-whydown');
-		$plugins->register_event(__CLASS__, 'command', 'karma-whyup');
-		$plugins->register_event(__CLASS__, 'command', 'karma', 'pub_karma');
+		$this->register_event('text', $trigger, 'karmachange');
+		$this->register_event('command', 'karma-top5');
+		$this->register_event('command', 'karma-bottom5');
+		$this->register_event('command', 'karma-whydown');
+		$this->register_event('command', 'karma-whyup');
+		$this->register_event('command', 'karma', 'pub_karma');
 	}
 
 	public function karmachange($args)

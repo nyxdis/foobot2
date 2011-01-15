@@ -15,9 +15,7 @@ class snack extends plugin_interface
 {
 	public function load()
 	{
-		$plugins = plugins::get_instance();
-
-		$plugins->register_event(__CLASS__, 'command', 'snack', 'pub_snack');
+		$this->register_event('command', 'snack', 'pub_snack');
 	}
 
 	public function pub_snack($args)
