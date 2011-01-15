@@ -102,7 +102,6 @@ class bot
 			mkdir('logs');
 
 		$this->open_log();
-		$this->create_socket();
 	}
 
 	/**
@@ -123,15 +122,6 @@ class bot
 	}
 
 	/**
-	 * Create socket
-	 * @access private
-	 **/
-	private function create_socket()
-	{
-		$this->socket = socket_create(AF_INET, SOCK_STREAM, 0);
-	}
-
-	/**
 	 * Connect the bot
 	 * @return bool
 	 **/
@@ -139,10 +129,11 @@ class bot
 	{
 		$this->protocol = new settings::$protocol;
 		$this->log(DEBUG, 'Connecting');
-		if (!socket_connect($this->socket, settings::$server, settings::$port))
+		$this->socket = fsockopen(settings::$server, settings::$port);
+		if (!$this->socket)
 			return false;
 		$this->protocol->connect();
-		socket_set_nonblock($this->socket);
+		stream_set_blocking($this->socket, 0);
 	}
 
 	/**
@@ -190,7 +181,7 @@ class bot
 	 **/
 	public function write($data)
 	{
-		socket_write($this->socket, $data);
+		fputs($this->socket, $data);
 	}
 
 	/**
@@ -198,7 +189,7 @@ class bot
 	 **/
 	public function read()
 	{
-		$buf = socket_read($this->socket, 4096, PHP_NORMAL_READ);
+		$buf = fgets($this->socket, 4096);
 		if (!$buf)
 			die ('Error while reading socket');
 		return $buf;
@@ -239,10 +230,10 @@ class bot
 	{
 		$nul = NULL;
 		$sock = array($this->socket);
-		if (socket_select($sock, $nul, $nul, 1)) {
+		if (stream_select($sock, $nul, $nul, 1)) {
 			$line = $this->read();
 			if (!$line) {
-				socket_close($this->socket);
+				fclose($this->socket);
 				$this->connect();
 			}
 			$this->parse($line);
