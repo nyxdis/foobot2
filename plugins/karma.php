@@ -59,7 +59,7 @@ class karma extends plugin_interface
 			$oldkarma = $db->query('SELECT `value` FROM `karma` WHERE `item`=' . $item)->fetchObject();
 			if (!$oldkarma) {
 				eval ('$karma = ' . $kc . '1;');
-				$db->query('INSERT INTO `karma` (`item`, `value`) VALUES(' . $item . ', 1)');
+				$db->query('INSERT INTO `karma` (`item`, `value`) VALUES(' . $item . ', ' . $karma . ')');
 			} else {
 				eval ('$karma = $oldkarma->value' . $kc . '1;');
 				$db->query('UPDATE `karma` SET `value` = `value`' . $kc . '1 WHERE `item`=' . $item);
