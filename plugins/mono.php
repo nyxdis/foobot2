@@ -17,7 +17,7 @@ class mono extends plugin_interface
 
 	public function load()
 	{
-		$this->register_event('text', NULL, 'mono_save');
+		$this->register_event('text', '/^[^' . settings::$command_char . ']+/', 'mono_save');
 		$this->register_event('command', 'mono', 'pub_mono');
 	}
 
@@ -25,10 +25,6 @@ class mono extends plugin_interface
 	{
 		$usr = bot::get_instance()->usr;
 		$channel = bot::get_instance()->channel;
-
-		$text = implode(' ', $args);
-		if ($text{0} == settings::$command_char)
-			return;
 
 		if (!isset ($this->mono[$channel]) || $this->mono[$channel]['nick'] != $usr->name) {
 			$this->mono[$channel]['nick'] = $usr->name;
