@@ -27,26 +27,82 @@ if (file_exists('.git')) {
 	unset ($rev);
 }
 
-// TODO doc
+/**
+ * Settings management
+ *
+ * @package foobot
+ * @subpackage classes
+ **/
 class settings
 {
+	/**
+	 * Prefix for commands
+	 **/
 	public static $command_char = '!';
+	/**
+	 * Currently used protocol
+	 **/
 	public static $protocol = 'irc';
+	/**
+	 * Nick of the bot
+	 **/
 	public static $nick = 'foobot';
+	/**
+	 * Username of the bot
+	 **/
 	public static $username = 'foobot';
+	/**
+	 * Realname of the bot
+	 **/
 	public static $realname = 'foobot';
+	/**
+	 * Server address
+	 **/
 	public static $server = '';
+	/**
+	 * Server port
+	 **/
 	public static $port = 6667;
+	/**
+	 * Network description (for internal use)
+	 **/
 	public static $network = 'default';
+	/**
+	 * Channels to join on startup
+	 **/
 	public static $channels = array();
+	/**
+	 * Authentication password
+	 **/
 	public static $authpass = '';
+	/**
+	 * Authentication username
+	 **/
 	public static $authnick = '';
+	/**
+	 * Service to authenticate against
+	 **/
 	public static $authserv = 'NickServ';
+	/**
+	 * Authentication command
+	 **/
 	public static $authcmd = 'identify';
+	/**
+	 * Print debug output?
+	 **/
 	public static $debug_mode = false;
+	/**
+	 * Send debug output to this channels
+	 **/
 	public static $debug_channel = '';
+	/**
+	 * Main channel of the bot
+	 **/
 	public static $main_channel = '';
 
+	/**
+	 * Load settings from config ini
+	 **/
 	public static function load()
 	{
 		global $argc, $argv;
