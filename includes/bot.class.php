@@ -81,6 +81,13 @@ class bot
 	private $log_fp;
 
 	/**
+	 * Command aliases
+	 * @access private
+	 * @var array
+	 **/
+	private $aliases = array();
+
+	/**
 	 * Returns the global instance for the bot class
 	 * @return bot The instance
 	 **/
@@ -119,6 +126,28 @@ class bot
 		$this->log_fp = fopen($filename, 'a+');
 		if (!$this->log_fp)
 			die ('Failed to open log file');
+	}
+
+	public function register_alias($function, $args = NULL)
+	{
+		$db = db::get_instance();
+		$function = strtolower($function);
+
+		$this->aliases[$alias] = array('function' => $function,
+				'args' => $args);
+		// TODO save to db
+	}
+
+	public function remove_alias($alias)
+	{
+		$alias = strtolower($alias);
+		unset ($this->aliases[$alias]);
+	}
+
+	public function get_alias($alias)
+	{
+		$alias = strtolower($alias);
+		return $this->aliases[$alias];
 	}
 
 	/**
@@ -282,7 +311,7 @@ class bot
 		$plugins = plugins::get_instance();
 
 		// Parse PRIVMSG
-		if (preg_match('/:(?<nick>\S+)!(?<ident>\S+)@(?<host>\S+) PRIVMSG (?<target>\S+) :(?<text>.*)/', $line, $matches)) {
+		if (preg_match('/:(?<nick>\S+)!(?<ident>\S+)@(?<host>\S+) PRIVMSG (?<target>\S+) :(?<text>.+)/', $line, $matches)) {
 			$nick = $matches['nick'];
 			$this->usr = $this->userlist[$matches['nick']]['usr'];
 			$target = $matches['target'];
@@ -296,15 +325,16 @@ class bot
 
 			if ($matches['text']{0} == settings::$command_char || $this->channel == $nick) {
 				if ($matches['text']{0} == settings::$command_char)
-					$matches['text'] = substr($matches['text'], 1);
-				$args = explode(' ', trim($matches['text']));
+					$text = substr($matches['text'], 1);
+				else
+					$text = $matches['text'];
+				$args = explode(' ', trim($text));
 				$cmd = strtolower(array_shift($args));
 				$return = $plugins->run_event('command', $cmd, $args);
 				if (!$return && $this->channel == $nick)
-					$this->say(settings::$main_channel, '<' . $nick . '> ' . $matches['text']);
-			} else {
-				$plugins->run_event('text', $matches['text']);
+					$this->say(settings::$main_channel, '<' . $nick . '> ' . $text);
 			}
+			$plugins->run_event('text', $matches['text']);
 		}
 	}
 
