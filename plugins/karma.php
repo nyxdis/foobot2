@@ -15,7 +15,7 @@ class karma extends plugin_interface
 {
 	public function load()
 	{
-		$trigger = '/(?<item>.+)(?<karma>[+-]{2})($| ?# ?(?<comment>.*))/';
+		$trigger = '/' . settings::$command_char . '?(?<item>.+)(?<karma>[+-]{2})($| ?# ?(?<comment>.*))/';
 		$this->register_event('text', $trigger, 'karmachange');
 		$this->register_event('command', 'karma-top5');
 		$this->register_event('command', 'karma-bottom5');
@@ -29,8 +29,6 @@ class karma extends plugin_interface
 		$db = db::get_instance();
 
 		$item = strtolower($args['item']);
-		if ($item{0} == settings::$command_char)
-			$item = substr($item, 1);
 		$item = $db->quote($item);
 
 		if ($args['karma'] == '++') {
