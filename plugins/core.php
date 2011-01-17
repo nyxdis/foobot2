@@ -43,11 +43,8 @@ class core extends plugin_interface
 		$channel = $bot->channel;
 
 		$version = BOT_VERSION;
-		if (file_exists('.git')) {
-			$rev = file_get_contents('.git/refs/heads/master');
-			$rev = substr($rev, 0, 7);
-			$version .= '-' . $rev;
-		}
+		if (defined('GIT_REV'))
+			$version .= '-' . GIT_REV;
 		$bot->send('NOTICE ' . $channel . ' :' . chr(1) . 'VERSION foobot v' . $version . chr(1));
 	}
 
@@ -353,11 +350,8 @@ class core extends plugin_interface
 	public function version($args)
 	{
 		$version = BOT_VERSION;
-		if (file_exists('.git')) {
-			$rev = file_get_contents('.git/refs/heads/master');
-			$rev = substr($rev, 0, 7);
-			$version .= '-' . $rev;
-		}
+		if (defined('GIT_REV'))
+			$version .= '-' . GIT_REV;
 		parent::answer('This is foobot v' . $version);
 	}
 

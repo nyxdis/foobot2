@@ -17,6 +17,15 @@ $major = floor(BOT_VERSION_ID / 10000);
 $minor = floor((BOT_VERSION_ID - ($major * 10000)) / 100);
 $micro = BOT_VERSION_ID - ($major * 10000) - ($minor * 100);
 define('BOT_VERSION', $major . '.' . $minor . '.' . $micro);
+unset ($major, $minor, $micro);
+
+// define git revision if we're running from a git repo
+if (file_exists('.git')) {
+	$rev = file_get_contents('.git/refs/heads/master');
+	$rev = substr($rev, 0, 7);
+	define('GIT_REV', $rev);
+	unset ($rev);
+}
 
 // TODO doc
 class settings
