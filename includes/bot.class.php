@@ -128,7 +128,7 @@ class bot
 			die ('Failed to open log file');
 	}
 
-	public function register_alias($function, $args = NULL)
+	public function register_alias($alias, $function, $args = NULL)
 	{
 		$db = db::get_instance();
 		$function = strtolower($function);
@@ -147,7 +147,10 @@ class bot
 	public function get_alias($alias)
 	{
 		$alias = strtolower($alias);
-		return $this->aliases[$alias];
+		if (isset ($this->aliases[$alias]))
+			return $this->aliases[$alias];
+		else
+			return false;
 	}
 
 	/**
@@ -331,6 +334,11 @@ class bot
 				$args = explode(' ', trim($text));
 				$cmd = strtolower(array_shift($args));
 				$return = $plugins->run_event('command', $cmd, $args);
+				$alias = $this->get_alias($cmd);
+				if ($alias) {
+					$alias['args'] = array_merge($alias['args'], $args);
+					$return = $plugins->run_event('command', $alias['function'], $alias['args']);
+				}
 				if (!$return && $this->channel == $nick)
 					$this->say(settings::$main_channel, '<' . $nick . '> ' . $text);
 			}

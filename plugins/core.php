@@ -91,48 +91,10 @@ class core extends plugin_interface
 	{
 		global $alias;
 
-		// TODO
-		parent::answer('Not yet implemented');
-		return;
-		$args = explode(' ', str_replace('-', '_', strtolower($args)));
-		if (!isset ($args[1])) {
-			parent::answer('wat');
-			return;
-		}
-		if (method_exists('bot_functions', 'pub_' . $args[0]) && method_exists('bot_functions', 'pub_' . $args[1])) {
-			parent::answer('Cannot overwrite function names');
-			return;
-		}
-		if (!method_exists('bot_functions', 'pub_' . $args[0]) && !method_exists('bot_functions', 'pub_' . $args[1])) {
-			parent::answer('Unknown function');
-			return;
-		}
-
-		if (method_exists('bot_functions', 'pub_' . $args[0])) {
-			$newalias = $args[1];
-			$function = $args[0];
-		} else {
-			$newalias = $args[0];
-			$function = $args[1];
-		}
-		if (substr($newalias, -2) == '++' || substr($newalias, -2) == '--' || substr($newalias, -1) == '?') {
-			parent::answer('Nope.');
-			return;
-		}
-		array_shift($args);
-		array_shift($args);
-		$args = implode(' ', $args);
-
-		if (isset ($alias[$newalias])) {
-			$db->query('UPDATE aliases SET function=' . $db->quote($function) . ', args=' . $db->quote($args) . ' WHERE alias=' . $db->quote($newalias));
-			$reply = 'Alias overwritten';
-		} else {
-			$db->query('INSERT INTO aliases VALUES(' . $db->quote($newalias) . ', ' . $db->quote($function) . ', ' . $db->quote($args) . ')');
-			$reply = 'Alias added';
-		}
-		$alias[$newalias]['function'] = $function;
-		$alias[$newalias]['args'] = $args;
-		parent::answer($reply);
+		$alias = strtolower(array_shift($args));
+		$function = strtolower(array_shift($args));
+		bot::get_instance()->register_alias($alias, $function, $args);
+		parent::answer('Okay.');
 	}
 
 	public function chlvl($args)
@@ -334,17 +296,9 @@ class core extends plugin_interface
 	{
 		global $alias;
 
-		// TODO
-		parent::answer('Not yet implemented');
-		return;
-		$a = str_replace('-', '_', $a);
-		if (!isset ($alias[$a])) {
-			parent::answer('No such alias');
-			return;
-		}
-		unset ($alias[$a]);
-		$db->query('DELETE FROM aliases WHERE alias=' . $db->quote($a));
-		parent::answer('Alias removed');
+		$alias = strtolower($args[0]);
+		bot::get_instance()->remove_alias($alias);
+		parent::answer('Okay.');
 	}
 
 	public function version($args)
