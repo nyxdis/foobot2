@@ -282,6 +282,16 @@ class plugins
 	}
 
 	/**
+	 * Load timed events from db and register them
+	 **/
+	public function load_timed()
+	{
+		$events = db::get_instance()->query('SELECT * FROM `timed_events`');
+		while ($event = $events->fetchObject())
+			$this->register_timed($event->plugin, $event->function, $event->time, unserialize($event->args), $event->id);
+	}
+
+	/**
 	 * Run timed events
 	 **/
 	public function run_timed()

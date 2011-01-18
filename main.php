@@ -25,12 +25,8 @@ foreach (glob('plugins/*.php') as $file) {
 	$file = substr($file, 0, -4);
 	$plugins->load($file);
 }
-
-// Load timed events
-$events = db::get_instance()->query('SELECT * FROM `timed_events`');
-while ($event = $events->fetchObject())
-	$plugins->register_timed($event->plugin, $event->function, $event->time, unserialize($event->args), $event->id);
-unset ($events, $plugins);
+$plugins->load_timed();
+unset ($plugins);
 
 $bot = bot::get_instance();
 $bot->load_aliases();
