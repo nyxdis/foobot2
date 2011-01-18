@@ -89,8 +89,6 @@ class core extends plugin_interface
 
 	public function alias($args)
 	{
-		global $alias;
-
 		$alias = strtolower(array_shift($args));
 		$function = strtolower(array_shift($args));
 		bot::get_instance()->register_alias($alias, $function, $args);
@@ -294,8 +292,6 @@ class core extends plugin_interface
 
 	public function unalias($args)
 	{
-		global $alias;
-
 		$alias = strtolower($args[0]);
 		bot::get_instance()->remove_alias($alias);
 		parent::answer('Okay.');
