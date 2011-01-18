@@ -18,6 +18,8 @@ class definitions extends plugin_interface
 		$trigger = '/' . settings::$command_char . '(?<item>.+)(\?| is (?<definition>.+))/';
 		$this->register_event('text', $trigger, 'define');
 		$this->register_event('command', 'forget');
+
+		db::get_instance()->query('CREATE TABLE IF NOT EXISTS definitions (item varchar(50) unique, description text)');
 	}
 
 	public function define($args)

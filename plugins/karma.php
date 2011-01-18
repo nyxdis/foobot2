@@ -22,6 +22,9 @@ class karma extends plugin_interface
 		$this->register_event('command', 'karma-whydown');
 		$this->register_event('command', 'karma-whyup');
 		$this->register_event('command', 'karma', 'pub_karma');
+
+		db::get_instance()->query('CREATE TABLE IF NOT EXISTS karma (item varchar(50) unique, value integer default 0)');
+		db::get_instance()->query('CREATE TABLE IF NOT EXISTS karma_comments (item varchar(50), karma varchar(4), comment varchar(150))');
 	}
 
 	public function karmachange($args)

@@ -20,6 +20,8 @@ class todo extends plugin_interface
 		$this->register_event('command', 'randomtodo');
 		$this->register_event('command', 'feature');
 		$this->register_event('command', 'todo', 'pub_todo');
+
+		db::get_instance()->query('CREATE TABLE IF NOT EXISTS todo (nick varchar(25) unique, todo text)');
 	}
 
 	public function done($args)

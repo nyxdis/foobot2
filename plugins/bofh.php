@@ -18,6 +18,8 @@ class bofh extends plugin_interface
 		$this->register_event('command', 'bofh', 'pub_bofh');
 		$this->register_event('command', 'addlart');
 		$this->register_event('command', 'lart');
+
+		db::get_instance()->query('CREATE TABLE IF NOT EXISTS larts (lart varchar(50))');
 	}
 
 	public function pub_bofh($args)

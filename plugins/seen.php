@@ -21,6 +21,8 @@ class seen extends plugin_interface
 		$this->register_event('command', 'seen', 'pub_seen');
 		$this->register_event('shutdown', NULL, 'save');
 		$this->register_recurring('save', 3600);
+
+		db::get_instance()->query('CREATE TABLE IF NOT EXISTS seen (nick varchar(25), ts int(11))');
 	}
 
 	public function seen_save($args)

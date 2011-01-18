@@ -18,6 +18,8 @@ class urls extends plugin_interface
 		$trigger = '/(?<url>(https?:\/\/|www\.)\S+)/';
 		$this->register_event('text', $trigger, 'urls_save');
 		$this->register_event('command', 'urls', 'pub_urls');
+
+		db::get_instance()->query('CREATE TABLE IF NOT EXISTS urls (id integer primary key, channel varchar(50), url varchar(250))');
 	}
 
 	public function urls_save($args)

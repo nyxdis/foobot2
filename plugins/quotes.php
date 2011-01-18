@@ -22,6 +22,8 @@ class quotes extends plugin_interface
 		$this->register_event('command', 'iq');
 		$this->register_event('command', 'sq');
 		$this->register_event('command', 'tq');
+
+		db::get_instance()->query('CREATE TABLE IF NOT EXISTS quotes (id integer primary key, text text, karma int)');
 	}
 
 	public function pub_2q($args)
