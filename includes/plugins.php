@@ -175,9 +175,12 @@ class plugins
 		if ($event == 'command' && !$trigger)
 			return false;
 
+		if ($event == 'command')
+			$trigger = strtolower($trigger);
+
 		$this->events[$event][] = array('plugin' => $plugin,
 				'function' => $function,
-				'trigger' => strtolower($trigger),
+				'trigger' => $trigger,
 				'level' => $level);
 	}
 
