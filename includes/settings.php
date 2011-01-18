@@ -103,10 +103,8 @@ class settings
 	/**
 	 * Load settings from config ini
 	 **/
-	public static function load()
+	public static function load($argc, $argv)
 	{
-		global $argc, $argv;
-
 		if ($argc != 2)
 			$file = 'config.ini';
 		else

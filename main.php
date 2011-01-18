@@ -16,7 +16,7 @@ require_once 'includes/misc_functions.php';
 require_once 'includes/plugins.php';
 
 // Load settings
-settings::load();
+settings::load($argc, $argv);
 
 // Load plugins
 $plugins = plugins::get_instance();
