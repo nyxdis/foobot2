@@ -19,7 +19,7 @@ class youtube extends plugin_interface
 	 **/
 	public function load()
 	{
-		$trigger = '/https?:\/\/(www\.)?youtube\.(com|de)\/watch\?.*v=(?<videoid>[A-Za-z0-9_]*)/';
+		$trigger = '/https?:\/\/(www\.)?youtube\.(com|de)\/watch\?.*v=(?<videoid>[\w0-9_]+)/';
 		$this->register_event('text', $trigger, 'youtube_parse');
 	}
 
@@ -34,7 +34,8 @@ class youtube extends plugin_interface
 		curl_setopt($ch, CURLOPT_URL, $url);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 4);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-		$result = json_decode(curl_exec($ch));
+		$result = curl_exec($ch);
+		$result = json_decode($result);
 		if (!$result)
 			return;
 		parent::answer($result->provider_name . ' - ' . $result->title);
