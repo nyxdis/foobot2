@@ -55,7 +55,7 @@ class db extends PDO
 			$ret = parent::query($sql);
 		} catch (PDOException $err) {
 			if (!empty (settings::$debug_channel))
-				$bot->write(settings::$debug_channel, $err->getMessage());
+				$bot->say(settings::$debug_channel, $err->getMessage());
 			return false;
 		}
 		return $ret;
