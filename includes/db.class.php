@@ -84,7 +84,7 @@ class db extends PDO
 		$this->query('CREATE TABLE IF NOT EXISTS users (id integer primary key, username varchar(25) unique, title varchar(25), ulvl integer, userdata varchar(150))');
 		$this->query('CREATE TABLE IF NOT EXISTS hosts (usrid integer, ident varchar(10), host varchar(50))');
 		$this->query('CREATE TABLE IF NOT EXISTS timed_events (id integer primary key, plugin varchar(25), function varchar(25), time int(11), args varchar(255))');
-		$this->query('CREATE TABLE IF NOT EXISTS aliases (alias varchar(50), function varchar(50), args varchar(250))');
+		$this->query('CREATE TABLE IF NOT EXISTS aliases (id integer primary key, alias varchar(50), function varchar(50), args varchar(250))');
 	}
 }
 

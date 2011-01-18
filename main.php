@@ -33,6 +33,7 @@ while ($event = $events->fetchObject())
 unset ($events, $plugins);
 
 $bot = bot::get_instance();
+$bot->load_aliases();
 $bot->usr = new user();
 $bot->connect();
 if (!$bot->connected)
