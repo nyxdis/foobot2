@@ -259,14 +259,26 @@ class plugins
 	 * @param string $function method to call
 	 * @param int $interval interval in seconds
 	 * @param mixed $args args passed to the callback function
-	 * @todo save to db
 	 **/
-	public function register_timed($plugin, $function, $time, $args = NULL)
+	public function register_timed($plugin, $function, $time, $args = NULL, $id = 0)
 	{
+		if ($id == 0) {
+			$db = db::get_instance();
+
+			$db->query('INSERT INTO `timed_events` (`plugin`, `function`, `time`, `args`)
+					VALUES(' . $db->quote($plugin) . ',
+						' . $db->quote($function) . ',
+						' . (int)$time . ',
+						' . $db->quote(serialize($args)) . ')');
+
+			$id = $db->lastInsertId();
+		}
+
 		$this->timed[] = array('plugin' => $plugin,
 				'function' => $function,
 				'time' => $time,
-				'args' => $args);
+				'args' => $args,
+				'id' => $id);
 	}
 
 	/**
@@ -277,6 +289,7 @@ class plugins
 		foreach ($this->timed as $id => $entry) {
 			if ($entry['time'] <= time()) {
 				$this->loaded[$entry['plugin']]->$entry['function']($entry['args']);
+				db::get_instance()->query('DELETE FROM `timed_events` WHERE `id` = ' . (int)$entry['id']);
 				unset ($this->timed[$id]);
 			}
 		}
