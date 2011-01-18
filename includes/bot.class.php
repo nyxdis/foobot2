@@ -128,6 +128,13 @@ class bot
 			die ('Failed to open log file');
 	}
 
+	/**
+	 * Register command alias
+	 * @param string $alias name of the alias
+	 * @param string $function name of the function
+	 * @param array $args arguments passed to the function
+	 * @param int $id id of the alias (only used to load aliases from sql)
+	 **/
 	public function register_alias($alias, $function, $args = NULL, $id = 0)
 	{
 		$function = strtolower($function);
@@ -146,6 +153,9 @@ class bot
 				'id' => $id);
 	}
 
+	/**
+	 * Load aliases from sql
+	 **/
 	public function load_aliases()
 	{
 		$aliases = db::get_instance()->query('SELECT * FROM `aliases`');
@@ -153,6 +163,10 @@ class bot
 			$this->register_alias($alias->alias, $alias->function, unserialize($alias->args), $alias->id);
 	}
 
+	/**
+	 * Remoev alias from db and array
+	 * @param string $alias name of the alias
+	 **/
 	public function remove_alias($alias)
 	{
 		$alias = strtolower($alias);
@@ -160,6 +174,11 @@ class bot
 		unset ($this->aliases[$alias]);
 	}
 
+	/**
+	 * Get alias
+	 * @return mixed false or the function
+	 * @param string $alias name of the alias
+	 **/
 	public function get_alias($alias)
 	{
 		$alias = strtolower($alias);
