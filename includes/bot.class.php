@@ -8,11 +8,20 @@
  **/
 
 /**
- * Logging levels
+ * Logging level: Debug output
  **/
 define('DEBUG', 0);
+/**
+ * Logging level: Notices
+ **/
 define('INFO', 1);
+/**
+ * Logging level: Warnings
+ **/
 define('WARNING', 2);
+/**
+ * Logging level: Errors
+ **/
 define('ERROR', 3);
 
 /**

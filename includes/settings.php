@@ -7,15 +7,21 @@
  **/
 
 /**
- * @ignore
+ * Bot version id for comparisons
  **/
 define('BOT_VERSION_ID', 19900);
+/**
+ * @ignore
+ **/
 define('LF', "\n");
 
 // Generate BOT_VERSION from BOT_VERSION_ID
 $major = floor(BOT_VERSION_ID / 10000);
 $minor = floor((BOT_VERSION_ID - ($major * 10000)) / 100);
 $micro = BOT_VERSION_ID - ($major * 10000) - ($minor * 100);
+/**
+ * Bot version as human readable string
+ **/
 define('BOT_VERSION', $major . '.' . $minor . '.' . $micro);
 unset ($major, $minor, $micro);
 
@@ -23,6 +29,9 @@ unset ($major, $minor, $micro);
 if (file_exists('.git')) {
 	$rev = file_get_contents('.git/refs/heads/master');
 	$rev = substr($rev, 0, 7);
+	/**
+	 * git revision
+	 **/
 	define('GIT_REV', $rev);
 	unset ($rev);
 }
