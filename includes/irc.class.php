@@ -91,7 +91,7 @@ class irc implements communication
 	{
 		$send = 'PRIVMSG ' . $target . ' :' . $text;
 		if (strlen($send) > 412) {
-			$text = str_split($text, 402 - strlen($channel));
+			$text = str_split($text, 402 - strlen($target));
 			foreach ($text as $t)
 				$this->say($target, $t);
 		} else {
