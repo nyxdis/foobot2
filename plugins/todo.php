@@ -85,7 +85,7 @@ class todo extends plugin_interface
 	public function feature($args)
 	{
 		$args = implode(' ', $args);
-		$args = 'for angelos' . $args;
+		$args = 'for angelos ' . $args;
 		$args = explode(' ', $args);
 		$this->pub_todo($args);
 	}
