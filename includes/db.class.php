@@ -68,10 +68,9 @@ class db extends PDO
 	 */
 	public function get_single_property($sql)
 	{
-		$r = $this->query($sql);
+		$r = $this->query($sql)->fetch(PDO::FETCH_NUM);
 		if (!$r)
 			return false;
-		$r = $r->fetch(PDO::FETCH_NUM);
 		return $r[0];
 	}
 
