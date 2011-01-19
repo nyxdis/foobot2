@@ -6,7 +6,7 @@
  *
  * @author Christoph Mende <angelos@unkreativ.org>
  * @package foobot
- **/
+ */
 
 if (!defined('PHP_VERSION_ID') || PHP_VERSION_ID < 50300)
 	die ('This script needs PHP 5.3 or higher!');

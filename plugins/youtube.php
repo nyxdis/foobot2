@@ -4,19 +4,19 @@
  *
  * @author Christoph Mende <angelos@unkreativ.org>
  * @package foobot
- **/
+ */
 
 /**
  * Implementation of plugin_interface
  * @package foobot
  * @subpackage plugins
- **/
+ */
 class youtube extends plugin_interface
 {
 	/**
 	 * Plugin initialization
 	 * @see plugins::register_event()
-	 **/
+	 */
 	public function load()
 	{
 		$trigger = '/https?:\/\/(www\.)?youtube\.(com|de)\/watch\?.*v=(?<videoid>[\w0-9_]+)/';
@@ -26,7 +26,7 @@ class youtube extends plugin_interface
 	/**
 	 * Ping function
 	 * @param mixed $dummy unused
-	 **/
+	 */
 	public function youtube_parse($args)
 	{
 		$ch = curl_init();

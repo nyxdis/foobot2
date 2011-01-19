@@ -4,13 +4,13 @@
  *
  * @author Christoph Mende <angelos@unkreativ.org>
  * @package foobot
- **/
+ */
 
 /**
  * Implementation of plugin_interface
  * @package foobot
  * @subpackage plugins
- **/
+ */
 class seen extends plugin_interface
 {
 	private $seen = array();

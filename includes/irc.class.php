@@ -4,24 +4,24 @@
  *
  * @author Christoph Mende <angelos@unkreativ.org>
  * @package foobot
- **/
+ */
 
 /**
  * IRC class
  * @package foobot
  * @subpackage classes
- **/
+ */
 class irc implements communication
 {
 	/**
 	 * Instance of the bot class
 	 * @access private
-	 **/
+	 */
 	private $bot;
 
 	/**
 	 * Constructor, get a bot instance
-	 **/
+	 */
 	public function __construct()
 	{
 		$this->bot = bot::get_instance();
@@ -29,7 +29,7 @@ class irc implements communication
 
 	/**
 	 * @see bot::connect()
-	 **/
+	 */
 	public function connect()
 	{
 		$this->send('USER ' . settings::$username . ' +i * :' . settings::$realname);
@@ -47,7 +47,7 @@ class irc implements communication
 
 	/**
 	 * @see bot::post_connect()
-	 **/
+	 */
 	public function post_connect()
 	{
 		if (!empty (settings::$authpass)) {
@@ -66,7 +66,7 @@ class irc implements communication
 
 	/**
 	 * @see bot::join()
-	 **/
+	 */
 	public function join($channel, $key)
 	{
 		$cmd = 'JOIN ' . $channel;
@@ -78,7 +78,7 @@ class irc implements communication
 
 	/**
 	 * @see bot::send()
-	 **/
+	 */
 	public function send($raw)
 	{
 		$this->bot->write($raw . LF);
@@ -86,7 +86,7 @@ class irc implements communication
 
 	/**
 	 * @see bot::say()
-	 **/
+	 */
 	public function say($target, $text)
 	{
 		$send = 'PRIVMSG ' . $target . ' :' . $text;
@@ -101,7 +101,7 @@ class irc implements communication
 
 	/**
 	 * @see bot::act()
-	 **/
+	 */
 	public function act($target, $text)
 	{
 		$this->say($target, "\001ACTION $text\001");
@@ -109,7 +109,7 @@ class irc implements communication
 
 	/**
 	 * @see bot::quit()
-	 **/
+	 */
 	public function quit($msg)
 	{
 		$this->send('QUIT :' . $msg);

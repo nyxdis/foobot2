@@ -5,101 +5,101 @@
  * Low-level bot interaction
  * @author Christoph Mende <angelos@unkreativ.org>
  * @package foobot
- **/
+ */
 
 /**
  * Logging level: Debug output
- **/
+ */
 define('DEBUG', 0);
 /**
  * Logging level: Notices
- **/
+ */
 define('INFO', 1);
 /**
  * Logging level: Warnings
- **/
+ */
 define('WARNING', 2);
 /**
  * Logging level: Errors
- **/
+ */
 define('ERROR', 3);
 
 /**
  * bot class
  * @package foobot
  * @subpackage classes
- **/
+ */
 class bot
 {
 	/**
 	 * The bot's internal userlist
 	 * @var array
-	 **/
+	 */
 	public $userlist = array();
 
 	/**
 	 * Is the bot connected?
 	 * @var bool
-	 **/
+	 */
 	public $connected = false;
 
 	/**
 	 * Current channel for events
 	 * @var string
-	 **/
+	 */
 	public $channel = '';
 
 	/**
 	 * Current user for events
 	 * @var user
-	 **/
+	 */
 	public $usr = NULL;
 
 	/**
 	 * The protocol to use (e.g. IRC)
 	 * @var communication
-	 **/
+	 */
 	private $protocol = NULL;
 
 	/**
 	 * Global instance of this class
 	 * @access private
 	 * @var bot
-	 **/
+	 */
 	private static $instance = NULL;
 
 	/**
 	 * List of joined channels
 	 * @access private
 	 * @var array
-	 **/
+	 */
 	private $channels = array();
 
 	/**
 	 * Socket for the connection
 	 * @access private
 	 * @var resource
-	 **/
+	 */
 	private $socket;
 
 	/**
 	 * Resource for the log file
 	 * @access private
 	 * @var resource
-	 **/
+	 */
 	private $log_fp;
 
 	/**
 	 * Command aliases
 	 * @access private
 	 * @var array
-	 **/
+	 */
 	private $aliases = array();
 
 	/**
 	 * Returns the global instance for the bot class
 	 * @return bot The instance
-	 **/
+	 */
 	public static function get_instance()
 	{
 		if (self::$instance == NULL)
@@ -111,7 +111,7 @@ class bot
 	 * Constructor, creates log dir if neccessary and opens the socket
 	 * and log resource handle.
 	 * @access private
-	 **/
+	 */
 	private function __construct()
 	{
 		if (!file_exists('logs'))
@@ -122,13 +122,13 @@ class bot
 
 	/**
 	 * @ignore
-	 **/
+	 */
 	private function __clone() {}
 
 	/**
 	 * Open log file
 	 * @access private
-	 **/
+	 */
 	private function open_log()
 	{
 		$filename = 'logs/' . settings::$network . '.log';
@@ -143,7 +143,7 @@ class bot
 	 * @param string $function name of the function
 	 * @param array $args arguments passed to the function
 	 * @param int $id id of the alias (only used to load aliases from sql)
-	 **/
+	 */
 	public function register_alias($alias, $function, $args = NULL, $id = 0)
 	{
 		$function = strtolower($function);
@@ -164,7 +164,7 @@ class bot
 
 	/**
 	 * Load aliases from sql
-	 **/
+	 */
 	public function load_aliases()
 	{
 		$aliases = db::get_instance()->query('SELECT * FROM `aliases`');
@@ -175,7 +175,7 @@ class bot
 	/**
 	 * Remoev alias from db and array
 	 * @param string $alias name of the alias
-	 **/
+	 */
 	public function remove_alias($alias)
 	{
 		$alias = strtolower($alias);
@@ -187,7 +187,7 @@ class bot
 	 * Get alias
 	 * @return mixed false or the function
 	 * @param string $alias name of the alias
-	 **/
+	 */
 	public function get_alias($alias)
 	{
 		$alias = strtolower($alias);
@@ -200,7 +200,7 @@ class bot
 	/**
 	 * Connect the bot
 	 * @return bool
-	 **/
+	 */
 	public function connect()
 	{
 		$this->protocol = new settings::$protocol;
@@ -214,7 +214,7 @@ class bot
 
 	/**
 	 * Stuff that needs to be done after connecting
-	 **/
+	 */
 	public function post_connect()
 	{
 		$this->protocol->post_connect();
@@ -233,7 +233,7 @@ class bot
 	 * Join a channel
 	 * @param string $channel name of the channel
 	 * @param string $key key of the channel
-	 **/
+	 */
 	public function join($channel, $key = NULL)
 	{
 		if (in_array($channel, $this->channels))
@@ -245,7 +245,7 @@ class bot
 	/**
 	 * Send raw protocol data
 	 * @param string $raw data
-	 **/
+	 */
 	public function send($raw)
 	{
 		$this->protocol->send($raw);
@@ -254,7 +254,7 @@ class bot
 	/**
 	 * Write data to the socket
 	 * @param string $data data
-	 **/
+	 */
 	public function write($data)
 	{
 		fputs($this->socket, $data);
@@ -262,7 +262,7 @@ class bot
 
 	/**
 	 * Read data from the socket
-	 **/
+	 */
 	public function read()
 	{
 		$buf = fgets($this->socket);
@@ -275,7 +275,7 @@ class bot
 	 * Write a log entry
 	 * @param int $level log level
 	 * @param string $msg text to log
-	 **/
+	 */
 	public function log($level, $msg)
 	{
 		$logstring = date('Y-m-d H:i') . ': ' . $msg . LF;
@@ -288,7 +288,7 @@ class bot
 	 * @param string $origin where was it executed
 	 * @param string $cmd which command
 	 * @param array $args args to the command (will be json encoded)
-	 **/
+	 */
 	public function log_cmd($nick, $origin, $cmd, $args)
 	{
 		$logstring = 'Command "' . $cmd . '" executed by "' . $nick . '" with arguments ' . json_encode($args);
@@ -301,7 +301,7 @@ class bot
 
 	/**
 	 * Wait for acion on the socket and execute timed and recurring events
-	 **/
+	 */
 	public function wait()
 	{
 		$nul = NULL;
@@ -325,7 +325,7 @@ class bot
 	 * Parse incoming messages
 	 * @access private
 	 * @param string $line
-	 **/
+	 */
 	private function parse($line)
 	{
 		$db = db::get_instance();
@@ -394,7 +394,7 @@ class bot
 	 * Send text to target
 	 * @param string $target where to send text to
 	 * @param string $text text to send
-	 **/
+	 */
 	public function say($target, $text)
 	{
 		$this->protocol->say($target, $text);
@@ -404,7 +404,7 @@ class bot
 	 * Send an action to target
 	 * @param string $target where to send the action to
 	 * @param string $text what to send
-	 **/
+	 */
 	public function act($target, $text)
 	{
 		$this->protocol->act($target, $text);
@@ -413,7 +413,7 @@ class bot
 	/**
 	 * Shut the bot down
 	 * @param string $msg Quitmsg
-	 **/
+	 */
 	public function shutdown($msg = '')
 	{
 		$this->protocol->quit($msg);

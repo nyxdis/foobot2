@@ -4,61 +4,61 @@
  *
  * @author Christoph Mende <angelos@unkreativ.org>
  * @package foobot
- **/
+ */
 
 /**
  * user management
  * @package foobot
  * @subpackage classes
- **/
+ */
 class user
 {
 	/**
 	 * Userid
 	 * @var int
-	 **/
+	 */
 	public $id;
 
 	/**
 	 * Username
 	 * @var string
-	 **/
+	 */
 	public $name;
 
 	/**
 	 * Userlevel
 	 * @var int
-	 **/
+	 */
 	public $level;
 
 	/**
 	 * Current nickname
 	 * @var string
-	 **/
+	 */
 	public $nick;
 
 	/**
 	 * Current ident
 	 * @var string
-	 **/
+	 */
 	public $ident;
 
 	/**
 	 * Current hostname
 	 * @var string
-	 **/
+	 */
 	public $host;
 
 	/**
 	 * Title
 	 * @var string
-	 **/
+	 */
 	public $title;
 
 	/**
 	 * Userdata for plugins
 	 * @var array
-	 **/
+	 */
 	private $userdata = array();
 
 	/**
@@ -66,7 +66,7 @@ class user
 	 * @param string $nick Current nick
 	 * @param string $ident Current ident
 	 * @param string $host Current hostname
-	 **/
+	 */
 	public function __construct($nick = '', $ident = '', $host = '')
 	{
 		$db = db::get_instance();
@@ -98,7 +98,7 @@ class user
 	 * Magic function that returns userdata values
 	 * @param string $key
 	 * @return string the value
-	 **/
+	 */
 	public function __get($prop)
 	{
 		if (isset ($this->userdata[$prop]))
@@ -109,7 +109,7 @@ class user
 	 * Magic function that changes userdata values
 	 * @param string $key
 	 * @param string $value
-	 **/
+	 */
 	public function __set($key, $value)
 	{
 		$db = db::get_instance();

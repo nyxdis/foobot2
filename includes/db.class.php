@@ -5,26 +5,26 @@
  * This class provides a singleton to use for the bot's database
  * @author Christoph Mende <angelos@unkreativ.org>
  * @package foobot
- **/
+ */
 
 /**
  * database management
  * @package foobot
  * @subpackage classes
- **/
+ */
 class db extends PDO
 {
 	/**
 	 * The class' instance
 	 * @access private
 	 * @var db
-	 **/
+	 */
 	private static $instance = NULL;
 
 	/**
 	 * Class constructor, initializes the database
 	 * @access private
-	 **/
+	 */
 	public function __construct()
 	{
 		parent::__construct('sqlite:foobot-' . strtolower(settings::$network) . '.db');
@@ -34,7 +34,7 @@ class db extends PDO
 
 	/**
 	 * Use this function to get an instance
-	 **/
+	 */
 	public static function get_instance()
 	{
 		if (self::$instance == NULL)
@@ -46,7 +46,7 @@ class db extends PDO
 	 * Execute a database query
 	 * @return mixed PDO result or false
 	 * @param string $sql the query
-	 **/
+	 */
 	public function query($sql)
 	{
 		$bot = bot::get_instance();
@@ -65,7 +65,7 @@ class db extends PDO
 	 * Get a single property
 	 * @return mixed the property or false
 	 * @param string $sql the query
-	 **/
+	 */
 	public function get_single_property($sql)
 	{
 		$r = $this->query($sql);
@@ -78,7 +78,7 @@ class db extends PDO
 	/**
 	 * Initialize a new database
 	 * @access private
-	 **/
+	 */
 	private function initialize()
 	{
 		$this->query('CREATE TABLE IF NOT EXISTS users (id integer primary key, username varchar(25) unique, title varchar(25), ulvl integer, userdata varchar(150))');

@@ -4,11 +4,11 @@
  *
  * @author Christoph Mende <angelos@unkreativ.org>
  * @package foobot
- **/
+ */
 
 /**
  * @ignore
- **/
+ */
 function __autoload($class)
 {
 	$path = 'includes/' . $class . '.class.php';
@@ -19,7 +19,7 @@ function __autoload($class)
 
 /**
  * @ignore
- **/
+ */
 function foobot_error_handler($errno, $error, $file, $line, $context)
 {
 	$bot = bot::get_instance();

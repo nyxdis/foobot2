@@ -4,13 +4,13 @@
  *
  * @author Christoph Mende <angelos@unkreativ.org>
  * @package foobot
- **/
+ */
 
 /**
  * Implementation of plugin_interface
  * @package foobot
  * @subpackage plugins
- **/
+ */
 class slogans extends plugin_interface
 {
 	private $cornholio = array('Are you threatening me?',
