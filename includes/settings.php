@@ -119,6 +119,9 @@ class settings
 		else
 			$file = $argv[1];
 
+		if (!file_exists($argv[1]))
+			die ('Configuration file "' . $file . '" not found');
+
 		$settings = parse_ini_file($file);
 		foreach ($settings as $key => $value) {
 			if (!property_exists(__CLASS__, $key)) {
