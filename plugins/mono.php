@@ -17,7 +17,7 @@ class mono extends plugin_interface
 
 	public function load()
 	{
-		$this->register_event('text', '/^[^' . settings::$command_char . ']+/', 'mono_save');
+		$this->register_event('text', '/^[^' . preg_quote(settings::$command_char, '/') . ']+/', 'mono_save');
 		$this->register_event('command', 'mono', 'pub_mono');
 	}
 
