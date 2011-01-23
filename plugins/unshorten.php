@@ -31,7 +31,7 @@ class unshorten extends plugin_interface
 		curl_setopt($ch, CURLOPT_POSTFIELDS, array('url' => $short_url));
 		$result = curl_exec($ch);
 		preg_match('/The real location of ' . preg_quote($short_url, '/') . ' is:\s+<br\/>\s+<a href="(?<real_url>[^"]+)/', $result, $matches);
-		if ($short_url != $matches['real_url']) {
+		if ($short_url != $matches['real_url'] && !empty ($short_url)) {
 			$bot = bot::get_instance();
 			$bot->say($bot->channel, $short_url . ' => ' . $matches['real_url']);
 		}
