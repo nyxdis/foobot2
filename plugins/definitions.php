@@ -15,7 +15,7 @@ class definitions extends plugin_interface
 {
 	public function load()
 	{
-		$trigger = '/' . preg_quote(settings::$command_char, '/') . '(?<item>.+)(\?| is (?<definition>.+))$/';
+		$trigger = '/' . preg_quote(settings::$command_char, '/') . '(?<item>\S+)(\?| is (?<definition>.+))$/';
 		$this->register_event('text', $trigger, 'define');
 		$this->register_event('command', 'forget');
 
