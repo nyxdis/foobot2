@@ -47,16 +47,20 @@ class db extends PDO
 	 * @return mixed PDO result or false
 	 * @param string $sql the query
 	 */
-	public function query($sql)
+	public function query($sql, $catch_exception = false)
 	{
 		$bot = bot::get_instance();
 
-		try {
+		if ($catch_exception) {
+			try {
+				$ret = parent::query($sql);
+			} catch (PDOException $err) {
+				if (!empty (settings::$debug_channel))
+					$bot->say(settings::$debug_channel, $err->getMessage());
+				return false;
+			}
+		} else {
 			$ret = parent::query($sql);
-		} catch (PDOException $err) {
-			if (!empty (settings::$debug_channel))
-				$bot->say(settings::$debug_channel, $err->getMessage());
-			return false;
 		}
 		return $ret;
 	}
