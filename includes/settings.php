@@ -139,8 +139,31 @@ class settings
 			if (empty (self::$$key))
 				die ('Required setting \'' . $key . '\' missing!');
 
-		self::$channels = explode(',', str_replace(' ', '', self::$channels));
-		if (empty (self::$main_channel))
-			self::$main_channel = key(self::$channels);
+		foreach (explode(',', self::$channels) as $channel) {
+			$c = explode(' ', trim($channel), 2);
+			if (count($c) > 1)
+				$channels[$c[0]] = $c[1];
+			else
+				$channels[$c[0]] = '';
+		}
+		self::$channels = $channels;
+
+		if (empty (self::$main_channel)) {
+			$key = key(self::$channels);
+			self::$main_channel = array('channel' => $key,
+					'key' => self::$channels[$key]);
+		} else {
+			$c = explode(' ', self::$main_channel, 2);
+			self::$main_channel = array('channel' => $c[0]);
+			if (count($c) == 2)
+				self::$main_channel['key'] = $c[1];
+		}
+
+		if (!empty (self::$debug_channel)) {
+			$c = explode(' ', self::$debug_channel, 2);
+			self::$debug_channel = array('channel' => $c[0]);
+			if (count($c) == 2)
+				self::$debug_channel['key'] = $c[1];
+		}
 	}
 }
