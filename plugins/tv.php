@@ -25,9 +25,13 @@ class tv extends plugin_interface
 		$tvdb = new SQLite3('xmltv.db');
 		if (empty ($args))
 			$args = array('');
+		if (empty ($usr->tv_channels))
+			$tv_channels = "'prosieben.de','rtl.de','sat1.de'";
+		else
+			$tv_channels = $usr->tv_channels;
 		switch($args[0]) {
 		case 'next':
-			$tv = $tvdb->query('select * from (select channelid, display_name, title, start from programme, channels where channelid=id and start>strftime(\'%s\', \'now\') and channelid in (' . $usr->tv_channels . ') order by start desc) group by channelid');
+			$tv = $tvdb->query('select * from (select channelid, display_name, title, start from programme, channels where channelid=id and start>strftime(\'%s\', \'now\') and channelid in (' . $tv_channels . ') order by start desc) group by channelid');
 			$next = '';
 			while ($programme = $tv->fetchArray()) {
 				$next .= $programme['display_name'] . ': ' . date('H:i', $programme['start']) . ' ' . $programme['title'] . ', ';
@@ -38,9 +42,9 @@ class tv extends plugin_interface
 				self::answer('No EPG data available');
 			break;
 		case 'chanlist':
-			$tv_channels = $tvdb->query('SELECT display_name FROM channels GROUP BY id');
+			$channels = $tvdb->query('SELECT display_name FROM channels GROUP BY id');
 			$chanlist = 'I know these channels: ';
-			while ($chan = $tv_channels->fetchArray()) {
+			while ($chan = $channels->fetchArray()) {
 				$chanlist .= $chan['display_name'] . ', ';
 			}
 			self::answer(trim($chanlist, ', '));
@@ -48,8 +52,8 @@ class tv extends plugin_interface
 		case 'set':
 			array_shift($args);
 			$list = strtolower(implode('\', \'', str_replace(', ', '', $args)));
-			$tv_channels = $tvdb->query('SELECT * FROM channels WHERE lower(display_name) IN (\'' . $list . '\')');
-			while ($chan = $tv_channels->fetchArray()) {
+			$channels = $tvdb->query('SELECT * FROM channels WHERE lower(display_name) IN (\'' . $list . '\')');
+			while ($chan = $channels->fetchArray()) {
 				$chanlist .= '\'' . $chan['id'] . '\', ';
 				$display_names .= $chan['display_name'] . ', ';
 			}
@@ -83,13 +87,13 @@ class tv extends plugin_interface
 				if (($time+7200) < time())
 					$time += 86400;
 				if (isset ($args[1]))
-					$tv_channels = $tvdb->escapeString($tvdb->querySingle('SELECT `id`
+					$channels = $tvdb->escapeString($tvdb->querySingle('SELECT `id`
 											       FROM `channels`
 											       WHERE `display_name` LIKE \'' . $tvdb->escapeString($args[1]) . '\'
 											       LIMIT 1'));
 				else
-					$tv_channels = $usr->tv_channels;
-				$tv = $tvdb->query('SELECT display_name, title, start FROM programme, channels WHERE channelid=id AND channelid IN (' . $tv_channels . ') AND start<=' . (int)$time . ' AND stop>' . (int)$time . ' GROUP BY channelid');
+					$channels = $tv_channels;
+				$tv = $tvdb->query('SELECT display_name, title, start FROM programme, channels WHERE channelid=id AND channelid IN (' . $channels . ') AND start<=' . (int)$time . ' AND stop>' . (int)$time . ' GROUP BY channelid');
 				$onair = '';
 				while ($programme = $tv->fetchArray()) {
 					$onair .= $programme['display_name'] . ': ' . date('H:i', $programme['start']) . ' ' . $programme['title'] . ', ';
@@ -126,7 +130,7 @@ class tv extends plugin_interface
 					self::answer('No EPG data available');
 				break;
 			}
-			$tv = $tvdb->query('SELECT display_name, title, start FROM programme, channels WHERE channelid=id AND channelid IN (' . $usr->tv_channels . ') AND start<=' . (int)time() . ' AND stop>' . (int)time() . ' GROUP BY channelid');
+			$tv = $tvdb->query('SELECT display_name, title, start FROM programme, channels WHERE channelid=id AND channelid IN (' . $tv_channels . ') AND start<=' . (int)time() . ' AND stop>' . (int)time() . ' GROUP BY channelid');
 			$onair = '';
 			while ($programme = $tv->fetchArray()) {
 				$onair .= $programme['display_name'] . ': ' . date('H:i', $programme['start']) . ' ' . $programme['title'] . ', ';
