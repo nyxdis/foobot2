@@ -199,7 +199,11 @@ class core extends plugin_interface
 		$bot = bot::get_instance();
 
 		$channel = $args[0];
-		$bot->join($channel);
+		if (count($args) > 1)
+			$key = $args[1];
+		else
+			$key = NULL;
+		$bot->join($channel, $key);
 	}
 
 	public function merge($args)
