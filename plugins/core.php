@@ -264,7 +264,7 @@ class core extends plugin_interface
 
 		$sql = implode(' ', $args);
 		try {
-			$res = $db->query($sql);
+			$res = $db->query($sql, false);
 		} catch(PDOException $err) {
 			parent::answer('PDO exception: ' . $err->getMessage());
 			return;
