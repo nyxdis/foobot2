@@ -200,7 +200,7 @@ class plugins
 		foreach ($this->events[$event] as $entry)
 		{
 			if ($entry['trigger'] &&
-			  (($entry['trigger']{0} == '/' && !preg_match($entry['trigger'], $trigger, $preg_args)) ||
+			  (($entry['trigger']{0} == '/' && !preg_match_all($entry['trigger'], $trigger, $preg_args, PREG_SET_ORDER)) ||
 			    ($entry['trigger']{0} != '/' && $entry['trigger'] != $trigger)))
 				continue;
 
@@ -210,7 +210,7 @@ class plugins
 			$return = true;
 
 			if (isset ($preg_args) && !empty ($preg_args))
-				$args = $preg_args;
+				$preg_match = true;
 			elseif ($argv && !is_array($argv))
 				$args = explode(' ', $argv);
 			elseif (!$argv && $event != 'command')
@@ -221,7 +221,12 @@ class plugins
 			if ($event == 'command')
 				$bot->log_cmd($bot->usr->name, $bot->channel, $entry['trigger'], $args);
 
-			$this->loaded[$entry['plugin']]->$entry['function']($args);
+			if ($preg_match) {
+				foreach ($preg_args as $args)
+					$this->loaded[$entry['plugin']]->$entry['function']($args);
+			} else {
+				$this->loaded[$entry['plugin']]->$entry['function']($args);
+			}
 		}
 
 		return $return;
