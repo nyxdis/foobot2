@@ -209,6 +209,7 @@ class plugins
 
 			$return = true;
 
+			$preg_match = false;
 			if (isset ($preg_args) && !empty ($preg_args))
 				$preg_match = true;
 			elseif ($argv && !is_array($argv))
