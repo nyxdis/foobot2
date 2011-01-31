@@ -25,7 +25,7 @@ class tv extends plugin_interface
 		$tvdb = new SQLite3('xmltv.db');
 		if (empty ($args))
 			$args = array('');
-		if (empty ($usr->tv_channels))
+		if ($usr->tv_channels == NULL)
 			$tv_channels = "'prosieben.de','rtl.de','sat1.de'";
 		else
 			$tv_channels = $usr->tv_channels;
