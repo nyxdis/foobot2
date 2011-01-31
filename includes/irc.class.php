@@ -85,6 +85,15 @@ class irc implements communication
 	}
 
 	/**
+	 * @see bot::notice()
+	 * @todo remove redundandy
+	 */
+	public function notice($target, $text)
+	{
+		$this->send('NOTICE ' . $target . ' :' . $text);
+	}
+
+	/**
 	 * @see bot::say()
 	 */
 	public function say($target, $text)

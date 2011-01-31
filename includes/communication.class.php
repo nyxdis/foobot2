@@ -36,6 +36,10 @@ interface communication
 	 */
 	public function say($target, $text);
 	/**
+	 * @see bot::notice()
+	 */
+	public function notice($target, $text);
+	/**
 	 * @see bot::act()
 	 */
 	public function act($target, $text);

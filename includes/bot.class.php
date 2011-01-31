@@ -401,6 +401,16 @@ class bot
 	}
 
 	/**
+	 * Send text to target
+	 * @param string $target where to send text to
+	 * @param string $text text to send
+	 */
+	public function notice($target, $text)
+	{
+		$this->protocol->notice($target, $text);
+	}
+
+	/**
 	 * Send an action to target
 	 * @param string $target where to send the action to
 	 * @param string $text what to send
