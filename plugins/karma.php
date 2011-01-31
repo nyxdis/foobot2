@@ -13,7 +13,7 @@
  */
 class karma extends plugin_interface
 {
-	public function load()
+	public function init()
 	{
 		$trigger = '/' . preg_quote(settings::$command_char, '/') . '?(?<item>.+)(?<karma>(--|\+\+))($| ?# ?(?<comment>.*))/';
 		$this->register_event('text', $trigger, 'karmachange');

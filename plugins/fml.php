@@ -13,7 +13,7 @@
  */
 class fml extends plugin_interface
 {
-	public function load()
+	public function init()
 	{
 		$this->register_event('command', 'fml', 'pub_fml');
 		$this->register_event('command', 'fmsl');

@@ -13,7 +13,7 @@
  */
 class urls extends plugin_interface
 {
-	public function load()
+	public function init()
 	{
 		$trigger = '/(?<url>(https?:\/\/|www\.)\S+)/';
 		$this->register_event('text', $trigger, 'urls_save');

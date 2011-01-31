@@ -12,12 +12,12 @@
  * @package foobot
  * @subpackage classes
  */
-abstract class plugin_interface
+abstract class plugin_interface extends plugins
 {
 	/**
 	 * This function is run when the plugin is loaded
 	 */
-	abstract public function load();
+	abstract public function init();
 
 	/**
 	 * Convenience function that sends 'Nick: text' to the channel where
@@ -34,27 +34,6 @@ abstract class plugin_interface
 			$text = $usr->nick . ': ' . $text;
 		$bot->say($channel, $text);
 	}
-
-	public function register_event($event, $trigger = NULL, $function = NULL, $level = 1)
-	{
-		plugins::get_instance()->register_event(get_class($this), $event, $trigger, $function, $level);
-	}
-
-	public function register_recurring($function, $interval, $args = NULL)
-	{
-		plugins::get_instance()->register_recurring(get_class($this), $function, $interval, $args);
-	}
-
-	public function register_timed($function, $time, $args = NULL)
-	{
-		plugins::get_instance()->register_timed(get_class($this), $function, $time, $args);
-	}
-
-	public function register_help($command, $help)
-	{
-		plugins::get_instance()->register_help(get_class($this), $command, $help);
-	}
-
 }
 
 /**
@@ -70,67 +49,44 @@ class plugins
 	 * @var array
 	 * @access private
 	 */
-	private $loaded = array();
+	private static $loaded = array();
 
 	/**
 	 * Registered help texts
 	 * @var array
 	 * @access private
 	 */
-	private $help = array();
+	private static $help = array();
 
 	/**
 	 * Registered events
 	 * @var array
 	 * @access private
 	 */
-	private $events = array();
+	private static $events = array();
 
 	/**
 	 * Registered recurring events
 	 * @var array
 	 * @access private
 	 */
-	private $recurring = array();
+	private static $recurring = array();
 
 	/**
 	 * Registered timed events
 	 * @var array
 	 * @access private
 	 */
-	private $timed = array();
-
-	/**
-	 * This class' instance
-	 * @var plugins
-	 * @access private
-	 */
-	private static $instance = NULL;
-
-	/**
-	 * @ignore
-	 */
-	private function __construct() {}
-	private function __clone() {}
-
-	/**
-	 * Use this to get an instance of this class
-	 */
-	public static function get_instance()
-	{
-		if (self::$instance == NULL)
-			self::$instance = new self;
-		return self::$instance;
-	}
+	private static $timed = array();
 
 	/**
 	 * Check if a plugin is loaded
 	 * @return bool
 	 * @param string $plugin name of the plugin
 	 */
-	public function is_loaded($plugin)
+	public static function is_loaded($plugin)
 	{
-		if (isset ($this->loaded[$plugin]))
+		if (isset (self::$loaded[$plugin]))
 			return true;
 		return false;
 	}
@@ -140,7 +96,7 @@ class plugins
 	 * @return bool success?
 	 * @param string $plugin name of the plugin
 	 */
-	public function load($plugin)
+	public static function load($plugin)
 	{
 		$path = 'plugins/' . $plugin . '.php';
 		if (!file_exists($path))
@@ -151,19 +107,18 @@ class plugins
 			return false;
 
 		$plug = new $plugin();
-		$plug->load();
-		$this->loaded[$plugin] = $plug;
+		$plug->init();
+		self::$loaded[$plugin] = $plug;
 		return true;
 	}
 
 	/**
 	 * Register an event
-	 * @param string $plugin the registering plugin
 	 * @param string $event what kind of event
 	 * @param string $trigger optional trigger for the event (useful for text events)
 	 * @param string $function method to call
 	 */
-	public function register_event($plugin, $event, $trigger = NULL, $function = NULL, $level = 1)
+	protected function register_event($event, $trigger = NULL, $function = NULL, $level = 1)
 	{
 		if (!$function)
 			$function = str_replace('-', '_', $trigger);
@@ -178,7 +133,7 @@ class plugins
 		if ($event == 'command')
 			$trigger = strtolower($trigger);
 
-		$this->events[$event][] = array('plugin' => $plugin,
+		self::$events[$event][] = array('plugin' => get_class($this),
 				'function' => $function,
 				'trigger' => $trigger,
 				'level' => $level);
@@ -191,13 +146,13 @@ class plugins
 	 * @param string $trigger used trigger if available
 	 * @param string $argv arguments to the trigger
 	 */
-	public function run_event($event, $trigger = NULL, $argv = NULL)
+	public static function run_event($event, $trigger = NULL, $argv = NULL)
 	{
 		$bot = bot::get_instance();
 
 		$return = false;
 
-		foreach ($this->events[$event] as $entry)
+		foreach (self::$events[$event] as $entry)
 		{
 			if ($entry['trigger'] &&
 			  (($entry['trigger']{0} == '/' && !preg_match_all($entry['trigger'], $trigger, $preg_args, PREG_SET_ORDER)) ||
@@ -224,9 +179,9 @@ class plugins
 
 			if ($preg_match) {
 				foreach ($preg_args as $args)
-					$this->loaded[$entry['plugin']]->$entry['function']($args);
+					self::$loaded[$entry['plugin']]->$entry['function']($args);
 			} else {
-				$this->loaded[$entry['plugin']]->$entry['function']($args);
+				self::$loaded[$entry['plugin']]->$entry['function']($args);
 			}
 		}
 
@@ -235,13 +190,12 @@ class plugins
 
 	/**
 	 * Register a recurring event
-	 * @param string $plugin the registering plugin
 	 * @param string $function method to call
 	 * @param int $interval interval in seconds
 	 */
-	public function register_recurring($plugin, $function, $interval, $args = NULL)
+	protected function register_recurring($function, $interval, $args = NULL)
 	{
-		$this->recurring[] = array('plugin' => $plugin,
+		self::$recurring[] = array('plugin' => get_class($this),
 				'function' => $function,
 				'interval' => $interval,
 				'args' => $args,
@@ -251,30 +205,29 @@ class plugins
 	/**
 	 * Run recurring events
 	 */
-	public function run_recurring()
+	public static function run_recurring()
 	{
-		foreach ($this->recurring as $id => $entry) {
+		foreach (self::$recurring as $id => $entry) {
 			if (($entry['last_execution'] + $entry['interval']) <= time()) {
-				$this->loaded[$entry['plugin']]->$entry['function']($entry['args']);
-				$this->recurring[$id]['last_execution'] = time();
+				self::$loaded[$entry['plugin']]->$entry['function']($entry['args']);
+				self::$recurring[$id]['last_execution'] = time();
 			}
 		}
 	}
 
 	/**
 	 * Register a timed event
-	 * @param string $plugin the registering plugin
 	 * @param string $function method to call
 	 * @param int $interval interval in seconds
 	 * @param mixed $args args passed to the callback function
 	 */
-	public function register_timed($plugin, $function, $time, $args = NULL, $id = 0)
+	protected function register_timed($function, $time, $args = NULL, $id = 0)
 	{
 		if ($id == 0) {
 			$db = db::get_instance();
 
 			$db->query('INSERT INTO `timed_events` (`plugin`, `function`, `time`, `args`)
-					VALUES(' . $db->quote($plugin) . ',
+					VALUES(' . $db->quote(get_class($this)) . ',
 						' . $db->quote($function) . ',
 						' . (int)$time . ',
 						' . $db->quote(serialize($args)) . ')');
@@ -282,7 +235,7 @@ class plugins
 			$id = $db->lastInsertId();
 		}
 
-		$this->timed[] = array('plugin' => $plugin,
+		self::$timed[] = array('plugin' => get_class($this),
 				'function' => $function,
 				'time' => $time,
 				'args' => $args,
@@ -292,36 +245,35 @@ class plugins
 	/**
 	 * Load timed events from db and register them
 	 */
-	public function load_timed()
+	public static function load_timed()
 	{
 		$events = db::get_instance()->query('SELECT * FROM `timed_events`');
 		while ($event = $events->fetchObject())
-			$this->register_timed($event->plugin, $event->function, $event->time, unserialize($event->args), $event->id);
+			self::register_timed($event->plugin, $event->function, $event->time, unserialize($event->args), $event->id);
 	}
 
 	/**
 	 * Run timed events
 	 */
-	public function run_timed()
+	public static function run_timed()
 	{
-		foreach ($this->timed as $id => $entry) {
+		foreach (self::$timed as $id => $entry) {
 			if ($entry['time'] <= time()) {
-				$this->loaded[$entry['plugin']]->$entry['function']($entry['args']);
+				self::$loaded[$entry['plugin']]->$entry['function']($entry['args']);
 				db::get_instance()->query('DELETE FROM `timed_events` WHERE `id` = ' . (int)$entry['id']);
-				unset ($this->timed[$id]);
+				unset (self::$timed[$id]);
 			}
 		}
 	}
 
 	/**
 	 * Register help text
-	 * @param string $plugin documented plugin
 	 * @param string $command documented function
 	 * @param string $help the help text
 	 */
-	public function register_help($plugin, $command, $help)
+	protected function register_help($command, $help)
 	{
-		$this->help[$plugin][strtolower($command)] = $help;
+		self::$help[get_class($this)][strtolower($command)] = $help;
 	}
 
 	/**
@@ -330,20 +282,20 @@ class plugins
 	 * @param string $plugin which plugin (returns all available plugins if empty)
 	 * @param string $function which function (Returns all available functions if empty)
 	 */
-	public function get_help($plugin = NULL, $function = NULL)
+	public static function get_help($plugin = NULL, $function = NULL)
 	{
 		if (!$plugin)
-			return array_keys($this->help);
+			return array_keys(self::$help);
 
 		if (!$function) {
-			if (isset ($this->help[$plugin]))
-				return array_keys($this->help[$plugin]);
+			if (isset (self::$help[$plugin]))
+				return array_keys(self::$help[$plugin]);
 			else
 				return false;
 		}
 
-		if (isset ($this->help[$plugin][strtolower($function)]))
-			return $this->help[$plugin][strtolower($function)];
+		if (isset (self::$help[$plugin][strtolower($function)]))
+			return self::$help[$plugin][strtolower($function)];
 		else
 			return false;
 	}

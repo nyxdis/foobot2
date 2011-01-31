@@ -13,7 +13,7 @@
  */
 class google extends plugin_interface
 {
-	public function load()
+	public function init()
 	{
 		$this->register_event('command', 'google', 'pub_google');
 		$this->register_event('command', 'weather');

@@ -19,14 +19,12 @@ require_once 'includes/plugins.php';
 settings::load($argc, $argv);
 
 // Load plugins
-$plugins = plugins::get_instance();
 foreach (glob('plugins/*.php') as $file) {
 	$file = basename($file);
 	$file = substr($file, 0, -4);
-	$plugins->load($file);
+	plugins::load($file);
 }
-$plugins->load_timed();
-unset ($plugins);
+plugins::load_timed();
 
 $bot = bot::get_instance();
 $bot->load_aliases();

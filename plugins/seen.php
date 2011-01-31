@@ -15,7 +15,7 @@ class seen extends plugin_interface
 {
 	private $seen = array();
 
-	public function load()
+	public function init()
 	{
 		$this->register_event('text', NULL, 'seen_save');
 		$this->register_event('command', 'seen', 'pub_seen');

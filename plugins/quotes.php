@@ -13,7 +13,7 @@
  */
 class quotes extends plugin_interface
 {
-	public function load()
+	public function init()
 	{
 		$this->register_event('command', '2q', 'pub_2q');
 		$this->register_event('command', 'q');

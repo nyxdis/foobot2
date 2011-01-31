@@ -16,7 +16,7 @@ class et extends plugin_interface
 	private $host;
 	private $rcon_pass;
 
-	public function load()
+	public function init()
 	{
 		$this->register_event('command', 'et', 'pub_et');
 		$this->register_event('command', 'etplayers');

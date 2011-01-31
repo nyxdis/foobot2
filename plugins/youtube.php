@@ -17,7 +17,7 @@ class youtube extends plugin_interface
 	 * Plugin initialization
 	 * @see plugins::register_event()
 	 */
-	public function load()
+	public function init()
 	{
 		$trigger = '/https?:\/\/(www\.)?youtube\.(com|de)\/watch\?.*v=(?<videoid>[\w0-9_]+)/';
 		$this->register_event('text', $trigger, 'youtube_parse');

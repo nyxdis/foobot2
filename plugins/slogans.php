@@ -93,7 +93,7 @@ class slogans extends plugin_interface
 		'FUN FOR THE WHOLE FAMILY EXCEPT GRANDMA AND GRANDPA');
 
 
-	public function load()
+	public function init()
 	{
 		$this->register_event('command', 'cornholio');
 		$this->register_event('command', 'futurama');

@@ -13,7 +13,7 @@
  */
 class urban extends plugin_interface
 {
-	public function load()
+	public function init()
 	{
 		$this->register_event('command', 'urban', 'pub_urban');
 	}

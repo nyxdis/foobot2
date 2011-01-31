@@ -15,7 +15,7 @@ class sed extends plugin_interface
 {
 	private $lastline = array();
 
-	public function load()
+	public function init()
 	{
 		$trigger = '/^s(?<match>\/.*)\/(?<replace>.*)(?<opts>\/i?)(?<global>g?)/';
 		$this->register_event('text', $trigger, 'sed_parse');

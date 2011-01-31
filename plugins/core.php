@@ -13,7 +13,7 @@
  */
 class core extends plugin_interface
 {
-	public function load()
+	public function init()
 	{
 		$this->register_event('command', "\001VERSION\001", 'ctcp_version');
 		$this->register_event('command', 'addhost');
@@ -157,25 +157,23 @@ class core extends plugin_interface
 
 	public function help($args)
 	{
-		$plugins = plugins::get_instance();
-
 		if (empty ($args)) {
 			$text = 'You can get help for the following plugins via "' . settings::$command_char . 'help <plugin>": ';
-			$text .= implode(', ', $plugins->get_help());
+			$text .= implode(', ', $this->get_help());
 		} elseif (count($args) == 1) {
-			$help = $plugins->get_help($args[0]);
+			$help = $this->get_help($args[0]);
 			if (!$help) {
 				$text = 'No help found for plugin ' . $args[0];
 			} else {
 				$text = 'You can get help for the following functions via "' . settings::$command_char . 'help <plugin> <function>": ';
-				$text .= implode(', ', $plugins->get_help($args[0]));
+				$text .= implode(', ', $this->get_help($args[0]));
 			}
 		} else {
-			$help = $plugins->get_help($args[0], $args[1]);
+			$help = $this->get_help($args[0], $args[1]);
 			if (!$help)
 				$text = 'No help found for function ' . $args[1] . ' in ' . $args[0];
 			else
-				$text = $args[1] . ': ' . $plugins->get_help($args[0], $args[1]);
+				$text = $args[1] . ': ' . $this->get_help($args[0], $args[1]);
 		}
 
 		parent::answer($text);
@@ -358,13 +356,12 @@ class core extends plugin_interface
 	{
 		$plug = $args[0];
 
-		$plugins = plugins::get_instance();
-		if ($plugins->is_loaded($plug)) {
+		if (plugins::is_loaded($plug)) {
 			parent::answer($plug . ' already loaded');
 			return;
 		}
 
-		if ($plugins->load($plug))
+		if (plugins::load($plug))
 			parent::answer($plug . ' loaded');
 		else
 			parent::answer($plug . ' not found');

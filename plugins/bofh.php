@@ -13,7 +13,7 @@
  */
 class bofh extends plugin_interface
 {
-	public function load()
+	public function init()
 	{
 		$this->register_event('command', 'bofh', 'pub_bofh');
 		$this->register_event('command', 'addlart');

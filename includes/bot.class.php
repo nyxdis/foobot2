@@ -314,10 +314,8 @@ class bot
 			}
 			$this->parse($line);
 		} else {
-			$plugins = plugins::get_instance();
-
-			$plugins->run_recurring();
-			$plugins->run_timed();
+			plugins::run_recurring();
+			plugins::run_timed();
 		}
 	}
 
@@ -349,13 +347,10 @@ class bot
 			if (isset ($whoinfo['channel'])) {
 				$args = array('nick' => $whoinfo['nick'],
 						'channel' => $whoinfo['channel']);
-				$plugins = plugins::get_instance();
-				$plugins->run_event('join', NULL, $args);
+				plugins::run_event('join', NULL, $args);
 			}
 			$this->userlist[$whoinfo['nick']]['usr'] = new user($whoinfo['nick'], $whoinfo['ident'], $whoinfo['host']);
 		}
-
-		$plugins = plugins::get_instance();
 
 		// Parse PRIVMSG
 		if (preg_match('/:(?<nick>\S+)!(?<ident>\S+)@(?<host>\S+) PRIVMSG (?<target>\S+) :(?<text>.+)/', $line, $matches)) {
@@ -377,16 +372,16 @@ class bot
 					$text = $matches['text'];
 				$args = explode(' ', trim($text));
 				$cmd = strtolower(array_shift($args));
-				$return = $plugins->run_event('command', $cmd, $args);
+				$return = plugins::run_event('command', $cmd, $args);
 				$alias = $this->get_alias($cmd);
 				if ($alias) {
 					$alias['args'] = array_merge($alias['args'], $args);
-					$return = $plugins->run_event('command', $alias['function'], $alias['args']);
+					$return = plugins::run_event('command', $alias['function'], $alias['args']);
 				}
 				if (!$return && $this->channel == $nick)
 					$this->say(settings::$main_channel, '<' . $nick . '> ' . $text);
 			}
-			$plugins->run_event('text', $matches['text']);
+			plugins::run_event('text', $matches['text']);
 		}
 	}
 
@@ -427,8 +422,7 @@ class bot
 	public function shutdown($msg = '')
 	{
 		$this->protocol->quit($msg);
-		$plugins = plugins::get_instance();
-		$plugins->run_event('shutdown');
+		plugins::run_event('shutdown');
 		exit;
 	}
 }

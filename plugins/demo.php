@@ -17,7 +17,7 @@ class demo extends plugin_interface
 	 * Plugin initialization
 	 * @see plugins::register_event()
 	 */
-	public function load()
+	public function init()
 	{
 		$this->register_event('command', 'ping', 'pub_ping');
 

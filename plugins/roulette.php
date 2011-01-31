@@ -19,7 +19,7 @@ class roulette extends plugin_interface
 	private $roulette_mode = array();
 	private $chamber = array();
 
-	public function load()
+	public function init()
 	{
 		$this->register_event('command', 'roulette', 'pub_roulette', 0);
 		$this->register_event('command', 'roulette-chance', NULL, 0);

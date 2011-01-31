@@ -13,7 +13,7 @@
  */
 class events extends plugin_interface
 {
-	public function load()
+	public function init()
 	{
 		$this->register_event('command', 'events', 'pub_events');
 		$this->register_event('command', 'addevent');
