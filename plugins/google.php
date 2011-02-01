@@ -66,15 +66,17 @@ class google extends plugin_interface
 		/* parsed info */
 		$city = $info->city['data'];
 		$time = date('G:i', strtotime($info->current_date_time['data']));
-		$temp = $weather->temp_c['data'];
+		$temp_metric = $weather->temp_c['data'];
+		$temp_imperial = $weather->temp_f['data'];
 		$humidity = explode(' ', $weather->humidity['data']);
 		$humidity = $humidity[1];
 		$condition = strtolower($weather->condition['data']);
 		$wind = explode(' ', $weather->wind_condition['data']);
 		$wind_direction = $wind[1];
-		$wind_speed = $wind[3] . ' ' . $wind[4];
+		$wind_speed_imperial = $wind[3];
+		$wind_speed_metric = round($wind_speed_imperial * 0.44704);
 
-		parent::answer($city . ' at ' . $time . ': The temperature is ' . $temp . ' °C with ' . $humidity . ' humidity. The weather is ' . $condition . ' with wind from ' . $wind_direction . ' at ' . $wind_speed);
+		parent::answer($city . ' at ' . $time . ': The temperature is ' . $temp_metric . ' °C (' . $temp_imperial . ' °F)with ' . $humidity . ' humidity. The weather is ' . $condition . ' with wind from ' . $wind_direction . ' at ' . $wind_speed_metric . ' m/s (' . $wind_speed_imperial . ' mph)');
 	}
 
 	public function suggest($args)
