@@ -47,7 +47,7 @@ class db extends PDO
 	 * @return mixed PDO result or false
 	 * @param string $sql the query
 	 */
-	public function query($sql, $catch_exception = false)
+	public function query($sql, $catch_exception = true)
 	{
 		$bot = bot::get_instance();
 
