@@ -108,6 +108,14 @@ class settings
 	 * Main channel of the bot
 	 */
 	public static $main_channel = '';
+	/**
+	 * IP address to listen on (important for DCC)
+	 **/
+	public static $listen_addr = NULL;
+	/**
+	 * Port for DCC connections
+	 **/
+	public static $dcc_port = 3333;
 
 	/**
 	 * Load settings from config ini
@@ -165,5 +173,8 @@ class settings
 			if (count($c) == 2)
 				self::$debug_channel['key'] = $c[1];
 		}
+
+		if (self::$listen_addr == NULL)
+			self::$listen_addr = gethostname();
 	}
 }
