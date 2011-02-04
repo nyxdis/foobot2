@@ -27,6 +27,12 @@ class roulette extends plugin_interface
 		$this->register_event('command', 'spin', NULL, 0);
 		$this->register_event('command', 'stats', NULL, 0);
 
+		$this->register_help('roulette', 'russian roulette, try your luck');
+		$this->register_help('roulette-chance', 'display current chance to die');
+		$this->register_help('roulette-mode', 'switch roulette mode, defines wether to spin before shots');
+		$this->register_help('spin', 'spin the cylinder, might not be available');
+		$this->register_help('stats', 'roulette stats');
+
 		db::get_instance()->query('CREATE TABLE IF NOT EXISTS roulette (nick varchar(25) unique, survivals integer default 0, deaths integer default 0)');
 	}
 

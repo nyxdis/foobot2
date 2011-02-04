@@ -16,6 +16,8 @@ class urban extends plugin_interface
 	public function init()
 	{
 		$this->register_event('command', 'urban', 'pub_urban');
+
+		$this->register_help('urban', 'urban dictionary');
 	}
 
 	public function pub_urban($args)

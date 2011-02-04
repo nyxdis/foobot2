@@ -98,6 +98,8 @@ class slogans extends plugin_interface
 		$this->register_event('command', 'cornholio');
 		$this->register_event('command', 'futurama');
 		$this->register_event('join', NULL, 'cornholio_join', 0);
+		$this->register_help('futurama', 'display futurama quotes');
+		$this->register_help('cornholio', 'display cornholio (beavis & butthead) quotes');
 	}
 
 	public function cornholio($args)

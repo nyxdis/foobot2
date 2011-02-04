@@ -19,6 +19,8 @@ class definitions extends plugin_interface
 		$this->register_event('text', $trigger, 'define');
 		$this->register_event('command', 'forget');
 
+		$this->register_help('forget', 'forget definitions');
+
 		db::get_instance()->query('CREATE TABLE IF NOT EXISTS definitions (item varchar(50) unique, description text)');
 	}
 

@@ -22,6 +22,11 @@ class et extends plugin_interface
 		$this->register_event('command', 'etplayers');
 		$this->register_event('command', 'etvar');
 		$this->register_event('command', 'rcon', NULL, 10);
+
+		$this->register_help('et', 'display information about the et server');
+		$this->register_help('etplayers', 'show current et players');
+		$this->register_help('etvar', 'get and set server variables');
+		$this->register_help('rcon', 'send rcon commands');
 	}
 
 	public function pub_et($args)

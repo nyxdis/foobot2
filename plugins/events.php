@@ -18,6 +18,10 @@ class events extends plugin_interface
 		$this->register_event('command', 'events', 'pub_events');
 		$this->register_event('command', 'addevent');
 		$this->register_event('command', 'delevent');
+
+		$this->register_help('events', 'show upcoming events');
+		$this->register_help('addevent', 'add an event');
+		$this->register_help('delevent', 'remove an event');
 	}
 
 	public function pub_events($args)

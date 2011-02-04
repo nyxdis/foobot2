@@ -17,6 +17,9 @@ class eightball extends plugin_interface
 	{
 		$this->register_event('command', '8ball', 'pub_8ball');
 		$this->register_event('command', 'decide');
+
+		$this->register_help('8ball', 'ask the magic 8ball');
+		$this->register_help('decide', 'helps you decide');
 	}
 
 	public function pub_8ball($args = NULL)

@@ -19,6 +19,11 @@ class google extends plugin_interface
 		$this->register_event('command', 'weather');
 		$this->register_event('command', 'suggest');
 		$this->register_event('command', 'translate');
+
+		$this->register_help('google', 'Search google');
+		$this->register_help('weather', 'Show the current weather (your location is saved)');
+		$this->register_help('suggest', 'Let google suggest different keywords');
+		$this->register_help('translate', 'Google Translate - translate from to text');
 	}
 
 	public function pub_google($args)
@@ -76,7 +81,7 @@ class google extends plugin_interface
 		$wind_speed_imperial = $wind[3];
 		$wind_speed_metric = round($wind_speed_imperial * 0.44704);
 
-		parent::answer($city . ' at ' . $time . ': The temperature is ' . $temp_metric . ' °C (' . $temp_imperial . ' °F)with ' . $humidity . ' humidity. The weather is ' . $condition . ' with wind from ' . $wind_direction . ' at ' . $wind_speed_metric . ' m/s (' . $wind_speed_imperial . ' mph)');
+		parent::answer($city . ' at ' . $time . ': The temperature is ' . $temp_metric . ' °C (' . $temp_imperial . ' °F) with ' . $humidity . ' humidity. The weather is ' . $condition . ' with wind from ' . $wind_direction . ' at ' . $wind_speed_metric . ' m/s (' . $wind_speed_imperial . ' mph)');
 	}
 
 	public function suggest($args)

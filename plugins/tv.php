@@ -16,6 +16,8 @@ class tv extends plugin_interface
 	public function init()
 	{
 		$this->register_event('command', 'tv', 'pub_tv');
+
+		$this->register_help('tv', 'TV Movie EPG');
 	}
 
 	public function pub_tv($args)

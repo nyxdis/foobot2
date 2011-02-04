@@ -23,6 +23,14 @@ class quotes extends plugin_interface
 		$this->register_event('command', 'sq');
 		$this->register_event('command', 'tq');
 
+		$this->register_help('2q', 'display 2 quotes');
+		$this->register_help('q', 'syntax: q <n> - display n quotes');
+		$this->register_help('aq', 'add quote');
+		$this->register_help('dq', 'delete quote');
+		$this->register_help('iq', 'get specific quote');
+		$this->register_help('sq', 'search quotes');
+		$this->register_help('tq', 'top quotes');
+
 		db::get_instance()->query('CREATE TABLE IF NOT EXISTS quotes (id integer primary key, text text, karma int)');
 	}
 
@@ -36,6 +44,10 @@ class quotes extends plugin_interface
 		$db = db::get_instance();
 
 		$num = (int)$args[0];
+		if ($num < 1)
+			$num = 1;
+		elseif ($num > 9)
+			$num = 9;
 		$quotes = $db->query('SELECT * FROM `quotes` WHERE `karma` > -3 ORDER BY RANDOM() LIMIT ' . $num);
 		while ($quote = $quotes->fetchObject())
 			parent::answer('#' . $quote->id . ' ' . $quote->text . ' (Karma: ' . $quote->karma . ')');

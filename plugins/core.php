@@ -16,6 +16,7 @@ class core extends plugin_interface
 	public function init()
 	{
 		$this->register_event('command', "\001VERSION\001", 'ctcp_version');
+		$this->register_event('command', "\001CHAT\001", 'ctcp_chat');
 		$this->register_event('command', 'addhost');
 		$this->register_event('command', 'adduser', NULL, 100);
 		$this->register_event('command', 'alias', NULL, 5);
@@ -35,6 +36,25 @@ class core extends plugin_interface
 		$this->register_event('command', 'who');
 		$this->register_event('command', 'whoami', NULL, 0);
 		$this->register_event('command', 'whois');
+
+		$this->register_help('addhost', 'add a host to your account');
+		$this->register_help('adduser', 'add a user to the bot');
+		$this->register_help('alias', 'alias <alias-name> <string> - add a command alias');
+		$this->register_help('chlvl', 'change the level of some user');
+		$this->register_help('getuserdata', 'retrieve the plugin user data');
+		$this->register_help('help', 'this help');
+		$this->register_help('join', 'join a channel');
+		$this->register_help('load', 'load a plugin');
+		$this->register_help('merge', 'merge <username> <nickname> - add nickname\'s host to username');
+		$this->register_help('raw', 'send raw IRC commands');
+		$this->register_help('reboot', 'reboot the bot');
+		$this->register_help('shutdown', 'shut the bot down');
+		$this->register_help('sql', 'send raw SQL commands');
+		$this->register_help('unalias', 'remove aliases');
+		$this->register_help('version', 'print the bot version');
+		$this->register_help('who', 'send a WHO command');
+		$this->register_help('whoami', 'print information about your account');
+		$this->register_help('whois', 'print information about some account');
 	}
 
 	public function ctcp_version($args)
@@ -46,6 +66,14 @@ class core extends plugin_interface
 		if (defined('GIT_REV'))
 			$version .= '-' . GIT_REV;
 		$bot->send('NOTICE ' . $channel . ' :' . chr(1) . 'VERSION foobot v' . $version . chr(1));
+	}
+
+	public function ctcp_chat($args)
+	{
+		$ip_addr = ip2long(gethostbyname(settings::$listen_addr));
+		$port = settings::$dcc_port;
+
+		parent::answer("\001DCC CHAT CHAT $ip_addr $port\001");
 	}
 
 	public function addhost($args)
@@ -149,7 +177,7 @@ class core extends plugin_interface
 		$userdata = 'Userdata for ' . $username . ': ';
 		$info = unserialize($info);
 		foreach ($info as $key => $value)
-			$userdata .= $key . '=' . $value . '; ';
+			$userdata .= $key . ' = "' . $value . '"; ';
 
 		$userdata = rtrim($userdata, '; ');
 		parent::answer($userdata);

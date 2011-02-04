@@ -16,6 +16,8 @@ class remind extends plugin_interface
 	public function init()
 	{
 		$this->register_event('command', 'remind', 'pub_remind');
+
+		$this->register_help('remind', 'simple reminder, syntax: remind (me|nick) about something (in|at) time');
 	}
 
 	public function pub_remind($args)

@@ -17,6 +17,9 @@ class fml extends plugin_interface
 	{
 		$this->register_event('command', 'fml', 'pub_fml');
 		$this->register_event('command', 'fmsl');
+
+		$this->register_help('fml', 'get random FML quotes');
+		$this->register_help('fmsl', 'get random FMSL quotes (broken)');
 	}
 
 	public function pub_fml($args)

@@ -21,6 +21,12 @@ class todo extends plugin_interface
 		$this->register_event('command', 'feature');
 		$this->register_event('command', 'todo', 'pub_todo');
 
+		$this->register_help('done', 'mark a task as done (remove it from list)');
+		$this->register_help('delete', 'delete a task');
+		$this->register_help('randomtodo', 'get a random task');
+		$this->register_help('feature', 'put a task on angelos\' todo list');
+		$this->register_help('todo', 'put something on your or someone else\'s todo list, syntax: todo for <nick>');
+
 		db::get_instance()->query('CREATE TABLE IF NOT EXISTS todo (nick varchar(25) unique, todo text)');
 	}
 

@@ -19,6 +19,8 @@ class mono extends plugin_interface
 	{
 		$this->register_event('text', '/^[^' . preg_quote(settings::$command_char, '/') . ']+/', 'mono_save');
 		$this->register_event('command', 'mono', 'pub_mono');
+
+		$this->register_help('mono', 'display monologue length');
 	}
 
 	public function mono_save($args)

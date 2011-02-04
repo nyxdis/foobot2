@@ -19,6 +19,8 @@ class urls extends plugin_interface
 		$this->register_event('text', $trigger, 'urls_save');
 		$this->register_event('command', 'urls', 'pub_urls');
 
+		$this->register_help('urls', 'display last 5 urls');
+
 		db::get_instance()->query('CREATE TABLE IF NOT EXISTS urls (id integer primary key, channel varchar(50), url varchar(250))');
 	}
 

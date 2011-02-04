@@ -19,6 +19,10 @@ class bofh extends plugin_interface
 		$this->register_event('command', 'addlart');
 		$this->register_event('command', 'lart');
 
+		$this->register_help('bofh', 'BOFH excuses');
+		$this->register_help('addlart', 'add a LART');
+		$this->register_help('lart', 'LART someone');
+
 		db::get_instance()->query('CREATE TABLE IF NOT EXISTS larts (lart varchar(50))');
 	}
 
