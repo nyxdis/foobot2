@@ -110,9 +110,10 @@ class core extends plugin_interface
 		$nick = $args[0];
 		$db->query('INSERT INTO `users` (`username`, `ulvl`) VALUES(' . $db->quote($nick) . ', 1)');
 		$usrid = $db->lastInsertId();
-		$db->query('INSERT INTO `hosts` (`usrid`, `ident`, `host`) VALUES(' . (int)$usrid . ', ' . $db->quote($bot->userlist[$nick]['ident']) . ', ' . $db->quote($bot->userlist[$nick]['host']) . ')');
-		$bot->userlist[$nick]['usr'] = new user($nick, $bot->userlist[$nick]['ident'], $bot->userlist[$nick]['host']);
-		parent::answer('Added user ' . $usrid . ' identified by ' . $bot->userlist[$nick]['ident'] . '@' . $bot->userlist[$nick]['host']);
+		$user = $bot->get_userlist($nick);
+		$db->query('INSERT INTO `hosts` (`usrid`, `ident`, `host`) VALUES(' . (int)$usrid . ', ' . $db->quote($user['ident']) . ', ' . $db->quote($user['host']) . ')');
+		$bot->send('WHO ' . $user['nick']);
+		parent::answer('Added user ' . $usrid . ' identified by ' . $user['ident'] . '@' . $user['host']);
 	}
 
 	public function alias($args)
@@ -242,7 +243,8 @@ class core extends plugin_interface
 			return;
 		}
 
-		if (!isset ($bot->userlist[$args[1]])) {
+		$user = $bot->get_userlist($args[1]);
+		if (!$user) {
 			parent::answer('Unknown nick');
 			return;
 		}
@@ -253,7 +255,7 @@ class core extends plugin_interface
 			return;
 		}
 
-		$db->query('INSERT INTO `hosts` VALUES(' . $usrid . ', ' . $db->quote($bot->userlist[$args[1]]['ident']) . ', ' . $db->quote($bot->userlist[$args[1]]['host']) . ')');
+		$db->query('INSERT INTO `hosts` VALUES(' . $usrid . ', ' . $db->quote($user['ident']) . ', ' . $db->quote($user['host']) . ')');
 		$bot->send('WHO ' . $args[1]);
 		parent::answer('Users merged');
 	}
@@ -367,11 +369,11 @@ class core extends plugin_interface
 		$bot = bot::get_instance();
 
 		$nick = $args[0];
-		if (!$bot->userlist[$nick]['usr']->name) {
+		$user = $bot->get_userlist($nick, true);
+		if (!$user) {
 			parent::answer($nick . ' is unknown');
 			return;
 		}
-		$user = $bot->userlist[$nick]['usr'];
 
 		$string = $nick . ' is ';
 		if (isset ($user->title))

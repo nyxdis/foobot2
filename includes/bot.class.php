@@ -35,7 +35,7 @@ class bot
 	 * The bot's internal userlist
 	 * @var array
 	 */
-	public $userlist = array();
+	private $userlist = array();
 
 	/**
 	 * Is the bot connected?
@@ -135,6 +135,23 @@ class bot
 		$this->log_fp = fopen($filename, 'a+');
 		if (!$this->log_fp)
 			die ('Failed to open log file');
+	}
+
+	/**
+	 * Wrapper function to access the internal userlist
+	 * @param string $nick entry to access
+	 * @param bool $return_usr only return the user object?
+	 * @return mixed false if the user is not known, user if $return_usr and array
+	 *               if !$return_usr
+	 **/
+	public function get_userlist($nick, $return_usr = false)
+	{
+		if ($return_usr && isset ($this->userlist[$nick]['usr']))
+			return $this->userlist[$nick]['usr'];
+		elseif ($return_usr || !isset ($this->userlist[$nick]))
+			return false;
+		else
+			return $this->userlist[$nick];
 	}
 
 	/**

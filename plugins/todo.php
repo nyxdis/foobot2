@@ -105,8 +105,8 @@ class todo extends plugin_interface
 			$text = implode(' ', $args);
 			preg_match('/^for (?<nick>[^ :]+):? ?(?<text>.*)/', $text, $matches);
 		}
-		if (isset ($matches['nick']) && isset ($bot->userlist[$matches['nick']]['usr'])) {
-			$nick = $bot->userlist[$matches['nick']]['usr']->name;
+		if (isset ($matches['nick']) && $bot->get_userlist($matches['nick'], true)) {
+			$nick = $bot->get_userlist($matches['nick'], true)->name;
 		} elseif (isset ($matches['nick'])) {
 			$nick = $matches['nick'];
 
