@@ -116,6 +116,10 @@ class settings
 	 * Port for DCC connections
 	 **/
 	public static $dcc_port = 3333;
+	/**
+	 * Plugin blacklist
+	 **/
+	public static $plugin_blacklist = array();
 
 	/**
 	 * Load settings from config ini
@@ -176,5 +180,10 @@ class settings
 
 		if (self::$listen_addr == NULL)
 			self::$listen_addr = gethostname();
+
+		if (!is_array(self::$plugin_blacklist)) {
+			$bl = str_replace(' ', '', self::$plugin_blacklist);
+			self::$plugin_blacklist = explode(',', $bl);
+		}
 	}
 }

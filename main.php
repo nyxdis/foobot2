@@ -22,7 +22,8 @@ settings::load($argc, $argv);
 foreach (glob('plugins/*.php') as $file) {
 	$file = basename($file);
 	$file = substr($file, 0, -4);
-	plugins::load($file);
+	if (!in_array($file, settings::$plugin_blacklist))
+		plugins::load($file);
 }
 plugins::load_timed();
 
