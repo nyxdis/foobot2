@@ -100,6 +100,7 @@ class todo extends plugin_interface
 	{
 		$usr = bot::get_instance()->usr;
 		$db = db::get_instance();
+		$bot = bot::get_instance();
 
 		if (!empty ($args)) {
 			$text = implode(' ', $args);
