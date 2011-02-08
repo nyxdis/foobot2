@@ -24,7 +24,7 @@ abstract class plugin_interface extends plugins
 	 * the event originated
 	 * @param string $text the text to send
 	 */
-	protected function answer($text)
+	protected final function answer($text)
 	{
 		$usr = bot::get_instance()->usr;
 		$channel = bot::get_instance()->channel;
@@ -84,7 +84,7 @@ class plugins
 	 * @return bool
 	 * @param string $plugin name of the plugin
 	 */
-	public static function is_loaded($plugin)
+	public static final function is_loaded($plugin)
 	{
 		return (isset (self::$loaded[$plugin]));
 	}
@@ -94,7 +94,7 @@ class plugins
 	 * @return bool success?
 	 * @param string $plugin name of the plugin
 	 */
-	public static function load($plugin)
+	public static final function load($plugin)
 	{
 		$path = 'plugins/' . $plugin . '.php';
 		if (!file_exists($path))
@@ -152,7 +152,7 @@ class plugins
 	 * @param string $trigger optional trigger for the event (useful for text events)
 	 * @param string $function method to call
 	 */
-	protected function register_event($event, $trigger = NULL, $function = NULL, $level = 1)
+	protected final function register_event($event, $trigger = NULL, $function = NULL, $level = 1)
 	{
 		if (!$function)
 			$function = str_replace('-', '_', $trigger);
@@ -180,7 +180,7 @@ class plugins
 	 * @param string $trigger used trigger if available
 	 * @param string $argv arguments to the trigger
 	 */
-	public static function run_event($event, $trigger = NULL, $argv = NULL)
+	public static final function run_event($event, $trigger = NULL, $argv = NULL)
 	{
 		$bot = bot::get_instance();
 
@@ -227,7 +227,7 @@ class plugins
 	 * @param string $function method to call
 	 * @param int $interval interval in seconds
 	 */
-	protected function register_recurring($function, $interval, $args = NULL)
+	protected final function register_recurring($function, $interval, $args = NULL)
 	{
 		self::$recurring[] = array('plugin' => get_class($this),
 				'function' => $function,
@@ -239,7 +239,7 @@ class plugins
 	/**
 	 * Run recurring events
 	 */
-	public static function run_recurring()
+	public static final function run_recurring()
 	{
 		foreach (self::$recurring as $id => $entry) {
 			if (($entry['last_execution'] + $entry['interval']) <= time()) {
@@ -255,7 +255,7 @@ class plugins
 	 * @param int $interval interval in seconds
 	 * @param mixed $args args passed to the callback function
 	 */
-	protected function register_timed($function, $time, $args = NULL, $id = 0)
+	protected final function register_timed($function, $time, $args = NULL, $id = 0)
 	{
 		if ($id == 0) {
 			$db = db::get_instance();
@@ -279,7 +279,7 @@ class plugins
 	/**
 	 * Load timed events from db and register them
 	 */
-	public static function load_timed()
+	public static final function load_timed()
 	{
 		$events = db::get_instance()->query('SELECT * FROM `timed_events`');
 		while ($event = $events->fetchObject())
@@ -289,7 +289,7 @@ class plugins
 	/**
 	 * Run timed events
 	 */
-	public static function run_timed()
+	public static final function run_timed()
 	{
 		foreach (self::$timed as $id => $entry) {
 			if ($entry['time'] <= time()) {
@@ -305,7 +305,7 @@ class plugins
 	 * @param string $command documented function
 	 * @param string $help the help text
 	 */
-	protected function register_help($command, $help)
+	protected final function register_help($command, $help)
 	{
 		self::$help[get_class($this)][strtolower($command)] = $help;
 	}
@@ -316,7 +316,7 @@ class plugins
 	 * @param string $plugin which plugin (returns all available plugins if empty)
 	 * @param string $function which function (Returns all available functions if empty)
 	 */
-	public static function get_help($plugin = NULL, $function = NULL)
+	public static final function get_help($plugin = NULL, $function = NULL)
 	{
 		if (!$plugin)
 			return array_keys(self::$help);
