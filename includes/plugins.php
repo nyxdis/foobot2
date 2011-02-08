@@ -86,9 +86,7 @@ class plugins
 	 */
 	public static function is_loaded($plugin)
 	{
-		if (isset (self::$loaded[$plugin]))
-			return true;
-		return false;
+		return (isset (self::$loaded[$plugin]));
 	}
 
 	/**
@@ -110,6 +108,42 @@ class plugins
 		$plug->init();
 		self::$loaded[$plugin] = $plug;
 		return true;
+	}
+
+	/**
+	 * Enable a plugin (execute its init function), this is only needed
+	 * after a plugin was disabled
+	 * @param string $plugin name of the plugin
+	 **/
+	public static final function enable($plugin)
+	{
+		self::$loaded[$plugin]->init();
+	}
+
+	/**
+	 * Disable a plugin (remove all of its registered events)
+	 * @param string $plugin name of the plugin
+	 * @todo set the state of the plugin instead of removing events
+	 **/
+	public static final function disable($plugin)
+	{
+		unset (self::$help[$plugin]);
+
+		foreach (self::$events as $type => $event) {
+			foreach ($event as $id => $data) {
+				if ($data['plugin'] == $plugin) {
+					unset (self::$events[$type][$id]);
+				}
+			}
+		}
+
+		foreach (self::$recurring as $id => $event)
+			if ($event['plugin'] == $plugin)
+				unset (self::$recurring[$id]);
+
+		foreach (self::$timed as $id => $event)
+			if ($event['plugin'] == $plugin)
+				unset (self::$timed[$id]);
 	}
 
 	/**

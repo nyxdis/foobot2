@@ -25,6 +25,8 @@ class core extends plugin_interface
 		$this->register_event('command', 'help');
 		$this->register_event('command', 'hi', NULL, 0);
 		$this->register_event('command', 'join', NULL, 10);
+		$this->register_event('command', 'enable' , 'pub_enable', 10);
+		$this->register_event('command', 'disable' , 'pub_disable', 10);
 		$this->register_event('command', 'load' , 'pub_load', 10);
 		$this->register_event('command', 'merge', NULL, 100);
 		$this->register_event('command', 'raw', NULL, 1000);
@@ -380,6 +382,32 @@ class core extends plugin_interface
 			$string .= $user->title . ' ';
 		$string .= $user->name . ', level ' . $user->level;
 		parent::answer($string);
+	}
+
+	public function pub_disable($args)
+	{
+		$plug = $args[0];
+
+		if (!plugins::is_loaded($plug)) {
+			parent::answer('Plugin is not loaded');
+			return;
+		}
+
+		plugins::disable($plug);
+		parent::answer('Disabled ' . $plug);
+	}
+
+	public function pub_enable($args)
+	{
+		$plug = $args[0];
+
+		if (!plugins::is_loaded($plug)) {
+			parent::answer('Plugin is not loaded');
+			return;
+		}
+
+		plugins::enable($plug);
+		parent::answer('Enabled ' . $plug);
 	}
 
 	public function pub_load($args)
