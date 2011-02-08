@@ -370,7 +370,7 @@ class core extends plugin_interface
 
 		$nick = $args[0];
 		$user = $bot->get_userlist($nick, true);
-		if (!$user) {
+		if (!$user->id) {
 			parent::answer($nick . ' is unknown');
 			return;
 		}
