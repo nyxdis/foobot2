@@ -140,18 +140,14 @@ class bot
 	/**
 	 * Wrapper function to access the internal userlist
 	 * @param string $nick entry to access
-	 * @param bool $return_usr only return the user object?
-	 * @return mixed false if the user is not known, user if $return_usr and array
-	 *               if !$return_usr
+	 * @return user empty object if now such nick is in the userlist or the
+	 *              userlist object
 	 **/
-	public function get_userlist($nick, $return_usr = false)
+	public function get_userlist($nick)
 	{
-		if ($return_usr && isset ($this->userlist[$nick]['usr']))
-			return $this->userlist[$nick]['usr'];
-		elseif ($return_usr || !isset ($this->userlist[$nick]))
-			return false;
-		else
+		if (isset ($this->userlist[$nick]))
 			return $this->userlist[$nick];
+		return new user();
 	}
 
 	/**
@@ -354,9 +350,9 @@ class bot
 		if (preg_match('/:\S+ 352 ' . settings::$nick . ' \S+ (?<ident>\S+) (?<host>\S+) \S+ (?<nick>\S+) \S+ :\d+( (?<realname>.+))?/', $line, $whoinfo) ||
 			preg_match('/:(?<nick>.+)!(?<ident>.+)@(?<host>.+) JOIN :(?<channel>\S+)/', $line, $whoinfo) ||
 			preg_match('/:(?<oldnick>\S+)!(?<ident>\S+)@(?<host>\S+) NICK :(?<nick>\S+)/', $line, $whoinfo)) {
-			$this->userlist[$whoinfo['nick']] = array('ident' => $whoinfo['ident'], 'host' => $whoinfo['host']);
+			$this->userlist[$whoinfo['nick']] = new user($whoinfo['nick'], $whoinfo['ident'], $whoinfo['host']);
 			if (isset ($whoinfo['realname']))
-				$this->userlist[$whoinfo['nick']]['realname'] = $whoinfo['realname'];
+				$this->userlist[$whoinfo['nick']]->realname = $whoinfo['realname'];
 			if (!isset ($whoinfo['realname']) && !isset ($whoinfo['oldnick']))
 				$this->send('WHO ' . $whoinfo['nick']);
 			if (isset ($whoinfo['oldnick']))
@@ -366,13 +362,12 @@ class bot
 						'channel' => $whoinfo['channel']);
 				plugins::run_event('join', NULL, $args);
 			}
-			$this->userlist[$whoinfo['nick']]['usr'] = new user($whoinfo['nick'], $whoinfo['ident'], $whoinfo['host']);
 		}
 
 		// Parse PRIVMSG
 		if (preg_match('/:(?<nick>\S+)!(?<ident>\S+)@(?<host>\S+) PRIVMSG (?<target>\S+) :(?<text>.+)/', $line, $matches)) {
 			$nick = $matches['nick'];
-			$this->usr = $this->userlist[$matches['nick']]['usr'];
+			$this->usr = $this->userlist[$matches['nick']];
 			$target = $matches['target'];
 
 			// Set channel to the origin's nick if the PRIVMSG was

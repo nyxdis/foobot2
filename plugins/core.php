@@ -113,9 +113,13 @@ class core extends plugin_interface
 		$db->query('INSERT INTO `users` (`username`, `ulvl`) VALUES(' . $db->quote($nick) . ', 1)');
 		$usrid = $db->lastInsertId();
 		$user = $bot->get_userlist($nick);
-		$db->query('INSERT INTO `hosts` (`usrid`, `ident`, `host`) VALUES(' . (int)$usrid . ', ' . $db->quote($user['ident']) . ', ' . $db->quote($user['host']) . ')');
-		$bot->send('WHO ' . $user['nick']);
-		parent::answer('Added user ' . $usrid . ' identified by ' . $user['ident'] . '@' . $user['host']);
+		if (!$user->nick) {
+			parent::answer('Unknown nick');
+			return;
+		}
+		$db->query('INSERT INTO `hosts` (`usrid`, `ident`, `host`) VALUES(' . (int)$usrid . ', ' . $db->quote($user->ident) . ', ' . $db->quote($user->host) . ')');
+		$bot->send('WHO ' . $user->nick);
+		parent::answer('Added user ' . $usrid . ' identified by ' . $user->ident . '@' . $user->host);
 	}
 
 	public function alias($args)
@@ -246,7 +250,7 @@ class core extends plugin_interface
 		}
 
 		$user = $bot->get_userlist($args[1]);
-		if (!$user) {
+		if (!$user->nick) {
 			parent::answer('Unknown nick');
 			return;
 		}
@@ -257,7 +261,7 @@ class core extends plugin_interface
 			return;
 		}
 
-		$db->query('INSERT INTO `hosts` VALUES(' . $usrid . ', ' . $db->quote($user['ident']) . ', ' . $db->quote($user['host']) . ')');
+		$db->query('INSERT INTO `hosts` VALUES(' . $usrid . ', ' . $db->quote($user->ident) . ', ' . $db->quote($user->host) . ')');
 		$bot->send('WHO ' . $args[1]);
 		parent::answer('Users merged');
 	}
@@ -371,7 +375,7 @@ class core extends plugin_interface
 		$bot = bot::get_instance();
 
 		$nick = $args[0];
-		$user = $bot->get_userlist($nick, true);
+		$user = $bot->get_userlist($nick);
 		if (!$user->id) {
 			parent::answer($nick . ' is unknown');
 			return;

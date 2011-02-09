@@ -50,6 +50,12 @@ class user
 	public $host;
 
 	/**
+	 * Real name
+	 * @var string
+	 */
+	public $realname;
+
+	/**
 	 * Title
 	 * @var string
 	 */
