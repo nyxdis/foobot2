@@ -255,19 +255,17 @@ class plugins
 	 * @param int $interval interval in seconds
 	 * @param mixed $args args passed to the callback function
 	 */
-	protected final function register_timed($function, $time, $args = NULL, $id = 0)
+	protected final function register_timed($function, $time, $args = NULL)
 	{
-		if ($id == 0) {
-			$db = db::get_instance();
+		$db = db::get_instance();
 
-			$db->query('INSERT INTO `timed_events` (`plugin`, `function`, `time`, `args`)
-					VALUES(' . $db->quote(get_class($this)) . ',
-						' . $db->quote($function) . ',
-						' . (int)$time . ',
-						' . $db->quote(serialize($args)) . ')');
+		$db->query('INSERT INTO `timed_events` (`plugin`, `function`, `time`, `args`)
+				VALUES(' . $db->quote(get_class($this)) . ',
+					' . $db->quote($function) . ',
+					' . (int)$time . ',
+					' . $db->quote(serialize($args)) . ')');
 
-			$id = $db->lastInsertId();
-		}
+		$id = $db->lastInsertId();
 
 		self::$timed[] = array('plugin' => get_class($this),
 				'function' => $function,
@@ -283,7 +281,11 @@ class plugins
 	{
 		$events = db::get_instance()->query('SELECT * FROM `timed_events`');
 		while ($event = $events->fetchObject())
-			self::register_timed($event->plugin, $event->function, $event->time, unserialize($event->args), $event->id);
+			self::$timed[] = array('plugin' => $event->plugin,
+					'function' => $event->function,
+					'time' => $event->time,
+					'args' => unserialize($event->args),
+					'id' => $event->id);
 	}
 
 	/**
