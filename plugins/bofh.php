@@ -45,7 +45,7 @@ class bofh extends plugin_interface
 	{
 		$bot = bot::get_instance();
 		$db = db::get_instance();
-		$channel = $bot->chanel;
+		$channel = $bot->channel;
 		$usr = $bot->usr;
 
 		if (empty ($args))
