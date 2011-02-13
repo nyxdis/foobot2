@@ -48,27 +48,31 @@ class google extends plugin_interface
 	{
 		$usr = bot::get_instance()->usr;
 
-		if (!empty ($args)) {
+		if (count($args) > 0)
 			$city = $args[0];
-			$usr->location = urlencode($city);
+		else
+			$city = $usr->location;
+
+		if (!$city) {
+			parent::answer('There is no saved location for you, try !weather <location>');
+			return;
 		}
 
 		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, 'http://www.google.com/ig/api?weather=' . $usr->location);
+		curl_setopt($ch, CURLOPT_URL, 'http://www.google.com/ig/api?weather=' . $city);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 4);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 		$weather = simplexml_load_string(utf8_encode(curl_exec($ch)))->weather;
 		if (!isset ($weather->forecast_information)) {
-			if ($city == NULL)
-				parent::answer('There is no saved location for you, try !weather <location>');
-			else
-				parent::answer('Unknown location');
+			parent::answer('Unknown location');
 			return;
 		}
 		$info = $weather->forecast_information;
 		$weather = $weather->current_conditions;
 
 		/* parsed info */
+		$postal_code = (string)$info->postal_code['data'];
+		$usr->location = $postal_code;
 		$city = $info->city['data'];
 		$time = date('G:i', strtotime($info->current_date_time['data']));
 		$temp_metric = $weather->temp_c['data'];
