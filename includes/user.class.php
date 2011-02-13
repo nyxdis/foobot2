@@ -109,6 +109,8 @@ class user
 	{
 		if (isset ($this->userdata[$prop]))
 			return $this->userdata[$prop];
+		else
+			return NULL;
 	}
 
 	/**
