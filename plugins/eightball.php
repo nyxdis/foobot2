@@ -50,11 +50,12 @@ class eightball extends plugin_interface
 
 	public function decide($args)
 	{
-		if (count($args) < 2) {
+		$options = str_getcsv(implode($args, ' '), ' ');
+		if (count($options) < 2) {
 			$this->pub_8ball();
 			return;
 		}
-		parent::answer($args[array_rand($args)]);
+		parent::answer($options[array_rand($options)]);
 	}
 }
 
