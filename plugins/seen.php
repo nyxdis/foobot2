@@ -24,6 +24,10 @@ class seen extends plugin_interface
 		$this->register_help('seen', 'when was a specific user online? only saves information about known users');
 
 		db::get_instance()->query('CREATE TABLE IF NOT EXISTS seen (nick varchar(25), ts int(11))');
+
+		$seen = db::get_instance()->query('SELECT * FROM seen');
+		while($entry = $seen->fetchObject())
+			        $this->seen[$entry->nick] = $entry->ts;
 	}
 
 	public function seen_save($args)
@@ -71,6 +75,8 @@ class seen extends plugin_interface
 		$seconds %= 3600;
 		$minutes = floor($seconds / 60);
 		$seconds %= 60;
+
+		$format_func = create_function('$s', 'return str_pad($s, 2, \'0\', STR_PAD_LEFT);');
 
 		if (($hours > 0 || $minutes > 0 || $seconds > 0) && $days > 1)
 			$result .= ', ';
