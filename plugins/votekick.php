@@ -32,15 +32,18 @@ class votekick extends plugin_interface
 					return;
 				}
 				$this->votes[$channel][$target]['count']++;
+				$this->votes[$channel][$target]['voters'][] = $name;
 			} else {
 				$this->votes[$channel][$target] = array('count' => 1,
 						'lastvote' => time(),
 						'voters' => array($name));
 			}
-			if ($this->votes[$channel][$target]['count'] < $maxvotes)
+			if ($this->votes[$channel][$target]['count'] < $maxvotes) {
 				parent::answer('Vote counted.');
-			else
+			} else {
 				bot::get_instance()->send('KICK ' . $channel . ' ' . $target . ' :It\'s not because I don\'t like you...');
+				$this->votes[$channel][$target] = array();
+			}
 		} else {
 			$votes = array();
 
