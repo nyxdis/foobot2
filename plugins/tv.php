@@ -88,13 +88,7 @@ class tv extends plugin_interface
 				$time = mktime($matches['hour'], $matches['minute'], 0);
 				if (($time+7200) < time())
 					$time += 86400;
-				if (isset ($args[1]))
-					$channels = $tvdb->escapeString($tvdb->querySingle('SELECT `id`
-											       FROM `channels`
-											       WHERE `display_name` LIKE \'' . $tvdb->escapeString($args[1]) . '\'
-											       LIMIT 1'));
-				else
-					$channels = $tv_channels;
+				$channels = $tv_channels;
 				$tv = $tvdb->query('SELECT display_name, title, start FROM programme, channels WHERE channelid=id AND channelid IN (' . $channels . ') AND start<=' . (int)$time . ' AND stop>' . (int)$time . ' GROUP BY channelid');
 				$onair = '';
 				while ($programme = $tv->fetchArray()) {
