@@ -22,7 +22,7 @@ class unshorten extends plugin_interface
 	public function do_unshorten($args)
 	{
 		$short_url = trim($args['url']);
-		if (strncmp($short_url, 'http', 4) != 0)
+		if (strncasecmp($short_url, 'http', 4) != 0)
 			$short_url = 'http://' . $short_url;
 
 		$ch = curl_init();

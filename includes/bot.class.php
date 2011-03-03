@@ -377,9 +377,9 @@ class bot
 			else
 				$this->channel = $matches['target'];
 
-			if (strncmp($matches['text'], settings::$command_char, strlen(settings::$command_char)) == 0 ||
+			if (strncasecmp($matches['text'], settings::$command_char, strlen(settings::$command_char)) == 0 ||
 					$this->channel == $nick) {
-				if (strncmp($matches['text'], settings::$command_char, strlen(settings::$command_char)) == 0)
+				if (strncasecmp($matches['text'], settings::$command_char, strlen(settings::$command_char)) == 0)
 					$text = substr($matches['text'], strlen(settings::$command_char));
 				else
 					$text = $matches['text'];
