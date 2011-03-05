@@ -30,8 +30,7 @@ class urls extends plugin_interface
 		$channel = bot::get_instance()->channel;
 
 		$db->query('INSERT INTO urls (channel, url)
-				VALUES(' . $db->quote($channel) . ',
-					' . $db->quote($args['url']) . ')');
+				VALUES(?, ?)', $channel, $args['url']);
 	}
 
 	public function pub_urls($args)
@@ -40,9 +39,9 @@ class urls extends plugin_interface
 		$channel = bot::get_instance()->channel;
 
 		$data = $db->query('SELECT * FROM urls
-			WHERE channel=' . $db->quote($channel) . '
+			WHERE channel = ?
 			ORDER BY id DESC
-			LIMIT 5');
+			LIMIT 5', $channel);
 		$urls = 'Last 5 URLs: ';
 		while ($row = $data->fetchObject())
 			$urls .= $row->url . ', ';
