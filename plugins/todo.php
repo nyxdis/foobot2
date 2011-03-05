@@ -41,7 +41,7 @@ class todo extends plugin_interface
 		}
 
 		$id = $args[0];
-		$todolist = unserialize($db->get_single_property('SELECT `todo` FROM `todo` WHERE `nick` = ' . $db->quote($usr->name)));
+		$todolist = unserialize($db->get_single_property('SELECT `todo` FROM `todo` WHERE `nick` = ?', $usr->name));
 		if (!is_numeric($id)) {
 			foreach ($todolist as $tid => $text) {
 				if (preg_match('/' . $id . '/i', $text))
@@ -63,7 +63,7 @@ class todo extends plugin_interface
 		else
 			parent::answer('No TODO with id #' . (int)$id . ' found');
 		unset ($todolist[$id]);
-		$db->query('UPDATE `todo` SET `todo` = ' . $db->quote(serialize($todolist)) . ' WHERE `nick` = ' . $db->quote($usr->name));
+		$db->query('UPDATE `todo` SET `todo` = ? WHERE `nick` = ?', serialize($todolist), $usr->name);
 	}
 
 	public function delete($args)
@@ -76,7 +76,7 @@ class todo extends plugin_interface
 		$usr = bot::get_instance()->usr;
 		$db = db::get_instance();
 
-		$todo = $db->get_single_property('SELECT `todo` FROM `todo` WHERE `nick` = ' . $db->quote($usr->name));
+		$todo = $db->get_single_property('SELECT `todo` FROM `todo` WHERE `nick` = ?', $usr->name);
 		if (!$todo) {
 			parent::answer('Nothing TODO for you');
 			return;
@@ -111,7 +111,7 @@ class todo extends plugin_interface
 		} elseif (isset ($matches['nick'])) {
 			$nick = $matches['nick'];
 
-			if (!$db->get_single_property('SELECT `id` FROM `users` WHERE `username` = ' . $db->quote($nick))) {
+			if (!$db->get_single_property('SELECT `id` FROM `users` WHERE `username` = ?', $nick)) {
 				parent::answer('No user named ' . $nick . ' found');
 				return;
 			}
@@ -120,7 +120,7 @@ class todo extends plugin_interface
 		}
 
 		if (empty ($args) || (!empty ($matches['nick']) && empty ($matches['text']))) {
-			$td = $db->get_single_property('SELECT `todo` FROM `todo` WHERE `nick` LIKE ' . $db->quote($nick));
+			$td = $db->get_single_property('SELECT `todo` FROM `todo` WHERE `nick` LIKE ?', $nick);
 			if (!$td)
 				$nick = 'you';
 			if (!$td || count(unserialize($td)) == 1) {
@@ -144,17 +144,17 @@ class todo extends plugin_interface
 				$text = $matches['text'];
 			}
 
-			$todo = $db->get_single_property('SELECT `todo` FROM `todo` WHERE `nick` LIKE ' . $db->quote($nick));
+			$todo = $db->get_single_property('SELECT `todo` FROM `todo` WHERE `nick` LIKE ?', $nick);
 			if ($nick != $usr->name)
 				$text .= ' (by ' . $usr->name . ')';
 			if (!$todo) {
 				$todolist[0] = '';
 				$todolist[] = $text;
-				$db->query('INSERT INTO `todo` (`nick`, `todo`) VALUES(' . $db->quote($nick) . ', ' . $db->quote(serialize($todolist)) . ')');
+				$db->query('INSERT INTO `todo` (`nick`, `todo`) VALUES(?, ?)', $nick, serialize($todolist));
 			} else {
 				$todolist = unserialize($todo);
 				$todolist[] = $text;
-				$db->query('UPDATE `todo` SET `todo` = ' . $db->quote(serialize($todolist)) . ' WHERE `nick` = ' . $db->quote($nick));
+				$db->query('UPDATE `todo` SET `todo` = ? WHERE `nick` = ?', serialize($todolist), $nick);
 			}
 			end($todolist);
 			parent::answer('Added TODO #' . key($todolist));
