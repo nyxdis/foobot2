@@ -259,11 +259,10 @@ class plugins
 	{
 		$db = db::get_instance();
 
-		$db->query('INSERT INTO `timed_events` (`plugin`, `function`, `time`, `args`)
-				VALUES(' . $db->quote(get_class($this)) . ',
-					' . $db->quote($function) . ',
-					' . (int)$time . ',
-					' . $db->quote(serialize($args)) . ')');
+		$sth = $db->prepare('INSERT INTO `timed_events`
+					(`plugin`, `function`, `time`, `args`)
+					VALUES(?, ?, ?, ?)');
+		$sth->execute(array(get_class($this), $function, $time, serialize($args)));
 
 		$id = $db->lastInsertId();
 
@@ -296,7 +295,8 @@ class plugins
 		foreach (self::$timed as $id => $entry) {
 			if ($entry['time'] <= time()) {
 				self::$loaded[$entry['plugin']]->$entry['function']($entry['args']);
-				db::get_instance()->query('DELETE FROM `timed_events` WHERE `id` = ' . (int)$entry['id']);
+				$sth = db::get_instance()->prepare('DELETE FROM `timed_events` WHERE `id` = ?');
+				$sth->execute(array($entry['id']));
 				unset (self::$timed[$id]);
 			}
 		}
