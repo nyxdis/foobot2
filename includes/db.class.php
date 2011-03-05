@@ -92,7 +92,7 @@ class db extends PDO
 	public function get_single_property()
 	{
 		if (func_num_args() == 1) {
-			$r = $this->query($sql)->fetch(PDO::FETCH_NUM);
+			$r = $this->query(func_get_arg(0))->fetch(PDO::FETCH_NUM);
 		} elseif (func_num_args() > 1) {
 			$args = func_get_args();
 			$sql = array_shift($args);
