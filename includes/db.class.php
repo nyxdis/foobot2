@@ -51,18 +51,26 @@ class db extends PDO
 	{
 		$bot = bot::get_instance();
 
+		$args = func_get_args();
+		$sql = array_shift($args);
+		if (isset($args[0]) && is_bool($args[0]))
+			$catch_exception = array_shift($args);
+
+		$sth = parent::prepare($sql);
+
 		if ($catch_exception) {
 			try {
-				$ret = parent::query($sql);
+				$sth->execute($args);
 			} catch (PDOException $err) {
 				if (!empty (settings::$debug_channel))
 					$bot->say(settings::$debug_channel, $err->getMessage());
 				return false;
 			}
 		} else {
-			$ret = parent::query($sql);
+			$sth->execute($args);
 		}
-		return $ret;
+
+		return $sth;
 	}
 
 	/**

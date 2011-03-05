@@ -163,9 +163,8 @@ class bot
 
 		if ($id == 0) {
 			$db = db::get_instance();
-			$sth = $db->prepare('INSERT INTO `aliases` (`alias`, `function`, `args`)
-						VALUES(?, ?, ?)');
-			$sth->execute(array($alias, $function, serialize($args)));
+			$db->query('INSERT INTO `aliases` (`alias`, `function`, `args`)
+					VALUES(?, ?, ?)', $alias, $function, serialize($args));
 
 			$id = $db->lastInsertId();
 		}
@@ -193,8 +192,7 @@ class bot
 	{
 		$alias = strtolower($alias);
 		$db = db::get_instance();
-		$sth = $db->prepare('DELETE FROM `aliases` WHERE `id` = ?');
-		$sth->execute(array($this->aliases[$alias]['id']));
+		$db->query('DELETE FROM `aliases` WHERE `id` = ?', $this->aliases[$alias]['id']);
 		unset ($this->aliases[$alias]);
 	}
 

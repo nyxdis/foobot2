@@ -84,16 +84,14 @@ class user
 		$this->ident = $ident;
 		$this->host = $host;
 
-		$sth = $db->prepare('SELECT *
-				     FROM `users`
-				     WHERE `id`=(SELECT `usrid`
-						 FROM `hosts`
-						 WHERE ? LIKE `ident` AND
-						 ? LIKE `host` LIMIT 1)
-				     LIMIT 1');
-
-		$sth->execute(array($ident, $host));
-		$user = $sth->fetchObject();
+		$user = $db->query('SELECT *
+				    FROM `users`
+				    WHERE `id`=(SELECT `usrid`
+						FROM `hosts`
+						WHERE ? LIKE `ident` AND
+						? LIKE `host` LIMIT 1)
+				    LIMIT 1', $ident, $host);
+		$user = $user->fetchObject();
 
 		if (!$user)
 			return false;
@@ -129,8 +127,7 @@ class user
 		if ($this->$key == $value)
 			return;
 		$this->userdata[$key] = $value;
-		$sth = $db->prepare('UPDATE `users` SET `userdata` = ? WHERE `id` = ?');
-		$sth->execute(array(serialize($this->userdata), $this->id));
+		$db->query('UPDATE `users` SET `userdata` = ? WHERE `id` = ?', serialize($this->userdata), $this->id);
 	}
 }
 
