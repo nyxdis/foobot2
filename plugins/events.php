@@ -33,10 +33,14 @@ class events extends plugin_interface
 		else
 			$name = $args[0];
 		$events = 'SELECT name, date FROM events WHERE date>=date(\'now\', \'localtime\')';
-		if ($name)
-			$events .= ' AND name LIKE ' . $db->quote('%' . $name . '%');
+		if ($name) {
+			$events .= ' AND `name` LIKE ?';
+			$args = array('%' . $name . '%');
+		} else {
+			$args = array();
+		}
 		$events .= ' ORDER BY date ASC LIMIT 2';
-		$events = $db->query($events);
+		$events = $db->query($events, $args);
 		$reply = 'Next up: ';
 		while ($next = $events->fetchObject()) {
 			$date = explode('-', $next->date);
@@ -67,7 +71,8 @@ class events extends plugin_interface
 			parent::answer('Invalid format, use <name> YYYY-MM-DD');
 			return;
 		}
-		$db->query('INSERT INTO events (name, date) VALUES(' . $db->quote($matches['name']) . ', \'' . $matches['year'] . '-' . $matches['month'] . '-' . $matches['day'] . '\')');
+		$db->query('INSERT INTO `events` (`name`, `date`) VALUES(?, ?, ?, ?)',
+			$matches['name'], $matches['year'], $matches['month'], $matches['day']);
 		$id = $db->lastInsertId();
 		$this->register_timed('announce', mktime(0, 0, 0, $matches['month'], $matches['day'], $matches['year']), $id);
 		$this->register_timed('announce', mktime(6, 0, 0, $matches['month'], $matches['day'], $matches['year']), $id);
@@ -81,7 +86,7 @@ class events extends plugin_interface
 		$db = db::get_instance();
 		$bot = bot::get_instance();
 
-		$name = $db->get_single_property('SELECT `name` FROM `events` WHERE `id` = ' . (int)$id);
+		$name = $db->get_single_property('SELECT `name` FROM `events` WHERE `id` = ?', (int)$id);
 		$bot->say(settings::$main_channel, 'Event happening today: ' . $name);
 	}
 
@@ -90,7 +95,7 @@ class events extends plugin_interface
 		$db = db::get_instance();
 
 		$name = $args[0];
-		$cnt = $db->get_single_property('SELECT COUNT(*) FROM events WHERE name LIKE ' . $db->quote('%' . str_replace(' ', '%', $name) . '%'));
+		$cnt = $db->get_single_property('SELECT COUNT(*) FROM `events` WHERE `name` LIKE ?', '%' . str_replace(' ', '%', $name) . '%');
 		if ($cnt > 1) {
 			parent::answer('Search string not unique');
 			return;
@@ -98,7 +103,7 @@ class events extends plugin_interface
 			parent::answer('Search string doesn\'t match any events');
 			return;
 		}
-		$db->query('DELETE FROM events WHERE name LIKE ' . $db->quote('%' . str_replace(' ', '%', $name) . '%'));
+		$db->query('DELETE FROM `events` WHERE `name` LIKE ?', '%' . str_replace(' ', '%', $name) . '%');
 		parent::answer('Deleted event');
 	}
 }
