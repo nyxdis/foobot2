@@ -85,12 +85,11 @@ class roulette extends plugin_interface
 			$nick = $usr->name;
 		else
 			$nick = $usr->nick;
-		$nick = $db->quote($nick);
-		$cnt = $db->get_single_property('SELECT COUNT(`nick`) FROM `roulette` WHERE `nick` LIKE ' . $nick);
+		$cnt = $db->get_single_property('SELECT COUNT(`nick`) FROM `roulette` WHERE `nick` LIKE ?', $nick);
 		if ($cnt > 0)
-			$db->query('UPDATE `roulette` SET `' . $result . 's` = `' . $result . 's`+1 WHERE `nick` LIKE ' . $nick);
+			$db->query('UPDATE `roulette` SET `' . $result . 's` = `' . $result . 's`+1 WHERE `nick` LIKE ?', $nick);
 		else
-			$db->query('INSERT INTO roulette (`nick`, `' . $result . 's`) VALUES(' . $nick . ', 1)');
+			$db->query('INSERT INTO `roulette` (`nick`, `' . $result . 's`) VALUES(?, 1)', $nick);
 	}
 
 	public function roulette_chance($args)
@@ -147,7 +146,12 @@ class roulette extends plugin_interface
 		$db = db::get_instance();
 
 		if (empty ($args)) {
-			$stats = $db->query('SELECT nick, (survivals * 100 / (survivals + deaths)) AS survival_rate FROM roulette WHERE (survivals + deaths) >= 50 ORDER BY survival_rate DESC LIMIT 5');
+			$stats = $db->query('SELECT nick,
+					(survivals * 100 / (survivals + deaths)) AS survival_rate
+					FROM roulette
+					WHERE (survivals + deaths) >= 50
+					ORDER BY survival_rate DESC
+					LIMIT 5');
 			while ($stat = $stats->fetchObject()) {
 				$top[$stat->nick] = $stat->survival_rate;
 			}
@@ -168,7 +172,7 @@ class roulette extends plugin_interface
 				$nick = $usr->nick;
 			if (isset ($usr->name) && $nick == $usr->nick)
 				$nick = $usr->name;
-			$stats = $db->query('SELECT * FROM roulette WHERE nick LIKE ' . $db->quote($nick))->fetchObject();
+			$stats = $db->query('SELECT * FROM roulette WHERE nick LIKE ?', $nick)->fetchObject();
 			if ($nick == $usr->nick || $nick == $usr->name)
 				$nick = 'You';
 			if (!$stats) {
