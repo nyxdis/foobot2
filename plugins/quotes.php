@@ -48,7 +48,7 @@ class quotes extends plugin_interface
 			$num = 1;
 		elseif ($num > 9)
 			$num = 9;
-		$quotes = $db->query('SELECT * FROM `quotes` WHERE `karma` > -3 ORDER BY RANDOM() LIMIT ' . $num);
+		$quotes = $db->query('SELECT * FROM `quotes` WHERE `karma` > -3 ORDER BY RANDOM() LIMIT ?', $num);
 		while ($quote = $quotes->fetchObject())
 			parent::answer('#' . $quote->id . ' ' . $quote->text . ' (Karma: ' . $quote->karma . ')');
 	}
@@ -58,7 +58,7 @@ class quotes extends plugin_interface
 		$db = db::get_instance();
 
 		$quote = implode(' ', $args);
-		$db->query('INSERT INTO `quotes` (`text`, `karma`) VALUES(' . $db->quote($quote) . ', 0)');
+		$db->query('INSERT INTO `quotes` (`text`, `karma`) VALUES(?, 0)', $quote);
 		parent::answer('Added quote ' . $db->lastInsertId());
 	}
 
@@ -67,7 +67,7 @@ class quotes extends plugin_interface
 		$db = db::get_instance();
 
 		$qid = (int)$args[0];
-		$res = $db->query('DELETE FROM `quotes` WHERE `id` = ' . $qid);
+		$res = $db->query('DELETE FROM `quotes` WHERE `id` = ?', $qid);
 		if ($res->rowCount() > 0)
 			parent::answer('Deleted quote ' . $qid);
 		else
@@ -79,7 +79,7 @@ class quotes extends plugin_interface
 		$db = db::get_instance();
 
 		$qid = (int)$args[0];
-		$quote = $db->query('SELECT * FROM `quotes` WHERE `id` = ' . $qid);
+		$quote = $db->query('SELECT * FROM `quotes` WHERE `id` = ?', $qid);
 		if ($quote = $quote->fetchObject())
 			parent::answer($quote->text . ' (Karma: ' . $quote->karma . ')');
 		else
@@ -91,7 +91,7 @@ class quotes extends plugin_interface
 		$db = db::get_instance();
 
 		$text = implode(' ', $args);
-		$quotes = $db->query('SELECT * FROM `quotes` WHERE `text` LIKE ' . str_replace(' ', '%', $db->quote('%' . $text . '%')) . ' ORDER BY RANDOM() LIMIT 3');
+		$quotes = $db->query('SELECT * FROM `quotes` WHERE `text` LIKE ? ORDER BY RANDOM() LIMIT 3', '%' . str_replace(' ', '%', $text) . '%');
 		while ($quote = $quotes->fetchObject())
 			parent::answer('#' . $quote->id . ' ' . $quote->text . ' (Karma: ' . $quote->karma . ')');
 	}
@@ -109,7 +109,7 @@ class quotes extends plugin_interface
 			$num = 5;
 		elseif ($num < 1)
 			$num = 1;
-		$quotes = $db->query('SELECT * FROM `quotes` ORDER BY `karma` DESC LIMIT ' . $num);
+		$quotes = $db->query('SELECT * FROM `quotes` ORDER BY `karma` DESC LIMIT ?', $num);
 		while ($quote = $quotes->fetchObject()) {
 			parent::answer('#' . $quote->id . ' ' . $quote->text . ' (Karma: ' . $quote->karma . ')');
 		}
