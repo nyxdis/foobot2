@@ -37,7 +37,7 @@ class bofh extends plugin_interface
 		$db = db::get_instance();
 
 		$lart = implode(' ', $args);
-		$db->query('INSERT INTO `larts` VALUES(' . $db->quote($lart) . ')');
+		$db->query('INSERT INTO `larts` VALUES(?)', $lart);
 		parent::answer('Added LART');
 	}
 
