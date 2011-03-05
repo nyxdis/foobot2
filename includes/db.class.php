@@ -70,9 +70,21 @@ class db extends PDO
 	 * @return mixed the property or false
 	 * @param string $sql the query
 	 */
-	public function get_single_property($sql)
+	public function get_single_property()
 	{
-		$r = $this->query($sql)->fetch(PDO::FETCH_NUM);
+		if (func_num_args() == 1) {
+			$r = $this->query($sql)->fetch(PDO::FETCH_NUM);
+		} elseif (func_num_args() > 1) {
+			$args = func_get_args();
+			$sql = array_shift($args);
+			$sth = $this->prepare($sql);
+			$sth->execute($args);
+			$r = $sth->fetch(PDO::FETCH_NUM);
+		} else {
+			trigger_error('db::get_single_property() expects at least one argument');
+			$r = false;
+		}
+
 		if (!$r)
 			return false;
 		return $r[0];
