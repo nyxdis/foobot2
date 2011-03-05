@@ -84,7 +84,7 @@ class core extends plugin_interface
 		$usr = bot::get_instance()->usr;
 
 		if (isset ($args[1])) {
-			$usrid = $db->get_single_property('SELECT `id` FROM `users` WHERE `username` = ' . $db->quote($args[0]));
+			$usrid = $db->get_single_property('SELECT `id` FROM `users` WHERE `username` = ?', $args[0]);
 			if (!$usrid) {
 				parent::answer('Unknown user');
 				return;
@@ -100,7 +100,7 @@ class core extends plugin_interface
 			return;
 		}
 		$hostmask = explode('@', $hostmask);
-		$db->query('INSERT INTO `hosts` (`usrid`, `ident`, `host`) VALUES(' . (int)$usrid . ', ' . $db->quote($hostmask[0]) . ', ' . $db->quote($hostmask[1]) . ')');
+		$db->query('INSERT INTO `hosts` (`usrid`, `ident`, `host`) VALUES(?, ?, ?)', (int)$usrid, $hostmask[0], $hostmask[1]);
 		parent::answer('Added host');
 	}
 
@@ -110,14 +110,14 @@ class core extends plugin_interface
 		$db = db::get_instance();
 
 		$nick = $args[0];
-		$db->query('INSERT INTO `users` (`username`, `ulvl`) VALUES(' . $db->quote($nick) . ', 1)');
+		$db->query('INSERT INTO `users` (`username`, `ulvl`) VALUES(?, 1)', $nick);
 		$usrid = $db->lastInsertId();
 		$user = $bot->get_userlist($nick);
 		if (!$user->nick) {
 			parent::answer('Unknown nick');
 			return;
 		}
-		$db->query('INSERT INTO `hosts` (`usrid`, `ident`, `host`) VALUES(' . (int)$usrid . ', ' . $db->quote($user->ident) . ', ' . $db->quote($user->host) . ')');
+		$db->query('INSERT INTO `hosts` (`usrid`, `ident`, `host`) VALUES(?, ?, ?)', (int)$usrid, $user->ident, $user->host);
 		$bot->send('WHO ' . $user->nick);
 		parent::answer('Added user ' . $usrid . ' identified by ' . $user->ident . '@' . $user->host);
 	}
@@ -141,7 +141,7 @@ class core extends plugin_interface
 		}
 
 		if (!is_numeric($args[0])) {
-			$user = $db->query('SELECT `id`, `ulvl` FROM `users` WHERE `username` = ' . $db->quote($args[0]))->fetchObject();
+			$user = $db->query('SELECT `id`, `ulvl` FROM `users` WHERE `username` = ?', $args[0])->fetchObject();
 			if (!$user) {
 				parent::answer('No such user');
 				return;
@@ -149,7 +149,7 @@ class core extends plugin_interface
 			$uid = $user->id;
 			$ulvl = $user->ulvl;
 		} else {
-			$ulvl = $db->get_single_property('SELECT `ulvl` FROM `users` WHERE `id` = ' . (int)$args[0]);
+			$ulvl = $db->get_single_property('SELECT `ulvl` FROM `users` WHERE `id` = ?', (int)$args[0]);
 			if (!$ulvl) {
 				parent::answer('No such user');
 				return;
@@ -167,7 +167,7 @@ class core extends plugin_interface
 			return;
 		}
 
-		$db->query('UPDATE `users` SET `ulvl` = ' . (int)$args[1] . ' WHERE `id` = ' . (int)$uid);
+		$db->query('UPDATE `users` SET `ulvl` = ? WHERE `id` = ?', (int)$args[0], (int)$uid);
 		parent::answer('Okay');
 	}
 
@@ -176,7 +176,7 @@ class core extends plugin_interface
 		$db = db::get_instance();
 
 		$username = $args[0];
-		$info = $db->get_single_property('SELECT `userdata` FROM `users` WHERE `username` = ' . $db->quote($username));
+		$info = $db->get_single_property('SELECT `userdata` FROM `users` WHERE `username` = ?', $username);
 		if (!$info) {
 			parent::answer('No such user');
 			return;
@@ -222,8 +222,8 @@ class core extends plugin_interface
 		$users = $db->get_single_property('SELECT COUNT(id) FROM users');
 		if ($users > 0)
 			return;
-		$db->query('INSERT INTO `users` (`username`, `ulvl`) VALUES(\'' . $usr->nick . '\', 1000)');
-		$db->query('INSERT INTO `hosts` VALUES(' . $db->lastInsertID() . ', \'' . $usr->ident . '\', \'' . $usr->host . '\')');
+		$db->query('INSERT INTO `users` (`username`, `ulvl`) VALUES(?, 1000)', $usr->nick);
+		$db->query('INSERT INTO `hosts` VALUES(?, ?, ?)', $db->lastInsertId(), $usr->ident, $usr->host);
 		parent::answer('Hi, you are now my owner, recognized by ' . $usr->ident . '@' . $usr->host . '.');
 	}
 
@@ -255,13 +255,13 @@ class core extends plugin_interface
 			return;
 		}
 
-		$usrid = $db->get_single_property('SELECT `id` FROM `users` WHERE `username` LIKE ' . $db->quote($args[0]));
+		$usrid = $db->get_single_property('SELECT `id` FROM `users` WHERE `username` LIKE ?', $args[0]);
 		if (!$usrid) {
 			parent::answer('Unknown user');
 			return;
 		}
 
-		$db->query('INSERT INTO `hosts` VALUES(' . $usrid . ', ' . $db->quote($user->ident) . ', ' . $db->quote($user->host) . ')');
+		$db->query('INSERT INTO `hosts` VALUES(?, ?, ?)', $usrid, $user->ident, $user->host);
 		$bot->send('WHO ' . $args[1]);
 		parent::answer('Users merged');
 	}
