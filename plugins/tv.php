@@ -10,6 +10,7 @@
  * Implementation of plugin_interface
  * @package foobot
  * @subpackage plugins
+ * @todo convert to prepared statements
  */
 class tv extends plugin_interface
 {
