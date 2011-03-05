@@ -47,7 +47,7 @@ class db extends PDO
 	 * @return mixed PDO result or false
 	 * @param string $sql the query
 	 */
-	public function query($sql, $catch_exception = true)
+	public function query()
 	{
 		$bot = bot::get_instance();
 
@@ -55,19 +55,30 @@ class db extends PDO
 		$sql = array_shift($args);
 		if (isset($args[0]) && is_bool($args[0]))
 			$catch_exception = array_shift($args);
+		else
+			$catch_exception = true;
 
-		$sth = parent::prepare($sql);
+		if (!empty ($args))
+			$sth = parent::prepare($sql);
 
 		if ($catch_exception) {
 			try {
-				$sth->execute($args);
+				if (!empty ($args)) {
+					$sth->execute($args);
+				} else {
+					$sth = parent::query($sql);
+				}
 			} catch (PDOException $err) {
 				if (!empty (settings::$debug_channel))
 					$bot->say(settings::$debug_channel, $err->getMessage());
+				bot::get_instance()->log(ERROR, $err->getMessage());
 				return false;
 			}
 		} else {
-			$sth->execute($args);
+			if (!empty ($args))
+				$sth->execute($args);
+			else
+				$sth = parent::query($sql);
 		}
 
 		return $sth;
@@ -108,6 +119,16 @@ class db extends PDO
 		$this->query('CREATE TABLE IF NOT EXISTS hosts (usrid integer, ident varchar(10), host varchar(50))');
 		$this->query('CREATE TABLE IF NOT EXISTS timed_events (id integer primary key, plugin varchar(25), function varchar(25), time int(11), args varchar(255))');
 		$this->query('CREATE TABLE IF NOT EXISTS aliases (id integer primary key, alias varchar(50), function varchar(50), args varchar(250))');
+	}
+
+	/**
+	 * Wrapper for PDO::quote that triggers an E_STRICT error
+	 * @see PDO::quote()
+	 **/
+	public function quote($string, $parameter_type = PDO::PARAM_STR)
+	{
+		trigger_error('Using disouraged function db::quote() - you should use prepared statements instead', E_STRICT);
+		return parent::quote($string, $parameter_type);
 	}
 }
 
