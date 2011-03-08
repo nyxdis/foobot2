@@ -51,6 +51,7 @@ class eightball extends plugin_interface
 	public function decide($args)
 	{
 		$options = str_getcsv(implode($args, ' '), ' ');
+		$options = array_unique($options);
 		if (count($options) < 2) {
 			$this->pub_8ball();
 			return;
