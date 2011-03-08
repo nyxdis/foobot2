@@ -34,6 +34,7 @@ class core extends plugin_interface
 		$this->register_event('command', 'shutdown', NULL, 1000);
 		$this->register_event('command', 'sql', NULL, 1000);
 		$this->register_event('command', 'unalias', NULL, 5);
+		$this->register_event('command', 'update', NULL, 1000);
 		$this->register_event('command', 'version');
 		$this->register_event('command', 'who');
 		$this->register_event('command', 'whoami', NULL, 0);
@@ -53,6 +54,7 @@ class core extends plugin_interface
 		$this->register_help('shutdown', 'shut the bot down');
 		$this->register_help('sql', 'send raw SQL commands');
 		$this->register_help('unalias', 'remove aliases');
+		$this->register_help('update', 'update the bot (requires git)');
 		$this->register_help('version', 'print the bot version');
 		$this->register_help('who', 'send a WHO command');
 		$this->register_help('whoami', 'print information about your account');
@@ -333,6 +335,21 @@ class core extends plugin_interface
 		$alias = strtolower($args[0]);
 		bot::get_instance()->remove_alias($alias);
 		parent::answer('Okay.');
+	}
+
+	public function update($args)
+	{
+		if (!file_exists('.git')) {
+			parent::answer('Update without git currently not supported');
+			return;
+		}
+
+		system('git pull', $ret);
+
+		if ($ret != 0)
+			parent::answer('Update failed');
+		else
+			parent::answer('Done. Don\'t forget to ' . settings::$command_char . 'reboot');
 	}
 
 	public function version($args)
