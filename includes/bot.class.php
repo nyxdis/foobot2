@@ -369,6 +369,7 @@ class bot
 			$nick = $matches['nick'];
 			$this->usr = $this->userlist[$matches['nick']];
 			$target = $matches['target'];
+			$text = $matches['text'];
 
 			// Set channel to the origin's nick if the PRIVMSG was
 			// sent directly to the bot
@@ -377,12 +378,15 @@ class bot
 			else
 				$this->channel = $matches['target'];
 
-			if (strncasecmp($matches['text'], settings::$command_char, strlen(settings::$command_char)) == 0 ||
+			if (strncasecmp($text, settings::$command_char, strlen(settings::$command_char)) == 0 ||
+					strncasecmp($text, settings::$nick . ': ', strlen(settings::$nick) + 2) == 0 ||
 					$this->channel == $nick) {
-				if (strncasecmp($matches['text'], settings::$command_char, strlen(settings::$command_char)) == 0)
-					$text = substr($matches['text'], strlen(settings::$command_char));
-				else
-					$text = $matches['text'];
+				if (strncasecmp($text, settings::$nick . ': ', strlen(settings::$nick) + 2) == 0)
+					$text = substr($text, strlen(settings::$nick) + 2);
+
+				if (strncasecmp($text, settings::$command_char, strlen(settings::$command_char)) == 0)
+					$text = substr($text, strlen(settings::$command_char));
+
 				$args = explode(' ', trim($text));
 				$cmd = strtolower(array_shift($args));
 				$return = plugins::run_event('command', $cmd, $args);
