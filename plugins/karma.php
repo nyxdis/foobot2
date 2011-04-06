@@ -15,13 +15,14 @@ class karma extends plugin_interface
 {
 	public function init()
 	{
-		$trigger = '/' . preg_quote(settings::$command_char, '/') . '?(?<item>.+)(?<karma>(--|\+\+))($| ?# ?(?<comment>.*))/';
+		$trigger = '/(?<command>' . preg_quote(settings::$command_char, '/') . ')?(?<item>.+)(?<karma>(--|\+\+))($| ?# ?(?<comment>.*))/';
 		$this->register_event('text', $trigger, 'karmachange');
 		$this->register_event('command', 'karma-top5');
 		$this->register_event('command', 'karma-bottom5');
 		$this->register_event('command', 'karma-whydown');
 		$this->register_event('command', 'karma-whyup');
 		$this->register_event('command', 'karma', 'pub_karma');
+		$this->register_event('command', 'karma-without-cmd', 'karma_without_cmd');
 
 		$this->register_help('karma-top5', 'display the top 5 karmas');
 		$this->register_help('karma-bottom5', 'display the bottom 5 karmas');
@@ -36,6 +37,10 @@ class karma extends plugin_interface
 	public function karmachange($args)
 	{
 		$db = db::get_instance();
+		$usr = bot::get_instance()->usr;
+
+		if (!$args['command'] && !$usr->karma_without_cmd)
+			return;
 
 		$item = strtolower($args['item']);
 
@@ -148,6 +153,22 @@ class karma extends plugin_interface
 			parent::answer('Karma of \'' . $item . '\' is 0');
 		else
 			parent::answer('Karma of \'' . $item . '\' is ' . $value);
+	}
+
+	public function karma_without_cmd($args)
+	{
+		$usr = bot::get_instance()->usr;
+
+		$msg = 'Karma without command char ';
+		if ($usr->karma_without_cmd) {
+			$usr->karma_without_cmd = false;
+			$msg .= 'dis';
+		} else {
+			$usr->karma_without_cmd = true;
+			$msg .= 'en';
+		}
+		$msg .= 'abled';
+		parent::answer($msg);
 	}
 }
 
