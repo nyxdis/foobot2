@@ -58,12 +58,10 @@ class db extends PDO
 		else
 			$catch_exception = true;
 
-		if (!empty ($args))
-			$sth = parent::prepare($sql);
-
 		if ($catch_exception) {
 			try {
 				if (!empty ($args)) {
+					$sth = parent::prepare($sql);
 					$sth->execute($args);
 				} else {
 					$sth = parent::query($sql);
@@ -75,10 +73,12 @@ class db extends PDO
 				return false;
 			}
 		} else {
-			if (!empty ($args))
+			if (!empty ($args)) {
+				$sth = parent::prepare($sql);
 				$sth->execute($args);
-			else
+			} else {
 				$sth = parent::query($sql);
+			}
 		}
 
 		return $sth;
