@@ -26,7 +26,7 @@ class remind extends plugin_interface
 		$channel = bot::get_instance()->channel;
 
 		$args = implode(' ', $args);
-		preg_match('/(?<who>.*) about (?<what>.*) (in (?<time1>\d+)(?<unit>.*)|at (?<time2>\d+[:.]\d\d))/', $args, $matches);
+		preg_match('/(?<who>.+?) about (?<what>.+) (in (?<time1>\d+)(?<unit>.+)|at (?<time2>\d+[:.]\d\d))/', $args, $matches);
 		if (!isset ($matches['who']) || !isset ($matches['what']) || ((!isset ($matches['time1']) && !isset ($matches['unit'])) && !isset ($matches['time2']))) {
 			self::answer('Bad format, use \'remind (me|nick) about something (in|at) time\'');
 			return;
