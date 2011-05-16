@@ -30,18 +30,22 @@ class google extends plugin_interface
 	{
 		$ch = curl_init();
 		$keyword = implode(' ', $args);
-		$searchurl = 'http://www.google.com/search?btnI=&q=' . urlencode($keyword);
+		$searchurl = 'https://www.googleapis.com/customsearch/v1?key=AIzaSyAYZXx03UHrabnRNR9v-dHKmo9AyaPNNKI&cx=013874739653622873177:ofobjgneups&q=' . urlencode($keyword);
 		curl_setopt($ch, CURLOPT_URL, $searchurl);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 4);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 		curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla');
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-		curl_exec($ch);
-		$url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
-		if ($url == $searchurl)
-			parent::answer('No results');
-		else
-			parent::answer($url);
+		$ret = json_decode(curl_exec($ch));
+		$results = 'Results: ';
+		for ($i = 0; $i < 3; $i++) {
+			$item = $ret->items[$i];
+			if (!$item)
+				break;
+			$results .= ($i + 1) . '. ' . $item->title . ' (' . $item->link . '), ';
+		}
+		$results = rtrim($results, ', ');
+		parent::answer($results);
 	}
 
 	public function weather($args)
