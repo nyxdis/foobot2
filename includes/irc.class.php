@@ -98,13 +98,17 @@ class irc implements communication
 	 */
 	public function say($target, $text)
 	{
-		$send = 'PRIVMSG ' . $target . ' :' . $text;
-		if (strlen($send) > 412) {
-			$text = str_split($text, 402 - strlen($target));
-			foreach ($text as $t)
-				$this->say($target, $t);
+		if (strlen($text) > 256) {
+			$lines = wordwrap($text, 256, "\n", true);
+			$lines = explode("\n", $lines);
+			foreach ($lines as $line) {
+				echo 'foo ';
+				echo strlen($line);
+				echo ' bar';
+				$this->say($target, $line);
+			}
 		} else {
-			$this->send($send);
+			$this->send('PRIVMSG ' . $target . ' :' . $text);
 		}
 	}
 
