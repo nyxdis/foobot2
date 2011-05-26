@@ -22,8 +22,8 @@ class qalc extends plugin_interface
 
 	public function pub_qalc($args)
 	{
-		$term = escapeshellcmd(implode(' ', $args));
-                parent::answer(exec('/usr/bin/qalc "' . $term . '"'));
+		$term = escapeshellarg(implode(' ', $args));
+                parent::answer(exec('/usr/bin/qalc ' . $term));
 	}
 }
 
