@@ -28,12 +28,20 @@ class sed extends plugin_interface
 		$channel = bot::get_instance()->channel;
 
 		$match = $args['match'] . $args['opts'];
-		if (!empty ($args['global']))
-			$ll = &$this->lastline[$channel][0];
-		else
+		if (empty ($args['global'])) {
 			$ll = &$this->lastline[$channel][$usr->nick];
-		$ll = preg_replace($match, $args['replace'], $ll);
-		parent::answer($ll);
+			$tmp = preg_replace($match, $args['replace'], $ll);
+		}
+
+		if (!empty ($args['global']) || $tmp == $ll) {
+			$ll = &$this->lastline[$channel][0];
+			$tmp = preg_replace($match, $args['replace'], $ll);
+		}
+
+		if ($tmp != $ll) {
+			$ll = $tmp;
+			parent::answer($ll);
+		}
 	}
 
 	public function sed_save($args)
