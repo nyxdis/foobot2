@@ -4,7 +4,7 @@
  *
  * This interface defines the commands required for the bot to communicate
  * over any given protocol.
- * @author Christoph Mende <angelos@unkreativ.org>
+ * @author Christoph Mende <mende.christoph@gmail.com>
  * @package foobot
  */
 

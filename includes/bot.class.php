@@ -3,7 +3,7 @@
  * bot class
  *
  * Low-level bot interaction
- * @author Christoph Mende <angelos@unkreativ.org>
+ * @author Christoph Mende <mende.christoph@gmail.com>
  * @package foobot
  */
 

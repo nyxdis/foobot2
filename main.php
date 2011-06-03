@@ -4,7 +4,7 @@
  *
  * This file calls all other functions required to run the bot
  *
- * @author Christoph Mende <angelos@unkreativ.org>
+ * @author Christoph Mende <mende.christoph@gmail.com>
  * @package foobot
  */
 

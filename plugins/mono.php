@@ -2,7 +2,7 @@
 /**
  * mono plugin
  *
- * @author Christoph Mende <angelos@unkreativ.org>
+ * @author Christoph Mende <mende.christoph@gmail.com>
  * @package foobot
  */
 
