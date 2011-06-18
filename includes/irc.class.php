@@ -102,9 +102,6 @@ class irc implements communication
 			$lines = wordwrap($text, 256, "\n", true);
 			$lines = explode("\n", $lines);
 			foreach ($lines as $line) {
-				echo 'foo ';
-				echo strlen($line);
-				echo ' bar';
 				$this->say($target, $line);
 			}
 		} else {
