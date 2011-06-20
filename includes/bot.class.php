@@ -233,7 +233,7 @@ class bot
 		$this->protocol->post_connect();
 
 		if (!empty (settings::$debug_channel))
-			$this->join(settings::$debug_channel);
+			$this->join(settings::$debug_channel['channel'], settings::$debug_channel['key']);
 
 		$this->log(DEBUG, 'Joining channels');
 		foreach (settings::$channels as $channel => $key) {

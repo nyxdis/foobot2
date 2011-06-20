@@ -176,6 +176,8 @@ class settings
 			self::$debug_channel = array('channel' => $c[0]);
 			if (count($c) == 2)
 				self::$debug_channel['key'] = $c[1];
+			else
+				self::$debug_channel['key'] = '';
 		}
 
 		if (self::$listen_addr == NULL)

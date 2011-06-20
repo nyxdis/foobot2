@@ -68,7 +68,7 @@ class db extends PDO
 				}
 			} catch (PDOException $err) {
 				if (!empty (settings::$debug_channel))
-					$bot->say(settings::$debug_channel, $err->getMessage());
+					$bot->say(settings::$debug_channel['channel'], $err->getMessage());
 				bot::get_instance()->log(ERROR, $err->getMessage());
 				return false;
 			}
