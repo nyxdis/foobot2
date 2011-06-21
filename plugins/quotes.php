@@ -43,11 +43,16 @@ class quotes extends plugin_interface
 	{
 		$db = db::get_instance();
 
-		$num = (int)$args[0];
-		if ($num < 1)
+		if (count($args) > 0) {
+			$num = (int)$args[0];
+			if ($num < 1)
+				$num = 1;
+			elseif ($num > 9)
+				$num = 9;
+		} else {
 			$num = 1;
-		elseif ($num > 9)
-			$num = 9;
+		}
+
 		$quotes = $db->query('SELECT * FROM `quotes` WHERE `karma` > -3 ORDER BY RANDOM() LIMIT ?', $num);
 		while ($quote = $quotes->fetchObject())
 			parent::answer('#' . $quote->id . ' ' . $quote->text . ' (Karma: ' . $quote->karma . ')');
