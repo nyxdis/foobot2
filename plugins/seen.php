@@ -66,6 +66,8 @@ class seen extends plugin_interface
 		$seconds = abs($seconds);
 		$days = $seconds / 86400;
 
+		$result = '';
+
 		if ($days > 1) {
 			$result .= floor($days) . ' day' . (floor($days) == 1 ? '' : 's');
 			$seconds %= 86400;
