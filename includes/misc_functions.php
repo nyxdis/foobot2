@@ -40,6 +40,8 @@ function foobot_error_handler($errno, $error, $file, $line, $context)
 	$string = $typestr . ' in ' . $file . ' on line ' . $line . ': ' .
 		$error;
 
+	file_put_contents('logs/' . settings::$network . '-error.log', $string, FILE_APPEND);
+
 	// Check if the bot is already initialized
 	if ($bot->connected) {
 		if (!empty (settings::$debug_channel))
