@@ -34,9 +34,13 @@ $bot->connect();
 if (!$bot->connected)
 	die ('Failed to connect');
 $bot->post_connect();
-unset ($bot);
 
-for (;;)
-	bot::get_instance()->wait();
+for (;;) {
+	if (!$bot->connected)
+		$bot->reconnect();
+
+	if ($bot->connected)
+		$bot->wait();
+}
 
 ?>

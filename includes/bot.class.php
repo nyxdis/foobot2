@@ -243,6 +243,16 @@ class bot
 	}
 
 	/**
+	 * Wrapper around bot::connect() and bot::post_connect()
+	 */
+	public function reconnect()
+	{
+		$this->connect();
+		if ($this->connected)
+			$this->post_connect();
+	}
+
+	/**
 	 * Join a channel
 	 * @param string $channel name of the channel
 	 * @param string $key key of the channel
@@ -270,7 +280,8 @@ class bot
 	 */
 	public function write($data)
 	{
-		fputs($this->socket, $data);
+		if (fputs($this->socket, $data) === false)
+			$this->connected = false;
 	}
 
 	/**
@@ -279,8 +290,8 @@ class bot
 	public function read()
 	{
 		$buf = fgets($this->socket);
-		if (!$buf)
-			die ('Error while reading socket');
+		if ($buf === false)
+			$this->connected = false;
 		return $buf;
 	}
 
