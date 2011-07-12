@@ -15,7 +15,7 @@ class urls extends plugin_interface
 {
 	public function init()
 	{
-		$trigger = '/(?<url>(https?:\/\/|www\.)\S+)/';
+		$trigger = '/(?<url>((ht|f)tps?:\/\/|www\.)[^\s)]+)/';
 		$this->register_event('text', $trigger, 'urls_save');
 		$this->register_event('command', 'urls', 'pub_urls');
 
