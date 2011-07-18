@@ -51,6 +51,57 @@ function foobot_error_handler($errno, $error, $file, $line, $context)
 	}
 }
 
+/**
+ * Execute a command and killing if it doesn't return fast enough
+ * @param string $exec path to the binary
+ * @param string $args arguments
+ * @param int $timeout time to wait for the process
+ * @return mixed false stdout of the process or false on error
+ */
+function exec_timeout($exec, $args = "", $timeout = 5)
+{
+	$pid = pcntl_fork();
+	$fifopath = "foo";
+
+	posix_mkfifo($fifopath, 0644);
+
+	if ($pid == -1) {
+		unlink($fifopath);
+		return false;
+	}
+
+	// parent
+	else if ($pid > 0) {
+		$handle = fopen($fifopath, 'r');
+
+		$read = array($handle);
+		$write = NULL;
+		$except = NULL;
+
+		$changed = stream_select($read, $write, $execpt, $timeout);
+
+		posix_kill($pid, SIGKILL);
+		if (!$changed) {
+			unlink($fifopath);
+			return false;
+		}
+
+		$result = fgets($handle);
+		unlink($fifopath);
+		return $result;
+	}
+
+	// child
+	else {
+		$handle = fopen($fifopath, 'w');
+		$cmd = $exec . ' ' . escapeshellarg($args);
+		$result = exec($cmd);
+		fputs($handle, $result);
+		// race condition, this thread should never return
+		sleep(1);
+	}
+}
+
 set_error_handler('foobot_error_handler');
 
 ?>
