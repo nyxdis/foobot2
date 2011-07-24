@@ -98,8 +98,9 @@ class irc implements communication
 	 */
 	public function say($target, $text)
 	{
-		if (strlen($text) > 500) {
-			$lines = wordwrap($text, 500, "\n", true);
+		// TODO: properly calculate max length
+		if (strlen($text) > 400) {
+			$lines = wordwrap($text, 400, "\n", true);
 			$lines = explode("\n", $lines);
 			foreach ($lines as $line) {
 				$this->say($target, $line);
