@@ -99,9 +99,6 @@ class irc implements communication
 	public function say($target, $text)
 	{
 		if (strlen($text) > 500) {
-			if (strlen($text) > 1000)
-				$text = substr($text, 0, 1000);
-
 			$lines = wordwrap($text, 500, "\n", true);
 			$lines = explode("\n", $lines);
 			foreach ($lines as $line) {

@@ -39,6 +39,7 @@ class sed extends plugin_interface
 		}
 
 		if ($tmp != $ll) {
+			$tmp = substr($tmp, 0, 500);
 			$ll = $tmp;
 			parent::answer($ll);
 		}
