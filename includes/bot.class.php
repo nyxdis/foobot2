@@ -378,7 +378,9 @@ class bot
 		// Parse PRIVMSG
 		if (preg_match('/:(?<nick>\S+)!(?<ident>\S+)@(?<host>\S+) PRIVMSG (?<target>\S+) :(?<text>.+)/', $line, $matches)) {
 			$nick = $matches['nick'];
-			$this->usr = $this->userlist[$matches['nick']];
+			$this->usr = $this->get_userlist($matches['nick']);
+			if (!$this->usr->nick)
+				$this->send('WHO ' . $matches['nick']);
 			$target = $matches['target'];
 			$text = $matches['text'];
 
