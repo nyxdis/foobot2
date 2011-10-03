@@ -16,7 +16,7 @@ class snack extends plugin_interface
 	public function init()
 	{
 		$this->register_event('command', 'snack', 'pub_snack');
-		$this->register_event('snack', 'feed the bot');
+		$this->register_help('snack', 'feed the bot');
 	}
 
 	public function pub_snack($args)
