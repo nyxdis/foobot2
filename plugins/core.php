@@ -169,7 +169,6 @@ class core extends plugin_interface
 			return;
 		}
 
-		$usr->level = $args[1];
 		$db->query('UPDATE `users` SET `ulvl` = ? WHERE `id` = ?', (int)$args[1], (int)$uid);
 		parent::answer('Okay');
 	}
