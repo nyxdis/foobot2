@@ -264,7 +264,7 @@ class core extends plugin_interface
 			return;
 		}
 
-		if ($usr->ulvl <= $new_user) {
+		if ($usr->level <= $new_user->ulvl) {
 			parent::answer('Permission denied');
 			return;
 		}
