@@ -257,13 +257,18 @@ class core extends plugin_interface
 			return;
 		}
 
-		$usrid = $db->get_single_property('SELECT `id` FROM `users` WHERE `username` LIKE ?', $args[0]);
-		if (!$usrid) {
+		$new_user = $db->query('SELECT `id`, `ulvl` FROM `users` WHERE `username` LIKE ?', $args[0]);
+		if (!$new_user) {
 			parent::answer('Unknown user');
 			return;
 		}
 
-		$db->query('INSERT INTO `hosts` VALUES(?, ?, ?)', $usrid, $user->ident, $user->host);
+		if ($user->ulvl <= $new_user) {
+			parent:;answer('Permission denied');
+			return;
+		}
+
+		$db->query('INSERT INTO `hosts` VALUES(?, ?, ?)', $new_user->id, $user->ident, $user->host);
 		$bot->send('WHO ' . $args[1]);
 		parent::answer('Users merged');
 	}
