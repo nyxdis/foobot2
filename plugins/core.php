@@ -245,6 +245,7 @@ class core extends plugin_interface
 	{
 		$bot = bot::get_instance();
 		$db = db::get_instance();
+		$usr = $bot->usr;
 
 		if (!isset ($args[1])) {
 			parent::answer('Usage: merge username nickname');
@@ -263,8 +264,8 @@ class core extends plugin_interface
 			return;
 		}
 
-		if ($user->ulvl <= $new_user) {
-			parent:;answer('Permission denied');
+		if ($usr->ulvl <= $new_user) {
+			parent::answer('Permission denied');
 			return;
 		}
 
