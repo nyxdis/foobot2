@@ -258,7 +258,7 @@ class core extends plugin_interface
 			return;
 		}
 
-		$new_user = $db->query('SELECT `id`, `ulvl` FROM `users` WHERE `username` LIKE ?', $args[0]);
+		$new_user = $db->query('SELECT `id`, `ulvl` FROM `users` WHERE `username` LIKE ?', $args[0])->fetchObject();
 		if (!$new_user) {
 			parent::answer('Unknown user');
 			return;
