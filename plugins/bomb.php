@@ -121,8 +121,10 @@ class bomb extends plugin_interface
 
 	public function kill($channel)
 	{
-		if (isset($this->target[$channel]))
+		if (isset($this->target[$channel])) {
 			bot::get_instance()->send("KICK $channel {$this->target[$channel]} :BOOM! Time's up!");
+			unset($this->target[$channel]);
+		}
 	}
 
 	public function remove_inactive($args)
