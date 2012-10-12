@@ -8,17 +8,16 @@
 
 /**
  * BOOM
- * @todo multi-channel awareness
  * @package foobot
  * @subpackage plugins
  */
 class bomb extends plugin_interface
 {
-	private $nicks = array();
-	private $target;
-	private $defuse_color;
-	private $kill_collor;
-	private $colors;
+	private $nicks = array(array());
+	private $target = array();
+	private $defuse_color = array();
+	private $kill_collor = array();
+	private $colors = array();
 
 	public function init()
 	{
@@ -32,41 +31,43 @@ class bomb extends plugin_interface
 	public function nick_save($args)
 	{
 		$usr = bot::get_instance()->usr;
-		$this->nicks[$usr->nick] = time();
+		$channel = bot::get_instance()->channel;
+		$this->nicks[$channel][$usr->nick] = time();
 
 		if (empty($args))
 			return;
 
 		$arg = strtolower($args[0]);
-		if (!empty($this->target) && in_array($arg, $this->colors)) {
+		if (isset($this->target[$channel]) && in_array($arg, $this->colors[$channel])) {
 			$usr = bot::get_instance()->usr;
 
-			if ($this->target != $usr->nick)
+			if ($this->target[$channel] != $usr->nick)
 				return;
 
-			$channel = bot::get_instance()->channel;
-			$timeleft = $this->timer - time() + $this->start;
-			if ($arg == $this->defuse_color) {
+			$timeleft = $this->timer[$channel] - time() + $this->start[$channel];
+			if ($arg == $this->defuse_color[$channel]) {
 				parent::answer("Great job!  You defused the bomb with $timeleft seconds on the timer.");
-				unset($this->target);
-			} else if ($arg == $this->kill_color) {
+				unset($this->target[$channel]);
+			} else if ($arg == $this->kill_color[$channel]) {
 				bot::get_instance()->send("KICK $channel {$usr->nick} :BOOM!  The $arg wire was a trap!");
-				unset($this->target);
+				unset($this->target[$channel]);
 			} else {
 				parent::answer("The $arg wire was a decoy.  The clock is still ticking.  Try again.");
-				unset($this->colors[$arg]);
-				bot::get_instance()->say($channel, "{$this->target}: The timer reads {$timeleft} seconds. Cut one of the following wires: " . implode(', ', $this->colors));
+				unset($this->colors[$channel][$arg]);
+				bot::get_instance()->say($channel, "{$this->target[$channel]}: The timer reads {$timeleft} seconds. Cut one of the following wires: " . implode(', ', $this->colors[$channel]));
 			}
 		}
 	}
 
 	private function random_bomb()
        	{
-		if (empty($this->nicks)) {
+		$channel = bot::get_instance()->channel;
+
+		if (empty($this->nicks[$channel])) {
 			return;
 		}
 
-		$nick = array_rand($this->nicks);
+		$nick = array_rand($this->nicks[$channel]);
 
 		$this->pub_bomb(array($nick));
 	}
@@ -79,8 +80,10 @@ class bomb extends plugin_interface
 
 	public function pub_bomb($args)
        	{
-		if (isset($this->target)) {
-			parent::answer("{$this->target} is holding a bomb already!");
+		$channel = bot::get_instance()->channel;
+
+		if (isset($this->target[$channel])) {
+			parent::answer("{$this->target[$channel]} is holding a bomb already!");
 			return;
 		}
 
@@ -91,7 +94,7 @@ class bomb extends plugin_interface
 			return;
 		}
 
-		$this->target = $args[0];
+		$this->target[$channel] = $args[0];
 
 		$tmp_colors = $colors;
 		shuffle($tmp_colors);
@@ -102,35 +105,35 @@ class bomb extends plugin_interface
 			$color = array_pop($colors);
 			$wire_colors[$color] = $color;
 		}
-		$this->colors = $wire_colors;
+		$this->colors[$channel] = $wire_colors;
 
-		$this->defuse_color = array_pop($wire_colors);
-		$this->kill_color = array_pop($wire_colors);
+		$this->defuse_color[$channel] = array_pop($wire_colors);
+		$this->kill_color[$channel] = array_pop($wire_colors);
 
-		$this->timer = mt_rand(10, 60);
-		$this->start = time();
+		$this->timer[$channel] = mt_rand(10, 60);
+		$this->start[$channel] = time();
 
 		$bot = bot::get_instance();
-		$channel = bot::get_instance()->channel;
-		$bot->act($channel, "throws a bomb at {$this->target}");
-		$bot->say($channel, "{$this->target}: The timer reads {$this->timer} seconds. Cut one of the following wires: " . implode(', ', $this->colors));
-		$this->register_timed('kill', time() + $this->timer, $channel);
+		$bot->act($channel, "throws a bomb at {$this->target[$channel]}");
+		$bot->say($channel, "{$this->target[$channel]}: The timer reads {$this->timer[$channel]} seconds. Cut one of the following wires: " . implode(', ', $this->colors[$channel]));
+		$this->register_timed('kill', time() + $this->timer[$channel], $channel);
 	}
 
 	public function kill($channel)
 	{
-		$bot = bot::get_instance();
-		bot::get_instance()->send("KICK $channel {$this->target} :BOOM! Time's up!");
+		bot::get_instance()->send("KICK $channel {$this->target[$channel]} :BOOM! Time's up!");
 	}
 
 	public function remove_inactive($args)
 	{
-		if (empty ($this->nicks))
+		$channel = bot::get_instance()->channel;
+
+		if (empty ($this->nicks[$channel]))
 			return;
 
-		foreach ($this->nicks as $nick => $time) {
+		foreach ($this->nicks[$channel] as $nick => $time) {
 			if ($time < time() - 60)
-				unset($this->nicks[$nick]);
+				unset($this->nicks[$channel][$nick]);
 		}
 	}
 }
