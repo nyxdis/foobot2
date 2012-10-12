@@ -38,7 +38,7 @@ class bomb extends plugin_interface
 			return;
 
 		$arg = strtolower($args[0]);
-		if (in_array($arg, $this->colors)) {
+		if (!empty($this->target) && in_array($arg, $this->colors)) {
 			$usr = bot::get_instance()->usr;
 
 			if ($this->target != $usr->nick)
