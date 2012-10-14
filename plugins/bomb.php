@@ -48,7 +48,7 @@ class bomb extends plugin_interface
 			if ($arg == $this->defuse_color[$channel]) {
 				parent::answer("Great job!  You defused the bomb with $timeleft seconds on the timer.");
 				unset($this->target[$channel]);
-			} else if ($arg == $this->kill_color[$channel]) {
+			} elseif ($arg == $this->kill_color[$channel]) {
 				bot::get_instance()->send("KICK $channel {$usr->nick} :BOOM!  The $arg wire was a trap!");
 				unset($this->target[$channel]);
 			} else {
@@ -91,6 +91,8 @@ class bomb extends plugin_interface
 
 		if (empty($args)) {
 			$this->random_bomb();
+			return;
+		} elseif (!isset($this->nicks[$channel][$args[0])) {
 			return;
 		}
 
