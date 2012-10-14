@@ -92,7 +92,7 @@ class bomb extends plugin_interface
 		if (empty($args)) {
 			$this->random_bomb();
 			return;
-		} elseif (!isset($this->nicks[$channel][$args[0])) {
+		} elseif (!isset($this->nicks[$channel][$args[0]])) {
 			return;
 		}
 
@@ -100,7 +100,7 @@ class bomb extends plugin_interface
 
 		$tmp_colors = $colors;
 		shuffle($tmp_colors);
-		$num_colors = mt_rand(3, count($colors));
+		$num_colors = mt_rand(3, min(6, count($colors)));
 
 		$wire_colors = array();
 		for ($i = 0; $i < $num_colors; $i++) {
