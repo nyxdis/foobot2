@@ -37,21 +37,60 @@ function foobot_error_handler($errno, $error, $file, $line, $context)
 		$typestr = 'Unknown error';
 	}
 
-	$string = $typestr . ' in ' . $file . ' on line ' . $line . ': ' .
-		$error;
-
-	file_put_contents('logs/' . settings::$network . '-error.log', $string, FILE_APPEND);
-
-	if (settings::$debug_mode)
-		file_put_contents('logs/' . settings::$network . '-debug.log', implode("\n", debug_backtrace()), FILE_APPEND);
-
 	// Check if the bot is already initialized
 	if ($bot->connected) {
-		if (!empty (settings::$debug_channel))
-			$bot->say(settings::$debug_channel['channel'], $string);
+		if (!empty (settings::$debug_channel)) {
+			// print backtrace in debug mode
+			if (settings::$debug_mode) {
+				$bt = debug_backtrace();
+				foreach ($bt as $num => $data) {
+					$file = getifset($data, "file");
+					$line = getifset($data, "line");
+					$fn = $data["function"];
+
+					// convert array args to strings
+					foreach ($data["args"] as $kv => $v) {
+						$lines = explode("\n",
+							print_r($v, true));
+						$data["args"][$k] = "";
+						foreach ($lines as $line)
+							$data["args"][$k] .= trim($line);
+					}
+
+					$args = implode(", ", $data["args"]);
+
+					$string = "#$num  $fn($args)";
+					if (!empty ($file) && !empty ($line))
+						$string .= " called at [$file:$line]";
+					$bot->say(settings::$debug_channel['channel'], $string);
+					file_put_contents('logs/' . settings::$network . '-error.log', $string . LF, FILE_APPEND);
+				}
+			} else {
+				$string = $typestr . ' in ' . $file .
+					' on line ' . $line . ': ' . $error;
+				$bot->say(settings::$debug_channel['channel'],
+					$string);
+				file_put_contents('logs/' . settings::$network . '-error.log', $string . LF, FILE_APPEND);
+			}
+		}
 	} else {
 		die ($string);
 	}
+}
+
+/**
+ * Check an array for a specific index and return the value if it
+ * exists, a default value otherwise.
+ * @param string $array the array to search
+ * @param string $index the index to search for
+ * @param string $default value to return when index wasn't found
+ * @return string $default or the value
+ */
+function getifset($array, $index, $default = "") {
+	if (isset ($array[$index]))
+		return $array[$index];
+	else
+		return $default;
 }
 
 /**
