@@ -49,7 +49,7 @@ function foobot_error_handler($errno, $error, $file, $line, $context)
 					$fn = $data["function"];
 
 					// convert array args to strings
-					foreach ($data["args"] as $kv => $v) {
+					foreach ($data["args"] as $k => $v) {
 						$lines = explode("\n",
 							print_r($v, true));
 						$data["args"][$k] = "";
