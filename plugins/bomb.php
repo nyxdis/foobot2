@@ -47,9 +47,11 @@ class bomb extends plugin_interface
 			$timeleft = $this->timer[$channel] - time() + $this->start[$channel];
 			if ($arg == $this->defuse_color[$channel]) {
 				parent::answer("Great job!  You defused the bomb with $timeleft seconds on the timer.");
+				unset($this->nicks[$channel][$this->target[$channel]]);
 				unset($this->target[$channel]);
 			} elseif ($arg == $this->kill_color[$channel]) {
 				bot::get_instance()->send("KICK $channel {$usr->nick} :BOOM!  The $arg wire was a trap!");
+				unset($this->nicks[$channel][$this->target[$channel]]);
 				unset($this->target[$channel]);
 			} else {
 				parent::answer("The $arg wire was a decoy.  The clock is still ticking.  Try again.");
