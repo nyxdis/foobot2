@@ -74,7 +74,7 @@ class bomb extends plugin_interface
 
 	public function random_bomb_timer($args)
 	{
-		if (mt_rand(0, 100) == 0)
+		if (mt_rand(0, 50) == 0)
 			$this->random_bomb();
 	}
 
