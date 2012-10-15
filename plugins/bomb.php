@@ -131,14 +131,11 @@ class bomb extends plugin_interface
 
 	public function remove_inactive($args)
 	{
-		$channel = bot::get_instance()->channel;
-
-		if (empty ($this->nicks[$channel]))
-			return;
-
-		foreach ($this->nicks[$channel] as $nick => $time) {
-			if ($time < time() - 60)
-				unset($this->nicks[$channel][$nick]);
+		foreach ($this->nicks as $channel => $nicks) {
+			foreach ($nicks as $nick => $time) {
+				if ($time < time() - 60)
+					unset($this->nicks[$channel][$nick]);
+			}
 		}
 	}
 }
