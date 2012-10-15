@@ -18,19 +18,22 @@ class votekick extends plugin_interface
 
 	public function pub_votekick($args)
 	{
-		$channel = bot::get_instance()->channel;
-		$name = bot::get_instance()->usr->name;
+		$bot = bot::get_instance();
+		$channel = $bot->channel;
+		$name = $bot->usr->name;
 
 		$maxvotes = 5;
 		$expiry = 60 * 60 * 24;
 
 		if (count($args) > 0) {
 			$target = $args[0];
+			$target_usr = $bot->get_userlist($target);
 
-			if ($target == settings::$nick) {
+			if ($target == settings::$nick || $bot->usr->level < $target_usr->level) {
 				parent::answer('No.');
 				return;
 			}
+
 
 			if (isset ($this->votes[$channel][$target]) && $this->votes[$channel][$target]['lastvote'] > (time() - $expiry)) {
 				if (in_array($name, $this->votes[$channel][$target]['voters'])) {
@@ -47,7 +50,7 @@ class votekick extends plugin_interface
 			if ($this->votes[$channel][$target]['count'] < $maxvotes) {
 				parent::answer('Vote counted.');
 			} else {
-				bot::get_instance()->send('KICK ' . $channel . ' ' . $target . ' :It\'s not because I don\'t like you...');
+				$bot->send('KICK ' . $channel . ' ' . $target . ' :It\'s not because I don\'t like you...');
 				$this->votes[$channel][$target] = array();
 			}
 		} else {
