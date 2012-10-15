@@ -21,11 +21,11 @@ class bomb extends plugin_interface
 
 	public function init()
 	{
-		$this->register_event('text', NULL, 'nick_save');
+		$this->register_event('text', NULL, 'nick_save', 0);
 		$this->register_event('command', 'bomb', 'pub_bomb');
 		$this->register_recurring('remove_inactive', 60);
 		$this->register_recurring('random_bomb_timer', 300);
-		$this->register_help('bomb', 'BOOM');
+		$this->register_help('bomb', 'BOOM', 0);
 	}
 
 	public function nick_save($args)
