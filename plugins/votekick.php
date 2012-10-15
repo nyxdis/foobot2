@@ -26,6 +26,12 @@ class votekick extends plugin_interface
 
 		if (count($args) > 0) {
 			$target = $args[0];
+
+			if ($target == settings::$nick) {
+				parent::answer('No.');
+				return;
+			}
+
 			if (isset ($this->votes[$channel][$target]) && $this->votes[$channel][$target]['lastvote'] > (time() - $expiry)) {
 				if (in_array($name, $this->votes[$channel][$target]['voters'])) {
 					parent::answer('You\'ve already voted.');
