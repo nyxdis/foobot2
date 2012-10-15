@@ -411,7 +411,8 @@ class bot
 				if (!$return && $this->channel == $nick)
 					$this->say(settings::$main_channel, '<' . $nick . '> ' . $text);
 			}
-			plugins::run_event('text', $matches['text']);
+			if (!$return)
+				plugins::run_event('text', $matches['text']);
 		}
 	}
 
