@@ -125,6 +125,7 @@ class bomb extends plugin_interface
 	{
 		if (isset($this->target[$channel]) && ($this->start[$channel] + $this->timer[$channel] <= time())) {
 			bot::get_instance()->send("KICK $channel {$this->target[$channel]} :BOOM!  Time's up!");
+			unset($this->nicks[$channel][$this->target[$channel]]);
 			unset($this->target[$channel]);
 		}
 	}
