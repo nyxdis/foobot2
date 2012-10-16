@@ -87,7 +87,7 @@ class events extends plugin_interface
 		$bot = bot::get_instance();
 
 		$name = $db->get_single_property('SELECT `name` FROM `events` WHERE `id` = ?', (int)$id);
-		$bot->say(settings::$main_channel, 'Event happening today: ' . $name);
+		$bot->say(settings::$main_channel['channel'], 'Event happening today: ' . $name);
 	}
 
 	public function delevent($args)

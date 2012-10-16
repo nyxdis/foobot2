@@ -107,7 +107,7 @@ class settings
 	/**
 	 * Main channel of the bot
 	 */
-	public static $main_channel = '';
+	public static $main_channel = array();
 	/**
 	 * IP address to listen on (important for DCC)
 	 **/

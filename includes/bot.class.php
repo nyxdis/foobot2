@@ -410,7 +410,7 @@ class bot
 					$return = plugins::run_event('command', $alias['function'], $alias['args']);
 				}
 				if (!$return && $this->channel == $nick)
-					$this->say(settings::$main_channel, '<' . $nick . '> ' . $text);
+					$this->say(settings::$main_channel['channel'], '<' . $nick . '> ' . $text);
 			}
 			if (!$return)
 				plugins::run_event('text', $matches['text']);
