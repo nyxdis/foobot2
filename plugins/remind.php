@@ -17,7 +17,7 @@ class remind extends plugin_interface
 	{
 		$this->register_event('command', 'remind', 'pub_remind');
 
-		$this->register_help('remind', 'simple reminder, syntax: remind (me|nick) about something (in|at) time');
+		$this->register_help('remind', 'simple reminder, syntax: remind (me|nick) (about|to) something (in|at) time');
 	}
 
 	public function pub_remind($args)
@@ -26,9 +26,9 @@ class remind extends plugin_interface
 		$channel = bot::get_instance()->channel;
 
 		$args = implode(' ', $args);
-		preg_match('/(?<who>.+?) about (?<what>.+) (in (?<time1>\d+)(?<unit>.+)|at (?<time2>\d+[:.]\d\d))/', $args, $matches);
+		preg_match('/(?<who>.+?) (about|to) (?<what>.+) (in (?<time1>\d+)(?<unit>.+)|at (?<time2>\d+[:.]\d\d))/', $args, $matches);
 		if (!isset ($matches['who']) || !isset ($matches['what']) || ((!isset ($matches['time1']) && !isset ($matches['unit'])) && !isset ($matches['time2']))) {
-			self::answer('Bad format, use \'remind (me|nick) about something (in|at) time\'');
+			self::answer('Bad format, use \'remind (me|nick) (about|to) something (in|at) time\'');
 			return;
 		}
 
