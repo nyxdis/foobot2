@@ -74,7 +74,7 @@ function foobot_error_handler($errno, $error, $file, $line, $context)
 			}
 		}
 	} else {
-		die ($string);
+		die($typestr . ' in ' . $file . ' on line ' . $line . ': ' . $error);
 	}
 }
 
