@@ -50,11 +50,11 @@ function foobot_error_handler($errno, $error, $file, $line, $context)
 
 					// convert array args to strings
 					foreach ($data["args"] as $k => $v) {
-						$lines = explode("\n",
+						$tlines = explode("\n",
 							print_r($v, true));
 						$data["args"][$k] = "";
-						foreach ($lines as $line)
-							$data["args"][$k] .= trim($line);
+						foreach ($tlines as $tline)
+							$data["args"][$k] .= trim($tline);
 					}
 
 					$args = implode(", ", $data["args"]);
