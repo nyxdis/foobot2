@@ -71,8 +71,8 @@ class events extends plugin_interface
 			parent::answer('Invalid format, use <name> YYYY-MM-DD');
 			return;
 		}
-		$db->query('INSERT INTO `events` (`name`, `date`) VALUES(?, ?, ?, ?)',
-			$matches['name'], $matches['year'], $matches['month'], $matches['day']);
+		$db->query('INSERT INTO `events` (`name`, `date`) VALUES(?, ?)',
+			$matches['name'], $matches['year'].'-'.$matches['month'].'-'.$matches['day']);
 		$id = $db->lastInsertId();
 		$this->register_timed('announce', mktime(0, 0, 0, $matches['month'], $matches['day'], $matches['year']), $id);
 		$this->register_timed('announce', mktime(6, 0, 0, $matches['month'], $matches['day'], $matches['year']), $id);
