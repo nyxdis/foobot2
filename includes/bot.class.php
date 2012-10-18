@@ -97,6 +97,13 @@ class bot
 	private $aliases = array();
 
 	/**
+	 * Ignore list, users in this array are ignored
+	 * @access private
+	 * @var array
+	 */
+	private $ignore_list = array();
+
+	/**
 	 * Returns the global instance for the bot class
 	 * @return bot The instance
 	 */
@@ -208,6 +215,25 @@ class bot
 			return $this->aliases[$alias];
 		else
 			return false;
+	}
+
+	/**
+	 * Ignore user
+	 * @param string $nick nickname of the user
+	 */
+	public function add_ignore($nick) {
+		if (!in_array($nick, $this->ignore_list))
+			$this->ignore_list[] = $nick;
+	}
+
+	/**
+	 * Unignore user
+	 * @param string $nick nickname of the user
+	 */
+	public function remove_ignore($nick) {
+		$key = array_search($nick, $this->ignore_list);
+		if ($key !== false)
+			unset ($this->ignore_list[$key]);
 	}
 
 	/**
@@ -378,18 +404,22 @@ class bot
 		// Parse PRIVMSG
 		if (preg_match('/:(?<nick>\S+)!(?<ident>\S+)@(?<host>\S+) PRIVMSG (?<target>\S+) :(?<text>.+)/', $line, $matches)) {
 			$nick = $matches['nick'];
-			$this->usr = $this->get_userlist($matches['nick']);
-			if (!$this->usr->nick)
-				$this->send('WHO ' . $matches['nick']);
 			$target = $matches['target'];
 			$text = $matches['text'];
+
+			$this->usr = $this->get_userlist($nick);
+			if (!$this->usr->nick)
+				$this->send('WHO ' . $nick);
+
+			if (in_array($nick, $this->ignore_list))
+				return;
 
 			// Set channel to the origin's nick if the PRIVMSG was
 			// sent directly to the bot
 			if ($target == settings::$nick)
-				$this->channel = $matches['nick'];
+				$this->channel = $nick;
 			else
-				$this->channel = $matches['target'];
+				$this->channel = $target;
 
 			$return = false;
 			if (strncasecmp($text, settings::$command_char, strlen(settings::$command_char)) == 0 ||
@@ -413,7 +443,7 @@ class bot
 					$this->say(settings::$main_channel['channel'], '<' . $nick . '> ' . $text);
 			}
 			if (!$return)
-				plugins::run_event('text', $matches['text']);
+				plugins::run_event('text', $text);
 		}
 	}
 

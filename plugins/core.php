@@ -24,6 +24,8 @@ class core extends plugin_interface
 		$this->register_event('command', 'getuserdata', NULL, 10);
 		$this->register_event('command', 'help');
 		$this->register_event('command', 'hi', NULL, 0);
+		$this->register_event('command', 'ignore', NULL, 100);
+		$this->register_event('command', 'unignore', NULL, 100);
 		$this->register_event('command', 'join', NULL, 10);
 		$this->register_event('command', 'enable' , 'pub_enable', 10);
 		$this->register_event('command', 'disable' , 'pub_disable', 10);
@@ -46,6 +48,8 @@ class core extends plugin_interface
 		$this->register_help('chlvl', 'change the level of some user');
 		$this->register_help('getuserdata', 'retrieve the plugin user data');
 		$this->register_help('help', 'this help');
+		$this->register_help('ignore', 'ignore all messages from a specific nick');
+		$this->register_help('unignore', 'remove the ignore for the specified nick');
 		$this->register_help('join', 'join a channel');
 		$this->register_help('load', 'load a plugin');
 		$this->register_help('merge', 'merge <username> <nickname> - add nickname\'s host to username');
@@ -227,6 +231,24 @@ class core extends plugin_interface
 		$db->query('INSERT INTO `users` (`username`, `ulvl`) VALUES(?, 1000)', $usr->nick);
 		$db->query('INSERT INTO `hosts` VALUES(?, ?, ?)', $db->lastInsertId(), $usr->ident, $usr->host);
 		parent::answer('Hi, you are now my owner, recognized by ' . $usr->ident . '@' . $usr->host . '.');
+	}
+
+	public function ignore($args) {
+		if (empty($args)) {
+			parent::answer("Ignore who?");
+		} else {
+			bot::get_instance()->add_ignore($args[0]);
+			parent::answer("Okay.");
+		}
+	}
+
+	public function unignore($args) {
+		if (empty($args)) {
+			parent::answer("Unignore who?");
+		} else {
+			bot::get_instance()->remove_ignore($args[0]);
+			parent::answer("Okay.");
+		}
 	}
 
 	public function join($args)
