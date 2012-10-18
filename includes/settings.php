@@ -126,12 +126,12 @@ class settings
 	 */
 	public static function load($argc, $argv)
 	{
-		if ($argc != 2)
+		if ($argc == 1)
 			$file = 'config.ini';
-		else
-			$file = $argv[1];
+		else if ($argv[$argc - 1] != "main.php")
+			$file = $argv[$argc - 1];
 
-		if (!file_exists($argv[1]))
+		if (!file_exists($file))
 			die ('Configuration file "' . $file . '" not found');
 
 		$settings = parse_ini_file($file);
