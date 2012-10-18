@@ -40,7 +40,7 @@ class urban extends plugin_interface
 			$description = str_replace('&apos;', '\'', $description);
 			preg_match('/<meta content=\'(?<title>.+)\' property=\'og:title\' \/>/', $result, $match);
 			$title = $match['title'];
-			parent::answer(html_entity_decode($title) . ' - ' . html_entity_decode($description) . ' (' . $url . ')');
+			parent::answer(html_entity_decode($title) . ' - ' . html_entity_decode($description) . ' <' . $url . '>');
 		} else {
 			parent::answer('No definition found');
 		}
