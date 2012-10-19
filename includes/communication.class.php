@@ -34,7 +34,7 @@ interface communication
 	/**
 	 * @see bot::say()
 	 */
-	public function say($target, $text);
+	public function say($target, $text, $prefix = "");
 	/**
 	 * @see bot::notice()
 	 */

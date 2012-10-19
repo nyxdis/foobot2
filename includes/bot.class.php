@@ -442,7 +442,7 @@ class bot
 					$return = plugins::run_event('command', $alias['function'], $alias['args']);
 				}
 				if (!$return && $this->channel == $nick)
-					$this->say(settings::$main_channel['channel'], '<' . $nick . '> ' . $text);
+					$this->say(settings::$main_channel['channel'], $text, "<$nick> ");
 			}
 			if (!$return)
 				plugins::run_event('text', $text);
@@ -454,9 +454,9 @@ class bot
 	 * @param string $target where to send text to
 	 * @param string $text text to send
 	 */
-	public function say($target, $text)
+	public function say($target, $text, $prefix = "")
 	{
-		$this->protocol->say($target, $text);
+		$this->protocol->say($target, $text, $prefix);
 	}
 
 	/**

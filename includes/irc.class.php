@@ -111,17 +111,17 @@ class irc implements communication
 	/**
 	 * @see bot::say()
 	 */
-	public function say($target, $text)
+	public function say($target, $text, $prefix = "")
 	{
 		// TODO: properly calculate max length
 		if (strlen($text) > 400) {
 			$lines = wordwrap($text, 400, "\n", true);
 			$lines = explode("\n", $lines);
 			foreach ($lines as $line) {
-				$this->say($target, $line);
+				$this->say($target, $line, $prefix);
 			}
 		} else {
-			$this->msg_queue[] = 'PRIVMSG ' . $target . ' :' . $text;
+			$this->msg_queue[] = "PRIVMSG $target :$prefix$text";
 		}
 	}
 

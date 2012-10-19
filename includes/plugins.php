@@ -30,9 +30,10 @@ abstract class plugin_interface extends plugins
 		$channel = bot::get_instance()->channel;
 
 		$bot = bot::get_instance();
+		$prefix = "";
 		if ($usr->nick != $channel)
-			$text = $usr->nick . ': ' . $text;
-		$bot->say($channel, $text);
+			$prefix = "{$usr->nick}: ";
+		$bot->say($channel, $text, $prefix);
 	}
 }
 
