@@ -20,6 +20,13 @@ class irc implements communication
 	private $bot;
 
 	/**
+	 * Message queue
+	 * @access private
+	 * @var array
+	 */
+	private $msg_queue = array();
+
+	/**
 	 * Constructor, get a bot instance
 	 */
 	public function __construct()
@@ -65,6 +72,14 @@ class irc implements communication
 	}
 
 	/**
+	 * @see communication::tick()
+	 */
+	public function tick() {
+		$data = array_shift($this->msg_queue);
+		$this->send($data);
+	}
+
+	/**
 	 * @see bot::join()
 	 */
 	public function join($channel, $key)
@@ -90,7 +105,7 @@ class irc implements communication
 	 */
 	public function notice($target, $text)
 	{
-		$this->send('NOTICE ' . $target . ' :' . $text);
+		$this->msg_queue[] = 'NOTICE ' . $target . ' :' . $text;
 	}
 
 	/**
@@ -106,7 +121,7 @@ class irc implements communication
 				$this->say($target, $line);
 			}
 		} else {
-			$this->send('PRIVMSG ' . $target . ' :' . $text);
+			$this->msg_queue[] = 'PRIVMSG ' . $target . ' :' . $text;
 		}
 	}
 

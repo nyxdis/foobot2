@@ -47,6 +47,10 @@ interface communication
 	 * @see bot::quit()
 	 */
 	public function quit($msg);
+	/**
+	 * Executed on every loop beginning
+	 */
+	public function tick();
 }
 
 ?>

@@ -354,6 +354,8 @@ class bot
 	 */
 	public function wait()
 	{
+		$this->protocol->tick();
+
 		$nul = NULL;
 		$sock = array($this->socket);
 		if (stream_select($sock, $nul, $nul, 1)) {
