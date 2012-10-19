@@ -27,7 +27,7 @@ class seen extends plugin_interface
 
 		$seen = db::get_instance()->query('SELECT * FROM seen');
 		while($entry = $seen->fetchObject())
-			        $this->seen[$entry->nick] = $entry->ts;
+				$this->seen[$entry->nick] = $entry->ts;
 	}
 
 	public function seen_save($args)
@@ -60,46 +60,35 @@ class seen extends plugin_interface
 			return;
 		}
 
-		$seconds = (time() - $this->seen[$nick]);
-		$days = $seconds / 86400;
+		$secs = (time() - $this->seen[$nick]);
 
-		$seconds = abs($seconds);
-		$days = $seconds / 86400;
+		// Christian Stigen Larsen's secs_to_h() -- http://csl.sublevel3.org/php-secs-to-human-text/
+		$units = array(
+			"week"	 => 7*24*3600,
+			"day"	 =>   24*3600,
+			"hour"	 =>	 3600,
+			"minute" =>	   60,
+			"second" =>	    1,
+		);
 
-		$result = '';
-
-		if ($days > 1) {
-			$result .= floor($days) . ' day' . (floor($days) == 1 ? '' : 's');
-			$seconds %= 86400;
+		// specifically handle zero
+		if ($secs < 60) {
+			parent::answer("$nick is online right now.");
+			return;
 		}
 
-		$hours = floor($seconds / 3600);
-		$seconds %= 3600;
-		$minutes = floor($seconds / 60);
-		$seconds %= 60;
+		$s = "";
 
-		$format_func = create_function('$s', 'return str_pad($s, 2, \'0\', STR_PAD_LEFT);');
-
-		if (($hours > 0 || $minutes > 0 || $seconds > 0) && $days > 1)
-			$result .= ', ';
-
-		if ($hours == 0 && $minutes == 0 && $seconds > 0) {
-			$unit = 'second' . ($seconds == 1 ? '' : 's');
-			$result .= $seconds;
-		} elseif ($hours == 0 && $minutes > 0) {
-			$unit = 'minute' . ($minutes == 1 && $seconds == 0 ? '' : 's');
-			if ($seconds > 0)
-				$result .= $format_func($minutes) . ':' . $format_func($seconds);
-			else
-				$result .= $minutes;
-		} elseif ($hours > 0) {
-			$unit = 'hour' . ($hours == 1 && $minutes == 0 && $seconds == 0 ? '' : 's');
-			$result .= ($minutes == 0 && $seconds == 0 ? $hours : $format_func($hours));
-			$result .= ($minutes > 0 || $seconds > 0 ? ':' . $format_func($minutes) . ($seconds > 0 ? ':' . $format_func($seconds) : '') : '');
+		foreach ($units as $name => $divisor) {
+			if ($quot = intval($secs / $divisor)) {
+				$s .= "$quot $name";
+				$s .= (abs($quot) > 1 ? "s" : "") . ", ";
+				$secs -= $quot * $divisor;
+			}
 		}
 
-		if (!empty ($unit))
-			$result .= ' ' . $unit;
+		$result = substr($s, 0, -2);
+
 
 		parent::answer($nick . ' was last seen ' . $result . ' ago');
 	}
