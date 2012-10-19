@@ -363,10 +363,10 @@ class bot
 				$this->connect();
 			}
 			$this->parse($line);
-		} else {
-			plugins::run_recurring();
-			plugins::run_timed();
 		}
+
+		plugins::run_recurring();
+		plugins::run_timed();
 	}
 
 	/**
