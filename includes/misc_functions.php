@@ -37,44 +37,38 @@ function foobot_error_handler($errno, $error, $file, $line, $context)
 		$typestr = 'Unknown error';
 	}
 
-	// Check if the bot is already initialized
-	if ($bot->is_connected()) {
-		if (!empty (settings::$debug_channel)) {
-			// print backtrace in debug mode
-			if (settings::$debug_mode) {
-				$bt = debug_backtrace();
-				foreach ($bt as $num => $data) {
-					$file = getifset($data, "file");
-					$line = getifset($data, "line");
-					$fn = $data["function"];
+	// print backtrace in debug mode
+	if (settings::$debug_mode) {
+		$bt = debug_backtrace();
+		foreach ($bt as $num => $data) {
+			$file = getifset($data, "file");
+			$line = getifset($data, "line");
+			$fn = $data["function"];
 
-					// convert array args to strings
-					foreach ($data["args"] as $k => $v) {
-						$tlines = explode("\n",
-							print_r($v, true));
-						$data["args"][$k] = "";
-						foreach ($tlines as $tline)
-							$data["args"][$k] .= trim($tline);
-					}
-
-					$args = implode(", ", $data["args"]);
-
-					$string = "#$num  $fn($args)";
-					if (!empty ($file) && !empty ($line))
-						$string .= " called at [$file:$line]";
-					$bot->say(settings::$debug_channel['channel'], $string);
-					file_put_contents('logs/' . settings::$network . '-error.log', $string . LF, FILE_APPEND);
-				}
-			} else {
-				$string = $typestr . ' in ' . $file .
-					' on line ' . $line . ': ' . $error;
-				$bot->say(settings::$debug_channel['channel'],
-					$string);
-				file_put_contents('logs/' . settings::$network . '-error.log', $string . LF, FILE_APPEND);
+			// convert array args to strings
+			foreach ($data["args"] as $k => $v) {
+				$tlines = explode("\n",
+					print_r($v, true));
+				$data["args"][$k] = "";
+				foreach ($tlines as $tline)
+					$data["args"][$k] .= trim($tline);
 			}
+
+			$args = implode(", ", $data["args"]);
+
+			$string = "#$num  $fn($args)";
+			if (!empty ($file) && !empty ($line))
+				$string .= " called at [$file:$line]";
+
+			if ($bot->is_connected() && !empty (settings::$debug_channel))
+				$bot->say(settings::$debug_channel['channel'], $string);
+			file_put_contents('logs/' . settings::$network . '-error.log', $string . LF, FILE_APPEND);
 		}
 	} else {
-		die($typestr . ' in ' . $file . ' on line ' . $line . ': ' . $error);
+		$string = $typestr . ' in ' . $file . ' on line ' . $line . ': ' . $error;
+		if ($bot->is_connected() && !empty (settings::$debug_channel))
+			$bot->say(settings::$debug_channel['channel'], $string);
+		file_put_contents('logs/' . settings::$network . '-error.log', $string . LF, FILE_APPEND);
 	}
 }
 
