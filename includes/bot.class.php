@@ -363,7 +363,7 @@ class bot
 	}
 
 	/**
-	 * Wait for acion on the socket and execute timed and recurring events
+	 * Wait for action on the socket and execute timed and recurring events
 	 */
 	public function wait()
 	{
@@ -375,9 +375,10 @@ class bot
 			$line = $this->read();
 			if (!$line) {
 				fclose($this->socket);
-				$this->connect();
+				$this->connected = false;
+			} else {
+				$this->parse($line);
 			}
-			$this->parse($line);
 		}
 
 		plugins::run_recurring();
