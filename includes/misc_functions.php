@@ -38,7 +38,7 @@ function foobot_error_handler($errno, $error, $file, $line, $context)
 	}
 
 	// Check if the bot is already initialized
-	if ($bot->connected) {
+	if ($bot->is_connected()) {
 		if (!empty (settings::$debug_channel)) {
 			// print backtrace in debug mode
 			if (settings::$debug_mode) {

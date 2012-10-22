@@ -41,7 +41,7 @@ class bot
 	 * Is the bot connected?
 	 * @var bool
 	 */
-	public $connected = false;
+	private $connected = false;
 
 	/**
 	 * Current channel for events
@@ -142,6 +142,14 @@ class bot
 		$this->log_fp = fopen($filename, 'a+');
 		if (!$this->log_fp)
 			die ('Failed to open log file');
+	}
+
+	/**
+	 * Is the bot connected to a network?
+	 * @return bool result
+	 */
+	public function is_connected() {
+		return $this->connected;
 	}
 
 	/**

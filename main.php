@@ -32,15 +32,15 @@ $bot = bot::get_instance();
 $bot->load_aliases();
 $bot->usr = new user();
 $bot->connect();
-if (!$bot->connected)
+if (!$bot->is_connected())
 	die ('Failed to connect');
 $bot->post_connect();
 
 for (;;) {
-	if (!$bot->connected)
+	if (!$bot->is_connected())
 		$bot->reconnect();
 
-	if ($bot->connected)
+	if ($bot->is_connected())
 		$bot->wait();
 }
 
