@@ -124,7 +124,7 @@ class roulette extends plugin_interface
 		$bot = bot::get_instance();
 		$channel = $bot->channel;
 
-		if ($this->roulette_mode[$channel] == 'spin') {
+		if (isset ($this->roulette_mode[$channel]) && $this->roulette_mode[$channel] == 'spin') {
 			parent::answer('Command not available in this roulette mode');
 			return;
 		}
