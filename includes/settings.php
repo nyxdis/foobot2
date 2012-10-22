@@ -38,6 +38,7 @@ if (file_exists('.git')) {
 
 /**
  * Settings management
+ * Note: default values for runtime changable attributes are set in set_defaults()
  *
  * @package foobot
  * @subpackage classes
@@ -46,16 +47,18 @@ class settings
 {
 	/**
 	 * Prefix for commands
+	 * @see settings::set_defaults()
 	 */
-	public static $command_char = '!';
+	public static $command_char;
 	/**
 	 * Currently used protocol
 	 */
 	public static $protocol = 'irc';
 	/**
 	 * Nick of the bot
+	 * @see settings::set_defaults()
 	 */
-	public static $nick = 'foobot';
+	public static $nick;
 	/**
 	 * Username of the bot
 	 */
@@ -78,36 +81,44 @@ class settings
 	public static $network = 'default';
 	/**
 	 * Channels to join on startup
+	 * @see settings::set_defaults()
 	 */
-	public static $channels = array();
+	public static $channels;
 	/**
 	 * Authentication password
+	 * @see settings::set_defaults()
 	 */
-	public static $authpass = '';
+	public static $authpass;
 	/**
 	 * Authentication username
+	 * @see settings::set_defaults()
 	 */
-	public static $authnick = '';
+	public static $authnick;
 	/**
 	 * Service to authenticate against
+	 * @see settings::set_defaults()
 	 */
-	public static $authserv = 'NickServ';
+	public static $authserv;
 	/**
 	 * Authentication command
+	 * @see settings::set_defaults()
 	 */
-	public static $authcmd = 'identify';
+	public static $authcmd;
 	/**
 	 * Print debug output?
+	 * @see settings::set_defaults()
 	 */
-	public static $debug_mode = false;
+	public static $debug_mode;
 	/**
 	 * Send debug output to this channels
+	 * @see settings::set_defaults()
 	 */
-	public static $debug_channel = '';
+	public static $debug_channel;
 	/**
 	 * Main channel of the bot
+	 * @see settings::set_defaults()
 	 */
-	public static $main_channel = array();
+	public static $main_channel;
 	/**
 	 * IP address to listen on (important for DCC)
 	 */
@@ -127,6 +138,22 @@ class settings
 	private static $file;
 
 	/**
+	 * Set default values for runtime changable attributes
+	 */
+	private static function set_defaults() {
+		self::$command_char = '!';
+		self::$nick = 'foobot';
+		self::$channels = array();
+		self::$authpass = '';
+		self::$authnick = '';
+		self::$authserv = 'NickServ';
+		self::$authcmd = 'identify';
+		self::$debug_mode = false;
+		self::$debug_channel = '';
+		self::$main_channel = array();
+	}
+
+	/**
 	 * Load settings from config ini
 	 */
 	public static function load($argc, $argv)
@@ -139,6 +166,7 @@ class settings
 		if (!file_exists(self::$file))
 			die ('Configuration file "' . self::$file . '" not found');
 
+		self::set_defaults();
 		self::do_load();
 		self::check_required();
 		self::parse_channels();
@@ -208,6 +236,7 @@ class settings
 	 * Reload settings
 	 */
 	public static function reload() {
+		self::set_defaults();
 		self::do_load();
 		self::parse_channels();
 	}
