@@ -248,7 +248,11 @@ class bot
 		if (!$this->socket)
 			return false;
 		$retval = $this->protocol->connect();
-		stream_set_blocking($this->socket, 0);
+		if ($retval) {
+			$this->log(DEBUG, 'Connected');
+			$this->connected = true;
+			stream_set_blocking($this->socket, 0);
+		}
 		return $retval;
 	}
 

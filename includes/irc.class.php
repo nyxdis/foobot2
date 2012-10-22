@@ -43,11 +43,8 @@ class irc implements communication
 		$this->send('NICK ' . settings::$nick);
 		for (;;) {
 			$buf = $this->bot->read();
-			if (strstr($buf, '001 ' . settings::$nick . ' :')) {
-				$this->bot->log(DEBUG, 'Connected');
-				$this->bot->connected = true;
+			if (strstr($buf, '001 ' . settings::$nick . ' :'))
 				return true;
-			}
 		}
 		return false;
 	}
