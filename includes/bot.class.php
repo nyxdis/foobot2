@@ -247,8 +247,9 @@ class bot
 		$this->socket = fsockopen(settings::$server, settings::$port);
 		if (!$this->socket)
 			return false;
-		$this->protocol->connect();
+		$retval = $this->protocol->connect();
 		stream_set_blocking($this->socket, 0);
+		return $retval;
 	}
 
 	/**
