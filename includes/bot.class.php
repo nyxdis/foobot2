@@ -104,6 +104,13 @@ class bot
 	private $ignore_list = array();
 
 	/**
+	 * Timestamp of last connection attempt
+	 * @access private
+	 * @var int
+	 */
+	private $last_connect = 0;
+
+	/**
 	 * Returns the global instance for the bot class
 	 * @return bot The instance
 	 */
@@ -250,6 +257,7 @@ class bot
 	 */
 	public function connect()
 	{
+		$this->last_connect = time();
 		$this->protocol = new settings::$protocol;
 		$this->log(DEBUG, 'Connecting');
 		$this->socket = fsockopen(settings::$server, settings::$port);
@@ -286,6 +294,9 @@ class bot
 	 */
 	public function reconnect()
 	{
+		if ($this->last_connect > time() - 60)
+			return;
+
 		$this->connect();
 		if ($this->connected)
 			$this->post_connect();
