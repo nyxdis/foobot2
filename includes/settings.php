@@ -110,16 +110,21 @@ class settings
 	public static $main_channel = array();
 	/**
 	 * IP address to listen on (important for DCC)
-	 **/
+	 */
 	public static $listen_addr = NULL;
 	/**
 	 * Port for DCC connections
-	 **/
+	 */
 	public static $dcc_port = 3333;
 	/**
 	 * Plugin blacklist
-	 **/
+	 */
 	public static $plugin_blacklist = array();
+
+	/**
+	 * Path to config
+	 */
+	private static $file;
 
 	/**
 	 * Load settings from config ini
@@ -127,14 +132,28 @@ class settings
 	public static function load($argc, $argv)
 	{
 		if ($argc == 1)
-			$file = 'config.ini';
+			self::$file = 'config.ini';
 		else if ($argv[$argc - 1] != "main.php")
-			$file = $argv[$argc - 1];
+			self::$file = $argv[$argc - 1];
 
-		if (!file_exists($file))
-			die ('Configuration file "' . $file . '" not found');
+		if (!file_exists(self::$file))
+			die ('Configuration file "' . self::$file . '" not found');
 
-		$settings = parse_ini_file($file);
+		self::do_load();
+		self::check_required();
+		self::parse_channels();
+
+		if (self::$listen_addr == NULL)
+			self::$listen_addr = gethostname();
+
+		if (!is_array(self::$plugin_blacklist)) {
+			$bl = str_replace(' ', '', self::$plugin_blacklist);
+			self::$plugin_blacklist = explode(',', $bl);
+		}
+	}
+
+	private static function do_load() {
+		$settings = parse_ini_file(self::$file);
 		foreach ($settings as $key => $value) {
 			if (!property_exists(__CLASS__, $key)) {
 				bot::get_instance()->log(WARNING, 'Unknown config key: ' . $key);
@@ -144,13 +163,17 @@ class settings
 			if (!empty ($key))
 				self::$$key = $value;
 		}
+	}
 
+	private static function check_required() {
 		$required = array('server', 'channels');
 
 		foreach ($required as $key)
 			if (empty (self::$$key))
 				die ('Required setting \'' . $key . '\' missing!');
+	}
 
+	private static function parse_channels() {
 		foreach (explode(',', self::$channels) as $channel) {
 			$c = explode(' ', trim($channel), 2);
 			if (count($c) > 1)
@@ -179,13 +202,13 @@ class settings
 			else
 				self::$debug_channel['key'] = '';
 		}
+	}
 
-		if (self::$listen_addr == NULL)
-			self::$listen_addr = gethostname();
-
-		if (!is_array(self::$plugin_blacklist)) {
-			$bl = str_replace(' ', '', self::$plugin_blacklist);
-			self::$plugin_blacklist = explode(',', $bl);
-		}
+	/**
+	 * Reload settings
+	 */
+	public static function reload() {
+		self::do_load();
+		self::parse_channels();
 	}
 }
