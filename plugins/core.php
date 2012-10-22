@@ -33,6 +33,7 @@ class core extends plugin_interface
 		$this->register_event('command', 'merge', NULL, 100);
 		$this->register_event('command', 'raw', NULL, 1000);
 		$this->register_event('command', 'reboot', NULL, 100);
+		$this->register_event('command', 'reload', NULL, 100);
 		$this->register_event('command', 'shutdown', NULL, 1000);
 		$this->register_event('command', 'sql', NULL, 1000);
 		$this->register_event('command', 'unalias', NULL, 5);
@@ -55,6 +56,7 @@ class core extends plugin_interface
 		$this->register_help('merge', 'merge <username> <nickname> - add nickname\'s host to username');
 		$this->register_help('raw', 'send raw IRC commands');
 		$this->register_help('reboot', 'reboot the bot');
+		$this->register_help('reload', 'reload settings');
 		$this->register_help('shutdown', 'shut the bot down');
 		$this->register_help('sql', 'send raw SQL commands');
 		$this->register_help('unalias', 'remove aliases');
@@ -312,6 +314,16 @@ class core extends plugin_interface
 
 		exec('/usr/bin/env php ' . $_SERVER['PHP_SELF'] . ' ' . $argv[1] . ' >/dev/null &');
 		$bot->shutdown('Rebooting as requested by ' . $usr->name);
+	}
+
+	public function reload($args) {
+		$bot = bot::get_instance();
+
+		settings::reload();
+		$bot->send('NICK ' . settings::$nick);
+		$bot->post_connect();
+
+		parent::answer("Done.");
 	}
 
 	public function shutdown($args)
