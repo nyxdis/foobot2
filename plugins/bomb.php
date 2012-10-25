@@ -18,11 +18,13 @@ class bomb extends plugin_interface
 	private $defuse_color = array();
 	private $kill_collor = array();
 	private $colors = array();
+	private $hardcore = array();
 
 	public function init()
 	{
 		$this->register_event('text', NULL, 'nick_save', 0);
 		$this->register_event('command', 'bomb', 'pub_bomb');
+		$this->register_event('command', 'hardcore-bomb', 'pub_hardcore_bomb');
 		$this->register_recurring('remove_inactive', 60);
 		$this->register_recurring('random_bomb_timer', 300);
 		$this->register_help('bomb', 'BOOM', 0);
@@ -50,7 +52,11 @@ class bomb extends plugin_interface
 				unset($this->nicks[$channel][$this->target[$channel]]);
 				unset($this->target[$channel]);
 			} elseif ($arg == $this->kill_color[$channel]) {
-				bot::get_instance()->send("KICK $channel {$usr->nick} :BOOM!  The $arg wire was a trap!");
+				$message = "BOOM!  The $arg wire was a trap!";
+				if (!isset($this->hardcore[$channel]) || $this->hardcore[$channel] == false)
+					parent::answer($message);
+				else
+					bot::get_instance()->send("KICK $channel {$usr->nick} :$message");
 				unset($this->nicks[$channel][$this->target[$channel]]);
 				unset($this->target[$channel]);
 			} else {
@@ -123,10 +129,23 @@ class bomb extends plugin_interface
 		$this->register_timed('kill', time() + $this->timer[$channel], $channel);
 	}
 
+	public function pub_hardcore_bomb($args) {
+		$channel = bot::get_instance()->channel;
+		if (!isset($this->hardcore[$channel]))
+			$this->hardcore[$channel] = true;
+		else
+			$this->hardcore[$channel] = !$this->hardcore[$channel];
+		parent::answer("Right! Have fun!");
+	}
+
 	public function kill($channel)
 	{
 		if (isset($this->target[$channel]) && ($this->start[$channel] + $this->timer[$channel] <= time())) {
-			bot::get_instance()->send("KICK $channel {$this->target[$channel]} :BOOM!  Time's up!");
+			$message = "BOOM!  Time's up!";
+			if (!isset($this->hardcore[$channel]) || $this->hardcore[$channel] == false)
+				bot::get_instance()->say($channel, "{$this->target[$channel]}: $message");
+			else
+				bot::get_instance()->send("KICK $channel {$this->target[$channel]} :BOOM!  Time's up!");
 			unset($this->nicks[$channel][$this->target[$channel]]);
 			unset($this->target[$channel]);
 		}
