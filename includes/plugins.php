@@ -199,10 +199,7 @@ class plugins
 
 			$return = true;
 
-			$preg_match = false;
-			if (isset ($preg_args) && !empty ($preg_args))
-				$preg_match = true;
-			elseif ($argv && !is_array($argv))
+			if ($argv && !is_array($argv))
 				$args = explode(' ', $argv);
 			elseif (!$argv && $event != 'command')
 				$args = explode(' ', $trigger);
@@ -212,7 +209,7 @@ class plugins
 			if ($event == 'command')
 				$bot->log_cmd($bot->usr->name, $bot->channel, $entry['trigger'], $args);
 
-			if ($preg_match) {
+			if (isset ($preg_args) && !empty ($preg_args)) {
 				foreach ($preg_args as $args)
 					self::$loaded[$entry['plugin']]->$entry['function']($args);
 			} else {
