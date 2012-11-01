@@ -28,9 +28,9 @@ class snackfixer extends plugin_interface
 		if (substr_count($str, 's') == 1 &&
 			substr_count($str, 'a') == 1 &&
 			substr_count($str, 'c') == 1 &&
-			((substr_count($str, 'n') == 1 &&
-			substr_count($str, 'k') == 1) ||
-			(substr_count($str, 'm') == 1 &&
+			((substr_count($str, 'n') == 1 ||
+			substr_count($str, 'm') == 1) &&
+			(substr_count($str, 'k') == 1 ||
 			substr_count($str, 'l') == 1)))
 			plugins::run_event('command', 'q', array());
 	}
