@@ -19,12 +19,12 @@ class snackfixer extends plugin_interface
 	 */
 	public function init()
 	{
-		$this->register_event('command', '/(' . preg_quote(settings::$command_char, '/') . ')?(?<gargabe>[snacmkl]{5})/', 'fix');
+		$this->register_event('command', '/(?<garbage>[snacmkl]{5})/', 'fix');
 	}
 
 	public function fix($args)
 	{
-		$str = $args[2];
+		$str = $args['garbage'];
 		if (substr_count($str, 's') == 1 &&
 			substr_count($str, 'a') == 1 &&
 			substr_count($str, 'c') == 1 &&
