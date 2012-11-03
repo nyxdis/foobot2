@@ -25,6 +25,8 @@ class snackfixer extends plugin_interface
 	public function fix($args)
 	{
 		$str = $args['garbage'];
+		if (strtolower($str) == "snack")
+			return;
 		if (substr_count($str, 's') == 1 &&
 			substr_count($str, 'a') == 1 &&
 			substr_count($str, 'c') == 1 &&
