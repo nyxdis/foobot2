@@ -130,7 +130,11 @@ class bomb extends plugin_interface
 	}
 
 	public function pub_hardcore_bomb($args) {
-		$channel = bot::get_instance()->channel;
+		if (count($args) > 0)
+			$channel = $args[0];
+		else
+			$channel = bot::get_instance()->channel;
+
 		if (!isset($this->hardcore[$channel]))
 			$this->hardcore[$channel] = true;
 		else
