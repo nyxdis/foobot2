@@ -289,6 +289,11 @@ class bot
 		}
 	}
 
+	private function disconnect() {
+		$this->channels = array();
+		$this->connected = false;
+	}
+
 	/**
 	 * Wrapper around bot::connect() and bot::post_connect()
 	 */
@@ -331,7 +336,7 @@ class bot
 	public function write($data)
 	{
 		if (fputs($this->socket, $data) === false)
-			$this->connected = false;
+			$this->disconnect();
 	}
 
 	/**
@@ -341,7 +346,7 @@ class bot
 	{
 		$buf = fgets($this->socket);
 		if ($buf === false)
-			$this->connected = false;
+			$this->disconnect();
 		return $buf;
 	}
 
@@ -386,7 +391,7 @@ class bot
 			$line = $this->read();
 			if (!$line) {
 				fclose($this->socket);
-				$this->connected = false;
+				$this->disconnect();
 			} else {
 				$this->parse($line);
 			}
