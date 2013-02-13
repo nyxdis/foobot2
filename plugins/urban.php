@@ -35,7 +35,7 @@ class urban extends plugin_interface
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
 		$result = curl_exec($ch);
 		$url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
-		if (preg_match('/<meta content=(\'|")(?<description>.*)(\'|") property=\'og:description\' \/>/', $result, $match)) {
+		if (preg_match('/<meta content=(\'|")(?<description>.*)(\'|") name=\'Description\' property=\'og:description\' \/>/', $result, $match)) {
 			$description = $match['description'];
 			$description = str_replace('&apos;', '\'', $description);
 			preg_match('/<meta content=\'(?<title>.+)\' property=\'og:title\' \/>/', $result, $match);
