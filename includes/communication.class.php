@@ -30,7 +30,7 @@ interface communication
 	/**
 	 * @see bot::part()
 	 */
-	public function part($channel, $key);
+	public function part($channel);
 	/**
 	 * @see bot::send()
 	 */
