@@ -31,6 +31,7 @@ class core extends plugin_interface
 		$this->register_event('command', 'disable' , 'pub_disable', 10);
 		$this->register_event('command', 'load' , 'pub_load', 10);
 		$this->register_event('command', 'merge', NULL, 100);
+		$this->register_event('command', 'part', NULL, 10);
 		$this->register_event('command', 'raw', NULL, 1000);
 		$this->register_event('command', 'reboot', NULL, 100);
 		$this->register_event('command', 'reload', NULL, 100);
@@ -54,6 +55,7 @@ class core extends plugin_interface
 		$this->register_help('join', 'join a channel');
 		$this->register_help('load', 'load a plugin');
 		$this->register_help('merge', 'merge <username> <nickname> - add nickname\'s host to username');
+		$this->register_help('part', 'part a channel');
 		$this->register_help('raw', 'send raw IRC commands');
 		$this->register_help('reboot', 'reboot the bot');
 		$this->register_help('reload', 'reload settings');
@@ -296,6 +298,17 @@ class core extends plugin_interface
 		$db->query('INSERT INTO `hosts` VALUES(?, ?, ?)', $new_user->id, $user->ident, $user->host);
 		$bot->send('WHO ' . $args[1]);
 		parent::answer('Users merged');
+	}
+
+	public function part($args)
+	{
+		$bot = bot::get_instance();
+
+		if (count($args) > 0)
+			$channel = $args[0];
+		else
+			$channel = $bot->channel;
+		$bot->part($channel);
 	}
 
 	public function raw($args)

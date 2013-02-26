@@ -28,6 +28,10 @@ interface communication
 	 */
 	public function join($channel, $key);
 	/**
+	 * @see bot::part()
+	 */
+	public function part($channel, $key);
+	/**
 	 * @see bot::send()
 	 */
 	public function send($raw);

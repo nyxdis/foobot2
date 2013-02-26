@@ -77,6 +77,14 @@ class irc implements communication
 	}
 
 	/**
+	 * @see bot::part()
+	 */
+	public function part($channel, $key)
+	{
+		$this->send("PART $channel");
+	}
+
+	/**
 	 * @see bot::join()
 	 */
 	public function join($channel, $key)

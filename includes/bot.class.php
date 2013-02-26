@@ -321,6 +321,20 @@ class bot
 	}
 
 	/**
+	 * Part a channel
+	 * @param string $channel name of the channel
+	 */
+	public function part($channel)
+	{
+		if (!in_array($channel, $this->channels))
+			return;
+
+		$key = array_search($channel, $this->channels);
+		unset($this->channels[$key]);
+		$this->protocol->part($channel);
+	}
+
+	/**
 	 * Send raw protocol data
 	 * @param string $raw data
 	 */
