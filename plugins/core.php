@@ -355,9 +355,9 @@ class core extends plugin_interface
 		if (empty ($args)) {
 			$tz = settings::$timezone;
 		} else {
-			$tz = implode(', ', $args);
+			$tz = timezone_name_from_abbr(implode(', ', $args));
 
-			if (!verify_timezone($tz)) {
+			if ($tz === false) {
 				parent::answer("Invalid timezone.");
 				return;
 			}

@@ -204,8 +204,9 @@ class settings
 			if (empty (self::$$key))
 				die ('Required setting \'' . $key . '\' missing!');
 
-		if (!verify_timezone(settings::$timezone))
-			die('Invalid timezone (' . settings::$timezone . ')');
+		settings::$timezone = timezone_name_from_abbr(settings::$timezone);
+		if (settings::$timezone === false)
+			die("Invalid timezone");
 	}
 
 	private static function parse_channels() {
