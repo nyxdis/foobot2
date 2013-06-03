@@ -145,12 +145,8 @@ function exec_timeout($exec, $args = "", $timeout = 5)
  */
 function verify_timezone($timezone)
 {
-	try {
-		new DateTimeZone($timezone);
-		return true;
-	} catch(Exception $e) {
-		return false;
-	}
+	$tzlist = timezone_identifiers_list();
+	return in_array($timezone, $tzlist);
 }
 
 set_error_handler('foobot_error_handler');
