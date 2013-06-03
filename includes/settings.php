@@ -131,6 +131,10 @@ class settings
 	 * Plugin blacklist
 	 */
 	public static $plugin_blacklist = array();
+	/**
+	 * Default timezone
+	 */
+	public static $timezone = 'UTC';
 
 	/**
 	 * Path to config
@@ -199,6 +203,9 @@ class settings
 		foreach ($required as $key)
 			if (empty (self::$$key))
 				die ('Required setting \'' . $key . '\' missing!');
+
+		if (!verify_timezone(settings::$timezone))
+			die('Invalid timezone (' . settings::$timezone . ')');
 	}
 
 	private static function parse_channels() {

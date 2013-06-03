@@ -129,6 +129,15 @@ class user
 		$this->userdata[$key] = $value;
 		$db->query('UPDATE `users` SET `userdata` = ? WHERE `id` = ?', serialize($this->userdata), $this->id);
 	}
+
+	/**
+	 * Magic function that checks wether userdata values exist
+	 * @param string $key
+	 */
+	public function __isset($key)
+	{
+		return isset ($this->userdata[$key]);
+	}
 }
 
 ?>

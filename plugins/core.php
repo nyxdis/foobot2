@@ -21,6 +21,7 @@ class core extends plugin_interface
 		$this->register_event('command', 'adduser', NULL, 100);
 		$this->register_event('command', 'alias', NULL, 5);
 		$this->register_event('command', 'chlvl', NULL, 100);
+		$this->register_event('command', 'gettz', NULL, 1);
 		$this->register_event('command', 'getuserdata', NULL, 10);
 		$this->register_event('command', 'help');
 		$this->register_event('command', 'hi', NULL, 0);
@@ -35,6 +36,7 @@ class core extends plugin_interface
 		$this->register_event('command', 'raw', NULL, 1000);
 		$this->register_event('command', 'reboot', NULL, 100);
 		$this->register_event('command', 'reload', NULL, 100);
+		$this->register_event('command', 'settz', NULL, 1);
 		$this->register_event('command', 'shutdown', NULL, 1000);
 		$this->register_event('command', 'sql', NULL, 1000);
 		$this->register_event('command', 'unalias', NULL, 5);
@@ -49,6 +51,7 @@ class core extends plugin_interface
 		$this->register_help('alias', 'alias <alias-name> <string> - add a command alias');
 		$this->register_help('chlvl', 'change the level of some user');
 		$this->register_help('getuserdata', 'retrieve the plugin user data');
+		$this->register_help('gettz', 'show current timezone');
 		$this->register_help('help', 'this help');
 		$this->register_help('ignore', 'ignore all messages from a specific nick');
 		$this->register_help('unignore', 'remove the ignore for the specified nick');
@@ -59,6 +62,7 @@ class core extends plugin_interface
 		$this->register_help('raw', 'send raw IRC commands');
 		$this->register_help('reboot', 'reboot the bot');
 		$this->register_help('reload', 'reload settings');
+		$this->register_help('settz', 'set your timezone');
 		$this->register_help('shutdown', 'shut the bot down');
 		$this->register_help('sql', 'send raw SQL commands');
 		$this->register_help('unalias', 'remove aliases');
@@ -179,6 +183,11 @@ class core extends plugin_interface
 
 		$db->query('UPDATE `users` SET `ulvl` = ? WHERE `id` = ?', (int)$args[1], (int)$uid);
 		parent::answer('Okay');
+	}
+
+	public function gettz($args)
+	{
+		parent::answer(date_default_timezone_get());
 	}
 
 	public function getuserdata($args)
@@ -336,6 +345,25 @@ class core extends plugin_interface
 		$bot->send('NICK ' . settings::$nick);
 		$bot->post_connect();
 
+		parent::answer("Done.");
+	}
+
+	public function settz($args)
+	{
+		$usr = bot::get_instance()->usr;
+
+		if (empty ($args)) {
+			$tz = settings::$timezone;
+		} else {
+			$tz = implode(', ', $args);
+
+			if (!verify_timezone($tz)) {
+				parent::answer("Invalid timezone.");
+				return;
+			}
+		}
+
+		$usr->timezone = $tz;
 		parent::answer("Done.");
 	}
 

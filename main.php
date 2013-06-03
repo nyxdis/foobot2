@@ -19,6 +19,9 @@ require_once 'includes/plugins.php';
 // Load settings
 settings::load($argc, $argv);
 
+// Set default timezone
+date_default_timezone_set(settings::$timezone);
+
 // Load plugins
 foreach (glob('plugins/*.php') as $file) {
 	$file = basename($file);

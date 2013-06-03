@@ -209,12 +209,17 @@ class plugins
 			if ($event == 'command')
 				$bot->log_cmd($bot->usr->name, $bot->channel, $entry['trigger'], $args);
 
+			if (isset ($bot->usr->timezone))
+				date_default_timezone_set($bot->usr->timezone);
+
 			if (isset ($preg_args) && !empty ($preg_args)) {
 				foreach ($preg_args as $args)
 					self::$loaded[$entry['plugin']]->$entry['function']($args);
 			} else {
 				self::$loaded[$entry['plugin']]->$entry['function']($args);
 			}
+
+			date_default_timezone_set(settings::$timezone);
 		}
 
 		return $return;

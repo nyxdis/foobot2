@@ -138,6 +138,21 @@ function exec_timeout($exec, $args = "", $timeout = 5)
 	}
 }
 
+/**
+ * Verify if the passed string is a valid identifier for a timezone
+ * @param string $timezone identifier
+ * @return boolean if the identifier is valid
+ */
+function verify_timezone($timezone)
+{
+	try {
+		new DateTimeZone($timezone);
+		return true;
+	} catch(Exception $e) {
+		return false;
+	}
+}
+
 set_error_handler('foobot_error_handler');
 
 ?>
