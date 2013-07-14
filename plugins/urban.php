@@ -24,25 +24,24 @@ class urban extends plugin_interface
 	{
 		$ch = curl_init();
 		if (empty ($args))
-			$urban = 'http://www.urbandictionary.com/random.php';
+			$urban = 'http://api.urbandictionary.com/v0/random';
 		else
-			$urban = 'http://www.urbandictionary.com/define.php?term=' . urlencode(implode(' ', $args));
+			$urban = 'http://api.urbandictionary.com/v0/define?term=' . urlencode(implode(' ', $args));
 
 		curl_setopt($ch, CURLOPT_URL, $urban);
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 4);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 		curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla');
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
-		$result = curl_exec($ch);
-		$url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
-		if (preg_match('/<meta content=(\'|")(?<description>.*)(\'|") name=\'Description\' property=\'og:description\' \/>/', $result, $match)) {
-			$description = $match['description'];
-			$description = str_replace('&apos;', '\'', $description);
-			preg_match('/<meta content=\'(?<title>.+)\' property=\'og:title\' \/>/', $result, $match);
-			$title = $match['title'];
-			parent::answer(html_entity_decode($title) . ' - ' . html_entity_decode($description) . ' <' . $url . '>');
-		} else {
+		$result = json_decode(curl_exec($ch));
+
+		if ($result->result_type == "no_results") {
 			parent::answer('No definition found');
+		} else {
+			$result = $result->list[0];
+			$def = explode("\n", $result->definition, 2)[0];
+			$def = substr($def, 0, 250) . '...';
+			parent::answer($result->word . ' - ' . $def . ' <' . $result->permalink . '>');
 		}
 	}
 }
