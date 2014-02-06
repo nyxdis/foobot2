@@ -39,8 +39,8 @@ class urban extends plugin_interface
 			parent::answer('No definition found');
 		} else {
 			$result = $result->list[0];
-			$def = explode("\n", $result->definition, 2)[0];
-			$def = substr($def, 0, 250) . '...';
+			$def = explode("\n", $result->definition, 2);
+			$def = substr($def[0], 0, 250) . '...';
 			parent::answer($result->word . ' - ' . $def . ' <' . $result->permalink . '>');
 		}
 	}
